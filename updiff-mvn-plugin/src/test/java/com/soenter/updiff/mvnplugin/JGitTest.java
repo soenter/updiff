@@ -32,7 +32,8 @@ public class JGitTest{
 
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 
-		Repository repository = builder.setGitDir(new File("D:\\0020_repo\\0010_git\\moquette\\.git"))
+
+		Repository repository = builder.setGitDir(new File("D:\\0005_git\\updiff\\.git"))
 				.readEnvironment()
 				.findGitDir()
 				.build();
@@ -42,11 +43,11 @@ public class JGitTest{
 		ObjectReader reader = git.getRepository().newObjectReader();
 
 		CanonicalTreeParser newTreeIterator = new CanonicalTreeParser();
-		ObjectId newTree = git.getRepository().resolve("bd1b804^{tree}");
+		ObjectId newTree = git.getRepository().resolve("HEAD^{tree}");
 		newTreeIterator.reset(reader, newTree);
 
 		CanonicalTreeParser oldTreeIterator = new CanonicalTreeParser();
-		ObjectId oldTree = git.getRepository().resolve("8574299^{tree}");
+		ObjectId oldTree = git.getRepository().resolve("e050d8c^{tree}");
 		oldTreeIterator.reset(reader, oldTree);
 
 		List<DiffEntry> diffs = git.diff()
