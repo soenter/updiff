@@ -3,7 +3,7 @@
     <parent>
         <artifactId>updiff</artifactId>
         <groupId>com.soenter.updiff</groupId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -31,9 +31,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit</artifactId>
-            <version>3.7.1.201504261725-r</version>
+            <groupId>com.soenter.updiff</groupId>
+            <artifactId>updiff-common</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <dependency>

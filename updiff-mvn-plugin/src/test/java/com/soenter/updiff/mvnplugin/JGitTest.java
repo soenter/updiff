@@ -12,6 +12,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.junit.Test;
 
 import java.io.File;
@@ -33,7 +34,7 @@ public class JGitTest{
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 
 
-		Repository repository = builder.setGitDir(new File("D:\\0005_git\\updiff\\.git"))
+		Repository repository = builder.setGitDir(new File("D:\\0005_git\\abacus\\.git"))
 				.readEnvironment()
 				.findGitDir()
 				.build();
@@ -47,7 +48,7 @@ public class JGitTest{
 		newTreeIterator.reset(reader, newTree);
 
 		CanonicalTreeParser oldTreeIterator = new CanonicalTreeParser();
-		ObjectId oldTree = git.getRepository().resolve("e050d8c^{tree}");
+		ObjectId oldTree = git.getRepository().resolve("b2408f9^{tree}");
 		oldTreeIterator.reset(reader, oldTree);
 
 		List<DiffEntry> diffs = git.diff()

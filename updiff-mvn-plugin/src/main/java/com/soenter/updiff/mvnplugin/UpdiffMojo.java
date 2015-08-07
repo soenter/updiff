@@ -1,11 +1,18 @@
 package com.soenter.updiff.mvnplugin;
 
+import com.soenter.updiff.common.DiffElement;
+import com.soenter.updiff.common.DiffWriter;
+import com.soenter.updiff.common.GitRep;
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 增量升级
@@ -15,14 +22,31 @@ import java.io.IOException;
  */
 public class UpdiffMojo extends AbstractMojo {
 
-	//工程项目根路径 + /.git = Git仓库路径
-	private String projectRootPath;
-
-	//Git旧版本号：SHA-1全称，或简称
+	/**
+	 * Git旧版本号：SHA-1全称，或简称
+	 * @parameter expression="${updiff.oldGitVersion}"
+	 * @required
+	 * @readonly
+	 *
+	 */
 	private String oldGitVersion;
 
-	//Git新版本号：SHA-1全称，或简称
-	private String newGitVersion = "HEAD";
+	/**
+	 * Git新版本号：SHA-1全称，或简称
+	 * @parameter expression="${updiff.newGitVersion}" efault-value="HEAD"
+	 * @readonly
+	 *
+	 */
+	private String newGitVersion;
+
+	/**
+	 *
+	 * @parameter expression="${session.executionRootDirectory}"
+	 * @required
+	 * @readonly
+	 *
+	 */
+	private File rootDir;
 
 	/**
 	 * @parameter expression="${project.basedir}"
@@ -30,7 +54,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 * @readonly
 	 */
 	private File baseDir;
-
 
 
 	/**
@@ -42,30 +65,117 @@ public class UpdiffMojo extends AbstractMojo {
 	 */
 	private File outputDirectory;
 
-	public void execute () throws MojoExecutionException {
-		File f = outputDirectory;
+	/**
+	 * 源文件路径.
+	 *
+	 * @parameter expression="${project.build.sourceDirectory}"
+	 * @required
+	 * @readonly
+	 */
+	private File sourceDirectory;
 
-		if (!f.exists()) {
-			f.mkdirs();
+	/**
+	 * 测试源文件路径.
+	 *
+	 * @parameter expression="${project.build.testSourceDirectory}"
+	 * @required
+	 * @readonly
+	 */
+	private File testSourceDirectory;
+
+
+
+	/**
+	 * 脚本文件路径.
+	 *
+	 * @parameter expression="${project.build.scriptSourceDirectory}"
+	 * @required
+	 * @readonly
+	 */
+	private File scriptSourceDirectory;
+
+	/**
+	 * 资源文件路径.
+	 *
+	 * @parameter expression="${project.build.resources}"
+	 * @required
+	 * @readonly
+	 */
+	private Resource[] mainResources;
+
+
+	/**
+	 * 测试源文件路径.
+	 *
+	 * @parameter expression="${project.build.testResources}"
+	 * @required
+	 * @readonly
+	 */
+	private Resource[] testResources;
+
+	/**
+	 * 最终名称
+	 *
+	 * @parameter expression="${project.build.finalName}"
+	 * @required
+	 * @readonly
+	 */
+	private String finalName;
+
+	/**
+	 * 打包方式
+	 *
+	 * @parameter expression="${project.packaging}"
+	 * @required
+	 * @readonly
+	 */
+	private String packaging;
+
+	public void execute () throws MojoExecutionException {
+
+		if("pom".equals(packaging)){
+			return;
 		}
 
-		File updiff = new File(f, "updiff.txt");
+		File outputDif = outputDirectory;
 
-		FileWriter w = null;
+		if (!outputDif.exists()) {
+			outputDif.mkdirs();
+		}
+
+		DiffWriter diffWriter = null;
 		try {
-			w = new FileWriter(updiff);
+			GitRep gitRep = new GitRep(
+					rootDir.getAbsolutePath(),
+					oldGitVersion,
+					newGitVersion,
+					baseDir.getAbsolutePath());
 
-			w.write("updiff.txt\n");
-			w.write(baseDir.getAbsolutePath());
-		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating file " + updiff, e);
-		} finally {
-			if (w != null) {
-				try {
-					w.close();
-				} catch (IOException e) {
-					// ignore
+			List<File> sourceStructFiles = new ArrayList<File>();
+			sourceStructFiles.add(sourceDirectory);
+			sourceStructFiles.add(scriptSourceDirectory);
+			sourceStructFiles.add(testSourceDirectory);
+			for (Resource resource: mainResources){
+				sourceStructFiles.add(new File(resource.getDirectory()));
+			}
+			for (Resource resource: testResources){
+				sourceStructFiles.add(new File(resource.getDirectory()));
+			}
+
+			List<DiffElement> diffs = gitRep.getDiffElements(sourceStructFiles);
+
+			if(diffs != null && diffs.size() > 0){
+				diffWriter = new DiffWriter(outputDif, finalName, packaging);
+				for (DiffElement element: diffs){
+					diffWriter.addElement(element);
 				}
+				diffWriter.write();
+			}
+		} catch (Exception e) {
+			throw new MojoExecutionException("生成diff文件异常 ", e);
+		} finally {
+			if (diffWriter != null) {
+				diffWriter.close();
 			}
 		}
 	}
