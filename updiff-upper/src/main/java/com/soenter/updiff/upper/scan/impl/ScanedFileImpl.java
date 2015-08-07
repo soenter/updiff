@@ -38,7 +38,13 @@ public class ScanedFileImpl implements ScanedFile{
 
 	private File diffFile;
 
-	public ScanedFileImpl (File oldFile, File newFile) {
+	private String relativePath;
+
+	private String newFileSha1;
+
+	private String oldFileSha1;
+
+	public ScanedFileImpl (File oldFile, File newFile, String relativePath) {
 
 		if(oldFile.exists() && newFile.exists()){
 			if(oldFile.isFile() != oldFile.isFile()){
@@ -55,6 +61,8 @@ public class ScanedFileImpl implements ScanedFile{
 		if(newFileDotIndex != -1){
 			this.diffFile = new File(newFilePath.substring(0, newFileDotIndex) + DiffWriter.fileTypeName);
 		}
+
+		this.relativePath = relativePath;
 	}
 
 	public boolean isDir () {
@@ -82,11 +90,13 @@ public class ScanedFileImpl implements ScanedFile{
 			return false;
 		}
 
-		String newFileSha1 = null;
-		String oldFileSha1 = null;
 		try {
-			newFileSha1 = DigestUtils.sha1Hex(new FileInputStream(newFile));
-			oldFileSha1 = DigestUtils.sha1Hex(new FileInputStream(oldFile));
+			if(newFileSha1 == null){
+				newFileSha1 = DigestUtils.sha1Hex(new FileInputStream(newFile));
+			}
+			if(oldFileSha1 == null){
+				oldFileSha1 = DigestUtils.sha1Hex(new FileInputStream(oldFile));
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("newFile 或 oldFile 文件不存在 ");
 		}
@@ -105,6 +115,10 @@ public class ScanedFileImpl implements ScanedFile{
 		return diffFile;
 	}
 
+	public String getRelativePath () {
+		return relativePath;
+	}
+
 	@Override
 	public String toString () {
 
@@ -117,7 +131,7 @@ public class ScanedFileImpl implements ScanedFile{
 		sb.append("isModifyFile: ").append(isModifyFile()).append(", ");
 		sb.append("oldFile: ").append(oldFile).append(", ");
 		sb.append("newFile: ").append(newFile).append(", ");
-		sb.append("diffFile: ").append(diffFile).append("");
+		sb.append("diffFile: ").append(diffFile);
 
 		return sb.append("]").toString();
 	}

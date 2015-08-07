@@ -72,16 +72,20 @@ public class ScannerImpl implements Scanner{
 		File[] files = file.listFiles();
 		for (File f: files){
 			if(f.isDirectory()){
-				scanFiles.add(new ScanedFileImpl(getOldFile(f), f));
+				scanFiles.add(new ScanedFileImpl(getOldFile(f), f, getRelativePath(f)));
 				walkFiles(scanFiles, f);
 			} else if(!f.getName().endsWith(DiffWriter.fileTypeName)){
-				scanFiles.add(new ScanedFileImpl(getOldFile(f), f));
+				scanFiles.add(new ScanedFileImpl(getOldFile(f), f, getRelativePath(f)));
 			}
 		}
 	}
 
 	private File getOldFile(File file){
-		String oldFilePath = oldDir.getAbsolutePath() + file.getAbsolutePath().substring(newDir.getAbsolutePath().length());
+		String oldFilePath = oldDir.getAbsolutePath() + getRelativePath(file);
 		return new File(oldFilePath);
+	}
+
+	private String getRelativePath(File file){
+		return file.getAbsolutePath().substring(newDir.getAbsolutePath().length());
 	}
 }

@@ -31,4 +31,6 @@ public interface ScanedFile {
 
 	File getDiffFile();
 
+	String getRelativePath();
+
 }

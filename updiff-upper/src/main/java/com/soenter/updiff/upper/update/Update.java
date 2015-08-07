@@ -1,5 +1,7 @@
 package com.soenter.updiff.upper.update;
 
+import java.io.IOException;
+
 /**
  * @author : sun.mt@sand.com.cn
  * @version 1.0.0
@@ -9,5 +11,23 @@ package com.soenter.updiff.upper.update;
  */
 public interface Update {
 
-	boolean execute();
+	void backup() throws IOException;
+
+	void recovery() throws IOException;
+
+	void execute() throws IOException;
+
+	enum FileType{
+		CLASS(".class"),
+		JAR(".jar");
+
+		String type;
+		FileType(String type){
+			this.type = type;
+		}
+
+		public String getType(){
+			return type;
+		}
+	}
 }

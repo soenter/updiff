@@ -13,7 +13,10 @@
  */
 package com.soenter.updiff.upper.update.impl;
 
+import com.soenter.updiff.upper.scan.ScanedFile;
 import com.soenter.updiff.upper.update.Update;
+
+import java.io.IOException;
 
 /**
  *
@@ -24,9 +27,27 @@ import com.soenter.updiff.upper.update.Update;
  * @version 1.0.0
  *
  */
-public class ClassUpdateImpl implements Update{
+public class ClassUpdateImpl extends UpdateImpl{
 
-	public boolean execute () {
-		return false;
+
+
+	public ClassUpdateImpl (ScanedFile scanedFile, String backupPath) throws IOException {
+		super(scanedFile, backupPath);
+
+		if(scanedFile.isDir() || !scanedFile.getNewFile().getName().endsWith(FileType.CLASS.getType())){
+			throw new IOException("ClassUpdateImpl 只能处理以.class结尾的文件");
+		}
+	}
+
+	public void backup () throws IOException {
+
+	}
+
+	public void recovery () throws IOException {
+
+	}
+
+	public void execute () throws IOException {
+
 	}
 }
