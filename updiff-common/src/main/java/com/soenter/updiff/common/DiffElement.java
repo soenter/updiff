@@ -69,4 +69,14 @@ public class DiffElement {
 	public void setOldGroupName (String oldGroupName) {
 		this.oldGroupName = oldGroupName;
 	}
+
+
+	public String getCompiledNewPath(){
+
+		String subfix = ".java";
+		if(newPath.endsWith(subfix)){
+			return newPath.substring(0, newPath.length() - subfix.length()) + ".class";
+		}
+		return newPath;
+	}
 }

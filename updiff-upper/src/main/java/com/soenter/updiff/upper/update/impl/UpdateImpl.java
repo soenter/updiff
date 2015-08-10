@@ -13,7 +13,7 @@
  */
 package com.soenter.updiff.upper.update.impl;
 
-import com.soenter.updiff.upper.scan.ScanedFile;
+import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.update.Update;
 import org.apache.commons.io.FileUtils;
 
@@ -31,44 +31,67 @@ import java.io.IOException;
  */
 public class UpdateImpl implements Update{
 
-	protected ScanedFile scanedFile;
+	protected Scaned scaned;
 
 	protected File backupFile;
 
-	public UpdateImpl (ScanedFile scanedFile, String backupPath) throws IOException{
-		this.scanedFile = scanedFile;
-		String backupFilePath = backupPath + "/" + scanedFile.getRelativePath();
-		this.backupFile = new File(backupFilePath);
+	protected String backupPath;
+
+	public UpdateImpl (Scaned scaned, String backupPath) throws IOException{
+		this.scaned = scaned;
+		this.backupPath = backupPath + File.separator + scaned.getRelativePath();
+		this.backupFile = new File(backupPath);
 
 		if(backupFile.exists()){
-			throw new IOException("备份文件已经存在：" + backupFilePath);
+			throw new IOException("备份文件已经存在：" + backupPath);
 		}
 	}
 
 	public void backup () throws IOException {
-		if(!scanedFile.isDir() && !scanedFile.isAddFile()){
-			FileUtils.copyFile(scanedFile.getOldFile(), backupFile);
+		if(scaned.isModifyFile() || scaned.isDeleteFile()){
+			FileUtils.copyFile(scaned.getOldFile(), backupFile);
 		}
 	}
 
 	public void recovery () throws IOException {
-		if(!scanedFile.isDir() && !scanedFile.isAddFile()) {
-			FileUtils.copyFile(backupFile, scanedFile.getOldFile());
+		if(scaned.isDir()){
+			if(scaned.isAddFile()){
+				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
+					throw new IOException("[恢复]-删除创建文件夹失败：" + scaned.getOldFile().getAbsolutePath());
+				}
+			}
+		} else {
+			if(scaned.isAddFile()){
+				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
+					throw new IOException("[恢复]-删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+				}
+			} else if(scaned.isModifyFile()){
+				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
+					throw new IOException("[恢复]-删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+				}
+				FileUtils.copyFile(backupFile, scaned.getOldFile());
+			}
 		}
 	}
 
 	public void execute () throws IOException {
-		if(scanedFile.isDir()){
-			if(scanedFile.getNewFile().mkdirs()){
-				throw new IOException("创建文件夹失败：" + scanedFile.getNewFile().getAbsolutePath());
-			}
-		} else {
-			if(scanedFile.isModifyFile()){
-				if(scanedFile.getOldFile().delete()){
-					throw new IOException("删除旧文件失败：" + scanedFile.getOldFile().getAbsolutePath());
+		if(scaned.isDir()){
+			if(scaned.isAddFile()){
+				if(scaned.getOldFile().exists() && !scaned.getOldFile().mkdirs()){
+					throw new IOException("创建文件夹失败：" + scaned.getOldFile().getAbsolutePath());
 				}
 			}
-			FileUtils.copyFile(scanedFile.getNewFile(), scanedFile.getOldFile());
+		} else {
+			if(scaned.isAddFile()){
+				if(!scaned.getOldFile().getParentFile().mkdirs()){
+					throw new IOException("创建父类文件夹失败：" + scaned.getOldFile().getParentFile().getAbsolutePath());
+				}
+			} else if(scaned.isModifyFile()){
+				if(!scaned.getOldFile().delete()){
+					throw new IOException("删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+				}
+			}
+			FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
 		}
 	}
 }

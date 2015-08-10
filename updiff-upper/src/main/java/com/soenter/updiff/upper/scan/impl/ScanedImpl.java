@@ -14,8 +14,9 @@
 package com.soenter.updiff.upper.scan.impl;
 
 import com.soenter.updiff.common.DiffWriter;
-import com.soenter.updiff.upper.scan.ScanedFile;
+import com.soenter.updiff.upper.scan.Scaned;
 import org.apache.commons.codec.digest.DigestUtils;
+import sun.applet.Main;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,14 +24,14 @@ import java.io.IOException;
 
 /**
  *
- * @ClassName ：com.soenter.updiff.upper.scan.impl.ScanedFileImpl
+ * @ClassName ：com.soenter.updiff.upper.scan.impl.ScanedImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 14:38
  * @version 1.0.0
  *
  */
-public class ScanedFileImpl implements ScanedFile{
+public class ScanedImpl implements Scaned {
 
 	private File oldFile;
 
@@ -44,8 +45,15 @@ public class ScanedFileImpl implements ScanedFile{
 
 	private String oldFileSha1;
 
-	public ScanedFileImpl (File oldFile, File newFile, String relativePath) {
+	public ScanedImpl (File oldFile, File newFile, String relativePath) {
+		init(oldFile, newFile, relativePath, false);
+	}
 
+	public ScanedImpl (File oldFile, File newFile, String relativePath, boolean isInnerDiffFile) {
+		init(oldFile, newFile, relativePath, isInnerDiffFile);
+	}
+
+	private void init(File oldFile, File newFile, String relativePath, boolean isInnerDiffFile){
 		if(oldFile.exists() && newFile.exists()){
 			if(oldFile.isFile() != oldFile.isFile()){
 				throw new RuntimeException("文件类型必须一样");
@@ -56,10 +64,16 @@ public class ScanedFileImpl implements ScanedFile{
 		this.newFile = newFile;
 
 		String newFilePath = newFile.getAbsolutePath();
-		int newFileDotIndex = newFilePath.lastIndexOf(".");
+		if(isInnerDiffFile){
+			this.diffFile = new File(newFilePath + "/" + newFile.getName() + DiffWriter.fileTypeName);
+		} else {
+			int newFileDotIndex = newFilePath.lastIndexOf(".");
 
-		if(newFileDotIndex != -1){
-			this.diffFile = new File(newFilePath.substring(0, newFileDotIndex) + DiffWriter.fileTypeName);
+			if(newFileDotIndex != -1){
+				this.diffFile = new File(newFilePath.substring(0, newFileDotIndex) + DiffWriter.fileTypeName);
+			} else {
+				this.diffFile = new File(newFilePath + DiffWriter.fileTypeName);
+			}
 		}
 
 		this.relativePath = relativePath;
@@ -71,6 +85,10 @@ public class ScanedFileImpl implements ScanedFile{
 
 	public boolean isJar () {
 		return newFile.getName().endsWith(".jar");
+	}
+
+	public boolean isClass () {
+		return newFile.getName().endsWith(".class");
 	}
 
 	public boolean hasDiff () {
@@ -90,6 +108,11 @@ public class ScanedFileImpl implements ScanedFile{
 			return false;
 		}
 
+		//如果是jar或class不能通过计算sha1值判断是否修改过
+		if(isJar() || isClass()){
+			return false;
+		}
+
 		try {
 			if(newFileSha1 == null){
 				newFileSha1 = DigestUtils.sha1Hex(new FileInputStream(newFile));
@@ -101,6 +124,10 @@ public class ScanedFileImpl implements ScanedFile{
 			throw new RuntimeException("newFile 或 oldFile 文件不存在 ");
 		}
 		return !newFileSha1.equals(oldFileSha1);
+	}
+
+	public boolean isDeleteFile () {
+		return new File(newFile.getParent(), newFile.getName() + ".delete").exists();
 	}
 
 	public File getOldFile () {
@@ -135,4 +162,5 @@ public class ScanedFileImpl implements ScanedFile{
 
 		return sb.append("]").toString();
 	}
+
 }

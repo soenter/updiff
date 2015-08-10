@@ -14,11 +14,10 @@
 package com.soenter.updiff.upper.scan.impl;
 
 import com.soenter.updiff.common.DiffWriter;
-import com.soenter.updiff.upper.scan.ScanedFile;
+import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.scan.Scanner;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,33 +48,24 @@ public class ScannerImpl implements Scanner{
 		this.newDir = newDir;
 	}
 
-	public File getOldDir () {
-		return oldDir;
-	}
+	public Iterator<Scaned> iterator () {
 
-	public File getNewDir () {
-		return newDir;
-	}
-
-
-	public Iterator<ScanedFile> iterator () {
-
-		List<ScanedFile> scanFiles = new LinkedList<ScanedFile>();
+		List<Scaned> scanFiles = new LinkedList<Scaned>();
 
 		walkFiles(scanFiles, newDir);
 
 		return scanFiles.iterator();
 	}
 
-	private void walkFiles(List<ScanedFile> scanFiles, File file){
+	private void walkFiles(List<Scaned> scanFiles, File file){
 
 		File[] files = file.listFiles();
 		for (File f: files){
 			if(f.isDirectory()){
-				scanFiles.add(new ScanedFileImpl(getOldFile(f), f, getRelativePath(f)));
+				scanFiles.add(new ScanedImpl(getOldFile(f), f, getRelativePath(f)));
 				walkFiles(scanFiles, f);
 			} else if(!f.getName().endsWith(DiffWriter.fileTypeName)){
-				scanFiles.add(new ScanedFileImpl(getOldFile(f), f, getRelativePath(f)));
+				scanFiles.add(new ScanedImpl(getOldFile(f), f, getRelativePath(f)));
 			}
 		}
 	}

@@ -9,10 +9,6 @@ import java.io.File;
  * @Description :
  * @Date : 2015/8/7 13:28
  */
-public interface Scanner extends Iterable<ScanedFile>{
-
-	File getOldDir();
-
-	File getNewDir();
+public interface Scanner <T> extends Iterable<T>{
 
 }
