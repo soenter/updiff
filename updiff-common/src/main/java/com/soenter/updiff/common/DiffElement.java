@@ -79,4 +79,17 @@ public class DiffElement {
 		}
 		return newPath;
 	}
+
+	@Override
+	public String toString () {
+		StringBuilder sb = new StringBuilder("[");
+
+		sb.append("newGroupName: ").append(newGroupName).append(", ");
+		sb.append("oldGroupName: ").append(oldGroupName).append(", ");
+		sb.append("changeName: ").append(changeName).append(", ");
+		sb.append("newPath: ").append(newPath).append(", ");
+		sb.append("oldPath: ").append(oldPath);
+
+		return sb.append("]").toString();
+	}
 }

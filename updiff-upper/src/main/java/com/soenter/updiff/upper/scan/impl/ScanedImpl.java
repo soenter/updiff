@@ -14,17 +14,20 @@
 package com.soenter.updiff.upper.scan.impl;
 
 import com.soenter.updiff.common.DiffWriter;
+import com.soenter.updiff.common.FileType;
 import com.soenter.updiff.upper.scan.Scaned;
+import com.soenter.updiff.upper.update.Update;
 import org.apache.commons.codec.digest.DigestUtils;
 import sun.applet.Main;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.scan.impl.ScanedImpl
+ * @ClassName ï¼šcom.soenter.updiff.upper.scan.impl.ScanedImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 14:38
@@ -45,6 +48,12 @@ public class ScanedImpl implements Scaned {
 
 	private String oldFileSha1;
 
+	private boolean isAddFile;
+
+	private boolean isDeleteFile;
+
+	private boolean isModifyFile;
+
 	public ScanedImpl (File oldFile, File newFile, String relativePath) {
 		init(oldFile, newFile, relativePath, false);
 	}
@@ -56,7 +65,7 @@ public class ScanedImpl implements Scaned {
 	private void init(File oldFile, File newFile, String relativePath, boolean isInnerDiffFile){
 		if(oldFile.exists() && newFile.exists()){
 			if(oldFile.isFile() != oldFile.isFile()){
-				throw new RuntimeException("ÎÄ¼şÀàĞÍ±ØĞëÒ»Ñù");
+				throw new RuntimeException("æ–‡ä»¶ç±»å‹å¿…é¡»ä¸€æ ·");
 			}
 		}
 
@@ -65,18 +74,24 @@ public class ScanedImpl implements Scaned {
 
 		String newFilePath = newFile.getAbsolutePath();
 		if(isInnerDiffFile){
-			this.diffFile = new File(newFilePath + "/" + newFile.getName() + DiffWriter.fileTypeName);
+			this.diffFile = new File(newFilePath + "/" + newFile.getName() + FileType.DIFF.getType());
 		} else {
 			int newFileDotIndex = newFilePath.lastIndexOf(".");
 
 			if(newFileDotIndex != -1){
-				this.diffFile = new File(newFilePath.substring(0, newFileDotIndex) + DiffWriter.fileTypeName);
+				this.diffFile = new File(newFilePath.substring(0, newFileDotIndex) + FileType.DIFF.getType());
 			} else {
-				this.diffFile = new File(newFilePath + DiffWriter.fileTypeName);
+				this.diffFile = new File(newFilePath + FileType.DIFF.getType());
 			}
 		}
 
 		this.relativePath = relativePath;
+
+		this.isAddFile = !oldFile.exists();
+
+		this.isModifyFile = getModifyFile();
+
+		this.isDeleteFile = new File(newFile.getParent(), newFile.getName() + FileType.DELETE.getType()).exists();
 	}
 
 	public boolean isDir () {
@@ -84,11 +99,11 @@ public class ScanedImpl implements Scaned {
 	}
 
 	public boolean isJar () {
-		return newFile.getName().endsWith(".jar");
+		return newFile.getName().endsWith(FileType.JAR.getType());
 	}
 
 	public boolean isClass () {
-		return newFile.getName().endsWith(".class");
+		return newFile.getName().endsWith(FileType.CLASS.getType());
 	}
 
 	public boolean hasDiff () {
@@ -96,38 +111,19 @@ public class ScanedImpl implements Scaned {
 	}
 
 	public boolean isUpVersionFile () {
-		return false;//FIXME ÎÄ¼ş°æ±¾Ôö¸ß»ò½µµÍ¹¦ÄÜ
+		return false;//FIXME æ–‡ä»¶ç‰ˆæœ¬å¢é«˜æˆ–é™ä½åŠŸèƒ½
 	}
 
 	public boolean isAddFile () {
-		return !oldFile.exists();
+		return this.isAddFile;
 	}
 
 	public boolean isModifyFile ()  {
-		if(!newFile.exists() || !oldFile.exists() || newFile.isDirectory() || oldFile.isDirectory()){
-			return false;
-		}
-
-		//Èç¹ûÊÇjar»òclass²»ÄÜÍ¨¹ı¼ÆËãsha1ÖµÅĞ¶ÏÊÇ·ñĞŞ¸Ä¹ı
-		if(isJar() || isClass()){
-			return false;
-		}
-
-		try {
-			if(newFileSha1 == null){
-				newFileSha1 = DigestUtils.sha1Hex(new FileInputStream(newFile));
-			}
-			if(oldFileSha1 == null){
-				oldFileSha1 = DigestUtils.sha1Hex(new FileInputStream(oldFile));
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("newFile »ò oldFile ÎÄ¼ş²»´æÔÚ ");
-		}
-		return !newFileSha1.equals(oldFileSha1);
+		return isModifyFile;
 	}
 
 	public boolean isDeleteFile () {
-		return new File(newFile.getParent(), newFile.getName() + ".delete").exists();
+		return isDeleteFile;
 	}
 
 	public File getOldFile () {
@@ -163,4 +159,40 @@ public class ScanedImpl implements Scaned {
 		return sb.append("]").toString();
 	}
 
+	private boolean getModifyFile(){
+		if(!newFile.exists() || !oldFile.exists() || newFile.isDirectory() || oldFile.isDirectory()){
+			return false;
+		}
+
+		//å¦‚æœæ˜¯jaræˆ–classä¸èƒ½é€šè¿‡è®¡ç®—sha1å€¼åˆ¤æ–­æ˜¯å¦ä¿®æ”¹è¿‡
+		if(isJar() || isClass()){
+			return false;
+		}
+		InputStream newFileIs = null;
+		InputStream oldFileIs = null;
+		try {
+			if(newFileSha1 == null){
+				newFileIs = new FileInputStream(newFile);
+				newFileSha1 = DigestUtils.sha1Hex(newFileIs);
+			}
+			if(oldFileSha1 == null){
+				oldFileIs = new FileInputStream(oldFile);
+				oldFileSha1 = DigestUtils.sha1Hex(oldFileIs);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("newFile æˆ– oldFile æ–‡ä»¶ä¸å­˜åœ¨ ");
+		} finally {
+			try {
+				if(newFileIs != null){
+					newFileIs.close();
+				}
+				if(oldFileIs != null){
+					oldFileIs.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return !newFileSha1.equals(oldFileSha1);
+	}
 }

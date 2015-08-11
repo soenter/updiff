@@ -21,9 +21,10 @@ import com.soenter.updiff.upper.scan.impl.ScannerDiffImpl;
 import com.soenter.updiff.upper.update.Executor;
 import com.soenter.updiff.upper.update.UpdateFactory;
 import org.apache.commons.io.FileUtils;
-import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.logging.console.ConsoleLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +32,7 @@ import java.util.Iterator;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.update.impl.UpdateJarImpl
+ * @ClassName ï¼šcom.soenter.updiff.upper.update.impl.UpdateJarImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 16:34
@@ -43,58 +44,70 @@ public class UpdateJarImpl extends UpdateImpl {
 	public UpdateJarImpl (Scaned scaned, String backupPath) throws IOException {
 		super(scaned, backupPath);
 		if(!scaned.isJar()){
-			throw new IOException("UpdateJarImpl Ö»ÄÜ´¦ÀíjarÎÄ¼ş");
+			throw new IOException("UpdateJarImpl åªèƒ½å¤„ç†jaræ–‡ä»¶");
 		}
 	}
 
 	@Override
 	public void execute () throws IOException {
 
-		if(scaned.isAddFile()){//ĞÂÌí¼ÓÎÄ¼ş
-			if(!scaned.getOldFile().getParentFile().mkdirs()){
-				throw new IOException("´´½¨¸¸ÀàÎÄ¼ş¼ĞÊ§°Ü£º" + scaned.getOldFile().getParentFile().getAbsolutePath());
+		if(scaned.isAddFile()){//æ–°æ·»åŠ æ–‡ä»¶
+			if(!scaned.getOldFile().getParentFile().exists() && !scaned.getOldFile().getParentFile().mkdirs()){
+				throw new IOException("åˆ›å»ºçˆ¶ç±»æ–‡ä»¶å¤¹å¤±è´¥ï¼š" + scaned.getOldFile().getParentFile().getAbsolutePath());
 			}
 			FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
-		} else if(scaned.hasDiff()){//´æÔÚdiffÎÄ¼ş
-			//1.½âÑ¹±¸·İjar µ½ ±¸·İÎÄ¼ş¼ĞÏÂ {filename}_old
-			UnArchiver unArchiverOld = new ZipUnArchiver();
+		} else if(scaned.hasDiff()){//å­˜åœ¨diffæ–‡ä»¶
+
+			//0.å¤‡ä»½æ–‡ä»¶
+			FileUtils.copyFile(scaned.getOldFile(), backupFile);
+
+			//1.è§£å‹å¤‡ä»½jar åˆ° å¤‡ä»½æ–‡ä»¶å¤¹ä¸‹ {filename}_old
+			ZipUnArchiver unArchiverOld = new ZipUnArchiver();
+			unArchiverOld.enableLogging(new ConsoleLogger(Logger.LEVEL_ERROR,"Package"));
 			unArchiverOld.setSourceFile(backupFile);
 			File unjarOld = new File(backupFile.getParent(), backupFile.getName() + "_old");
+			if(!unjarOld.exists()){
+				unjarOld.mkdirs();
+			}
 			unArchiverOld.setDestDirectory(unjarOld);
 			unArchiverOld.extract();
 
-			//2.½âÑ¹ĞÂjar µ½ ±¸·İÎÄ¼ş¼ĞÏÂ {filename}_new
-			UnArchiver unArchiverNew = new ZipUnArchiver();
+			//2.è§£å‹æ–°jar åˆ° å¤‡ä»½æ–‡ä»¶å¤¹ä¸‹ {filename}_new
+			ZipUnArchiver unArchiverNew = new ZipUnArchiver();
+			unArchiverNew.enableLogging(new ConsoleLogger(Logger.LEVEL_ERROR,"Package"));
 			unArchiverNew.setSourceFile(scaned.getNewFile());
 			File unjarNew = new File(backupFile.getParent(), backupFile.getName() + "_new");
+			if(!unjarNew.exists()){
+				unjarNew.mkdirs();
+			}
 			unArchiverNew.setDestDirectory(unjarNew);
 			unArchiverNew.extract();
 
-			//3.¸ù¾İdiffÅäÖÃ¸üĞÂ¡°{filename}_old¡±ÖĞµÄÎÄ¼şµ½¡°{filename}_new¡±ÖĞ
+			//3.æ ¹æ®diffé…ç½®æ›´æ–°â€œ{filename}_oldâ€ä¸­çš„æ–‡ä»¶åˆ°â€œ{filename}_newâ€ä¸­
 			Scanner<DiffElement> diffElScanner = new ScannerDiffImpl(scaned.getDiffFile());
 			Iterator<DiffElement> diffIt = diffElScanner.iterator();
 			String updateJarBack = backupFile.getAbsolutePath() + "_bak";
 
 			Executor executor = new Executor();
 			while(diffIt.hasNext()){
-				DiffElement element = diffIt.next();
-				String compliedPath = element.getCompiledNewPath();
-				File oldFile = new File(unjarOld.getAbsolutePath() + File.separator + compliedPath);
-				File newFile = new File(unjarNew.getAbsolutePath() + File.separator + compliedPath);
-				Scaned scaned = new ScandDiffImpl(oldFile, newFile, compliedPath, element);
+				try {
+					DiffElement element = diffIt.next();
+					String compliedPath = element.getCompiledNewPath();
+					File oldFile = new File(unjarOld.getAbsolutePath() + File.separator + compliedPath);
+					File newFile = new File(unjarNew.getAbsolutePath() + File.separator + compliedPath);
+					Scaned scaned = new ScandDiffImpl(oldFile, newFile, compliedPath, element);
 
-				if(newFile.exists()){
-					try {
+					if(newFile.exists() || scaned.isDeleteFile()){
 						executor.execute(UpdateFactory.create(scaned, updateJarBack));
-					} catch (Exception e){
-						executor.recovery();
-						throw new IOException(e);
 					}
+				} catch (Exception e){
+					executor.recovery();
+					throw new IOException(e);
 				}
 			}
 
 
-			//4.´ò°ü¡°{filename}_old¡±ÎªĞÂjar
+			//4.æ‰“åŒ…â€œ{filename}_oldâ€ä¸ºæ–°jar
 			JarArchiver archiver = new JarArchiver();
 
 			archiver.addDirectory(unjarOld);
@@ -103,14 +116,11 @@ public class UpdateJarImpl extends UpdateImpl {
 			archiver.createArchive();
 
 
-			//5.ÓÃĞÂjarÌæ»»¾ÉÎÄ¼ş
-			if(!scaned.getOldFile().delete()){
-				throw new IOException("É¾³ı¾ÉÎÄ¼şÊ§°Ü£º" + scaned.getOldFile().getAbsolutePath());
+			//5.ç”¨æ–°jaræ›¿æ¢æ—§æ–‡ä»¶
+			if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
+				throw new IOException("åˆ é™¤æ—§æ–‡ä»¶å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
 			}
 			FileUtils.copyFile(destFile, scaned.getOldFile());
-
 		}
-
-
 	}
 }

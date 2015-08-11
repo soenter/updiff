@@ -13,7 +13,8 @@
  */
 package com.soenter.updiff.upper.scan.impl;
 
-import com.soenter.updiff.common.DiffWriter;
+import com.soenter.updiff.common.FileType;
+import com.soenter.updiff.common.UpiffFileUtils;
 import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.scan.Scanner;
 
@@ -24,7 +25,7 @@ import java.util.List;
 
 /**
  *
- * @ClassName ：com.soenter.updiff.upper.scan.impl.ScannerImpl
+ * @ClassName 锛歝om.soenter.updiff.upper.scan.impl.ScannerImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 13:46
@@ -41,7 +42,7 @@ public class ScannerImpl implements Scanner{
 	public ScannerImpl (File oldDir, File newDir) {
 
 		if(!oldDir.isDirectory() || !newDir.isDirectory()){
-			throw new RuntimeException("Scanner 参数必须是文件夹");
+			throw new RuntimeException("Scanner 鍙傛暟蹇呴』鏄枃浠跺す");
 		}
 
 		this.oldDir = oldDir;
@@ -62,10 +63,12 @@ public class ScannerImpl implements Scanner{
 		File[] files = file.listFiles();
 		for (File f: files){
 			if(f.isDirectory()){
-				scanFiles.add(new ScanedImpl(getOldFile(f), f, getRelativePath(f)));
+				File realFile = UpiffFileUtils.castControlFile(f);
+				scanFiles.add(new ScanedImpl(getOldFile(realFile), realFile, getRelativePath(realFile)));
 				walkFiles(scanFiles, f);
-			} else if(!f.getName().endsWith(DiffWriter.fileTypeName)){
-				scanFiles.add(new ScanedImpl(getOldFile(f), f, getRelativePath(f)));
+			} else if(!f.getName().endsWith(FileType.DIFF.getType()) && !UpiffFileUtils.isInnerClassFile(f)){
+				File realFile = UpiffFileUtils.castControlFile(f);
+				scanFiles.add(new ScanedImpl(getOldFile(realFile), realFile, getRelativePath(realFile)));
 			}
 		}
 	}

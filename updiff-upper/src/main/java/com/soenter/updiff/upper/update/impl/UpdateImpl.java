@@ -22,7 +22,7 @@ import java.io.IOException;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.update.impl.UpdateImpl
+ * @ClassName ï¼šcom.soenter.updiff.upper.update.impl.UpdateImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 16:33
@@ -37,13 +37,13 @@ public class UpdateImpl implements Update{
 
 	protected String backupPath;
 
-	public UpdateImpl (Scaned scaned, String backupPath) throws IOException{
+	public UpdateImpl (Scaned scaned, String backupDir) throws IOException{
 		this.scaned = scaned;
-		this.backupPath = backupPath + File.separator + scaned.getRelativePath();
-		this.backupFile = new File(backupPath);
+		this.backupPath = backupDir + File.separator + scaned.getRelativePath();
+		this.backupFile = new File(this.backupPath);
 
 		if(backupFile.exists()){
-			throw new IOException("±¸·İÎÄ¼şÒÑ¾­´æÔÚ£º" + backupPath);
+			throw new IOException("å¤‡ä»½æ–‡ä»¶å·²ç»å­˜åœ¨ï¼š" + this.backupPath);
 		}
 	}
 
@@ -57,17 +57,18 @@ public class UpdateImpl implements Update{
 		if(scaned.isDir()){
 			if(scaned.isAddFile()){
 				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("[»Ö¸´]-É¾³ı´´½¨ÎÄ¼ş¼ĞÊ§°Ü£º" + scaned.getOldFile().getAbsolutePath());
+					throw new IOException("[æ¢å¤]-åˆ é™¤åˆ›å»ºæ–‡ä»¶å¤¹å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
 				}
 			}
+			//æ–‡ä»¶å¤¹ä¸æ”¯æŒæ¢å¤åˆ é™¤ä¿®æ”¹æ“ä½œ
 		} else {
 			if(scaned.isAddFile()){
 				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("[»Ö¸´]-É¾³ı¾ÉÎÄ¼şÊ§°Ü£º" + scaned.getOldFile().getAbsolutePath());
+					throw new IOException("[æ¢å¤]-åˆ é™¤æ—§æ–‡ä»¶å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
 				}
-			} else if(scaned.isModifyFile()){
+			} else if(scaned.isModifyFile() || scaned.isDeleteFile()){
 				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("[»Ö¸´]-É¾³ı¾ÉÎÄ¼şÊ§°Ü£º" + scaned.getOldFile().getAbsolutePath());
+					throw new IOException("[æ¢å¤]-åˆ é™¤æ—§æ–‡ä»¶å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
 				}
 				FileUtils.copyFile(backupFile, scaned.getOldFile());
 			}
@@ -77,21 +78,27 @@ public class UpdateImpl implements Update{
 	public void execute () throws IOException {
 		if(scaned.isDir()){
 			if(scaned.isAddFile()){
-				if(scaned.getOldFile().exists() && !scaned.getOldFile().mkdirs()){
-					throw new IOException("´´½¨ÎÄ¼ş¼ĞÊ§°Ü£º" + scaned.getOldFile().getAbsolutePath());
+				if(!scaned.getOldFile().exists() && !scaned.getOldFile().mkdirs()){
+					throw new IOException("åˆ›å»ºæ–‡ä»¶å¤¹å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
 				}
 			}
+			//æ–‡ä»¶å¤¹ä¸æ”¯æŒåˆ é™¤ä¿®æ”¹
 		} else {
 			if(scaned.isAddFile()){
-				if(!scaned.getOldFile().getParentFile().mkdirs()){
-					throw new IOException("´´½¨¸¸ÀàÎÄ¼ş¼ĞÊ§°Ü£º" + scaned.getOldFile().getParentFile().getAbsolutePath());
+				if(!scaned.getOldFile().getParentFile().exists() && !scaned.getOldFile().getParentFile().mkdirs()){
+					throw new IOException("åˆ›å»ºçˆ¶ç±»æ–‡ä»¶å¤¹å¤±è´¥ï¼š" + scaned.getOldFile().getParentFile().getAbsolutePath());
 				}
+				FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
 			} else if(scaned.isModifyFile()){
-				if(!scaned.getOldFile().delete()){
-					throw new IOException("É¾³ı¾ÉÎÄ¼şÊ§°Ü£º" + scaned.getOldFile().getAbsolutePath());
+				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
+					throw new IOException("åˆ é™¤æ—§æ–‡ä»¶å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
+				}
+				FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
+			} else if(scaned.isDeleteFile()){
+				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
+					throw new IOException("åˆ é™¤æ—§æ–‡ä»¶å¤±è´¥ï¼š" + scaned.getOldFile().getAbsolutePath());
 				}
 			}
-			FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
 		}
 	}
 }

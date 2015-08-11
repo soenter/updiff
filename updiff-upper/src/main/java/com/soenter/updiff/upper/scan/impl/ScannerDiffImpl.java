@@ -15,7 +15,6 @@ package com.soenter.updiff.upper.scan.impl;
 
 import com.soenter.updiff.common.DiffElement;
 import com.soenter.updiff.common.DiffReader;
-import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.scan.Scanner;
 import org.dom4j.DocumentException;
 
@@ -25,7 +24,7 @@ import java.util.Iterator;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.scan.impl.ScannerDiffImpl
+ * @ClassName ï¿½ï¿½com.soenter.updiff.upper.scan.impl.ScannerDiffImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/10 15:36
@@ -42,12 +41,12 @@ public class ScannerDiffImpl implements Scanner<DiffElement>{
 		this.diffFile = diffFile;
 
 		if(!this.diffFile.exists()){
-			throw new IOException("diff ÎÄ¼þ²»´æÔÚ");
+			throw new IOException("diff ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 		}
 		try {
 			diffReader = new DiffReader(this.diffFile);
 		} catch (DocumentException e) {
-			throw new IOException("diff ÎÄ¼þ¸ñÊ½·Ç·¨");
+			throw new IOException("diff ï¿½Ä¼ï¿½ï¿½ï¿½Ê½ï¿½Ç·ï¿½");
 		}
 	}
 

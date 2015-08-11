@@ -40,8 +40,6 @@ import java.util.Map;
  */
 public class DiffWriter {
 
-	public static final String fileTypeName = ".diff";
-
 	private XMLWriter writer;
 
 	private Document document;
@@ -57,7 +55,7 @@ public class DiffWriter {
 	public DiffWriter(File savePath, String fileName, String packaging) throws IOException, DocumentException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
 
-		File file = new File(savePath, fileName + fileTypeName);
+		File file = new File(savePath, fileName + FileType.DIFF.getType());
 
 		if(file.exists()){
 			SAXReader saxReader = new SAXReader();

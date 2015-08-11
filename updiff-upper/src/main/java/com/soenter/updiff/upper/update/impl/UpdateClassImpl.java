@@ -13,10 +13,10 @@
  */
 package com.soenter.updiff.upper.update.impl;
 
+import com.soenter.updiff.common.FileType;
 import com.soenter.updiff.upper.scan.Scaned;
 import org.apache.commons.io.FileUtils;
 
-import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.update.impl.UpdateClassImpl
+ * @ClassName ï¼šcom.soenter.updiff.upper.update.impl.UpdateClassImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 16:35
@@ -32,8 +32,6 @@ import java.util.List;
  *
  */
 public class UpdateClassImpl extends UpdateImpl{
-
-	private static final String CLASS_SUBPRIX = ".class";
 
 	private List<File> oldFiles;
 	private List<File> newFiles;
@@ -44,33 +42,32 @@ public class UpdateClassImpl extends UpdateImpl{
 		super(scaned, backupPath);
 
 		if(scaned.isDir() || !scaned.getNewFile().getName().endsWith(FileType.CLASS.getType())){
-			throw new IOException("UpdateClassImpl Ö»ÄÜ´¦ÀíÒÔ.class½áÎ²µÄÎÄ¼ş");
+			throw new IOException("UpdateClassImpl åªèƒ½å¤„ç†ä»¥.classç»“å°¾çš„æ–‡ä»¶");
 		}
 
 		String name = scaned.getNewFile().getName();
-		String filterName = name.substring(0, name.length() - CLASS_SUBPRIX.length()) + "$";
 
 		File oldParent = scaned.getOldFile().getParentFile();
-		oldFiles = genInnerClassList(oldParent, filterName);
+		oldFiles = genInnerClassList(oldParent, name);
 
 		File newParent = scaned.getNewFile().getParentFile();
-		newFiles = genInnerClassList(newParent, filterName);
+		newFiles = genInnerClassList(newParent, name);
 
 
 	}
 
 	public void backup () throws IOException {
 		if(!scaned.isAddFile()){
-			File backupDir = new File(backupPath + File.separator + scaned.getRelativePath()).getParentFile();
+			File backupDir = new File(backupPath).getParentFile();
 
-			if(!backupDir.mkdirs()){
-				throw new IOException("´´½¨±¸·İÎÄ¼ş¼ĞÊ§°Ü:" + backupDir.getAbsolutePath());
+			if(!backupDir.exists() && !backupDir.mkdirs()){
+				throw new IOException("åˆ›å»ºå¤‡ä»½æ–‡ä»¶å¤¹å¤±è´¥:" + backupDir.getAbsolutePath());
 			}
 
 			for(File f: oldFiles){
 				File backupFile = new File(backupDir, f.getName());
 				if(backupFile.exists()){
-					throw new IOException("±¸·İÎÄ¼şÒÑ¾­´æÔÚ:" + backupFile.getAbsolutePath());
+					throw new IOException("å¤‡ä»½æ–‡ä»¶å·²ç»å­˜åœ¨:" + backupFile.getAbsolutePath());
 				}
 				FileUtils.copyFile(f, backupFile);
 			}
@@ -79,15 +76,15 @@ public class UpdateClassImpl extends UpdateImpl{
 
 	public void recovery () throws IOException {
 		if(scaned.isAddFile()){
-			//É¾³ıĞÂ¼ÓÎÄ¼ş
+			//åˆ é™¤æ–°åŠ æ–‡ä»¶
 			deleteAddFile();
 		} else if(scaned.isModifyFile()){
-			//É¾³ıĞÂ¼ÓÎÄ¼ş
+			//åˆ é™¤æ–°åŠ æ–‡ä»¶
 			deleteAddFile();
-			//»¹Ô­±¸·İÎÄ¼ş
+			//è¿˜åŸå¤‡ä»½æ–‡ä»¶
 			recoveryOldFile();
 		} else if(scaned.isDeleteFile()){
-			//»¹Ô­±¸·İÎÄ¼ş
+			//è¿˜åŸå¤‡ä»½æ–‡ä»¶
 			recoveryOldFile();
 		}
 
@@ -96,41 +93,41 @@ public class UpdateClassImpl extends UpdateImpl{
 	public void execute () throws IOException {
 
 		if(scaned.isAddFile()){
-			//¿½±´ĞÂÎÄ¼ş
+			//æ‹·è´æ–°æ–‡ä»¶
 			File oldPathDir = scaned.getOldFile().getParentFile();
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
 				if(newFile.exists()){
-					throw new IOException("ĞÂÎÄ¼şÒÑ¾­´æÔÚ:" + f.getAbsolutePath());
+					throw new IOException("æ–°æ–‡ä»¶å·²ç»å­˜åœ¨:" + newFile.getAbsolutePath());
 				}
 				File newFileParent = newFile.getParentFile();
 
 				if(!newFileParent.exists() && !newFileParent.mkdirs()){
-					throw new IOException("ĞÂÎÄ¼ş¸¸Ä¿Â¼´´½¨Ê§°Ü:" + f.getAbsolutePath());
+					throw new IOException("æ–°æ–‡ä»¶çˆ¶ç›®å½•åˆ›å»ºå¤±è´¥:" + newFileParent.getAbsolutePath());
 				}
 				FileUtils.copyFile(f, newFile);
 			}
 		} else if(scaned.isModifyFile()){
-			//É¾³ı¾ÉÎÄ¼ş
+			//åˆ é™¤æ—§æ–‡ä»¶
 			for(File f: oldFiles){
-				if(f.delete()){
-					throw new IOException("¾ÉÎÄ¼şÉ¾³ıÊ§°Ü:" + f.getAbsolutePath());
+				if(f.exists() && !f.delete()){
+					throw new IOException("æ—§æ–‡ä»¶åˆ é™¤å¤±è´¥:" + f.getAbsolutePath());
 				}
 			}
-			//¿½±´ĞÂÎÄ¼ş
+			//æ‹·è´æ–°æ–‡ä»¶
 			File oldPathDir = scaned.getOldFile().getParentFile();
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
 				if(newFile.exists()){
-					throw new IOException("ĞÂÎÄ¼şÒÑ¾­´æÔÚ:" + f.getAbsolutePath());
+					throw new IOException("æ–°æ–‡ä»¶å·²ç»å­˜åœ¨:" + f.getAbsolutePath());
 				}
 				FileUtils.copyFile(f, newFile);
 			}
 		} else if(scaned.isDeleteFile()){
-			//É¾³ı¾ÉÎÄ¼ş
+			//åˆ é™¤æ—§æ–‡ä»¶
 			for(File f: oldFiles){
-				if(!f.delete()){
-					throw new IOException("¾ÉÎÄ¼şÉ¾³ıÊ§°Ü:" + f.getAbsolutePath());
+				if(f.exists() && !f.delete()){
+					throw new IOException("æ—§æ–‡ä»¶åˆ é™¤å¤±è´¥:" + f.getAbsolutePath());
 				}
 			}
 		}
@@ -138,13 +135,14 @@ public class UpdateClassImpl extends UpdateImpl{
 
 	}
 
-	private static List<File> genInnerClassList(File file, String filterName){
+	private static List<File> genInnerClassList(File file, String name){
+		String filterName = name.substring(0, name.length() - FileType.CLASS.getType().length()) + "$";
+
 		List<File> files = new ArrayList<File>();
-		files.add(file);
 		for(File f: file.listFiles()){
 			if(f.isDirectory()) continue;
 
-			if(f.getName().startsWith(filterName) && f.getName().endsWith(CLASS_SUBPRIX)){
+			if(f.getName().equals(name) || (f.getName().startsWith(filterName) && f.getName().endsWith(FileType.CLASS.getType()))){
 				files.add(f);
 			}
 		}
@@ -152,21 +150,24 @@ public class UpdateClassImpl extends UpdateImpl{
 	}
 
 	private void deleteAddFile() throws IOException {
-		//É¾³ıĞÂ¼ÓÎÄ¼ş
+		//åˆ é™¤æ–°åŠ æ–‡ä»¶
 		File oldPathDir = scaned.getOldFile().getParentFile();
 		for(File f: newFiles){
 			File newFile = new File(oldPathDir, f.getName());
-			if(!newFile.delete()){
-				throw new IOException("[»Ö¸´]-É¾³ıĞÂ¼ÓÎÄ¼şÊ§°Ü£º" + f.getAbsolutePath());
+			if(newFile.exists() && !newFile.delete()){
+				throw new IOException("[æ¢å¤]-åˆ é™¤æ–°åŠ æ–‡ä»¶å¤±è´¥ï¼š" + newFile.getAbsolutePath());
 			}
 		}
 	}
 
 	private void recoveryOldFile() throws IOException {
-		//»¹Ô­±¸·İÎÄ¼ş
-		File backupDir = new File(backupPath + File.separator + scaned.getRelativePath()).getParentFile();
+		//è¿˜åŸå¤‡ä»½æ–‡ä»¶
+		File backupDir = new File(backupPath).getParentFile();
 		for(File f: oldFiles){
 			File backupFile = new File(backupDir, f.getName());
+			if(f.exists() && !f.delete()){
+				throw new IOException("[æ¢å¤]-åˆ é™¤å·²æœ‰æ—§æ–‡ä»¶å¤±è´¥ï¼š" + f.getAbsolutePath());
+			}
 			FileUtils.copyFile(backupFile, f);
 		}
 	}

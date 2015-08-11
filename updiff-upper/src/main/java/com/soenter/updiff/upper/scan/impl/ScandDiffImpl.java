@@ -13,6 +13,7 @@
  */
 package com.soenter.updiff.upper.scan.impl;
 
+import com.soenter.updiff.common.ChangeType;
 import com.soenter.updiff.common.DiffElement;
 import com.soenter.updiff.upper.scan.Scaned;
 
@@ -20,7 +21,7 @@ import java.io.File;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.scan.impl.ScandDiffImpl
+ * @ClassName ï¼šcom.soenter.updiff.upper.scan.impl.ScandDiffImpl
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/10 14:45

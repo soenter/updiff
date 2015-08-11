@@ -13,6 +13,7 @@
  */
 package com.soenter.updiff.upper.update;
 
+import com.soenter.updiff.common.FileType;
 import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.update.impl.UpdateClassImpl;
 import com.soenter.updiff.upper.update.impl.UpdateImpl;
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 /**
  *
- * @ClassName £ºcom.soenter.updiff.upper.update.UpdateFactory
+ * @ClassName ï¼šcom.soenter.updiff.upper.update.UpdateFactory
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/10 16:53
@@ -36,7 +37,7 @@ public class UpdateFactory {
 		String newFileName = scaned.getNewFile().getName();
 		 if(scaned.isJar()){
 			return new UpdateJarImpl(scaned, backpath);
-		} else if(newFileName.endsWith(".class")){
+		} else if(newFileName.endsWith(FileType.CLASS.getType())){
 			 return new UpdateClassImpl(scaned, backpath);
 		 } else {
 			return new UpdateImpl(scaned, backpath);
