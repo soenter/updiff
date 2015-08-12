@@ -16,6 +16,8 @@ package com.soenter.updiff.upper.update.impl;
 import com.soenter.updiff.common.FileType;
 import com.soenter.updiff.upper.scan.Scaned;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +34,8 @@ import java.util.List;
  *
  */
 public class UpdateClassImpl extends UpdateImpl{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateClassImpl.class);
 
 	private List<File> oldFiles;
 	private List<File> newFiles;
@@ -70,6 +74,7 @@ public class UpdateClassImpl extends UpdateImpl{
 					throw new IOException("备份文件已经存在:" + backupFile.getAbsolutePath());
 				}
 				FileUtils.copyFile(f, backupFile);
+				LOGGER.info("[备份]-备份文件:[{}] ==> [{}]", f, backupFile);
 			}
 		}
 	}
@@ -106,12 +111,16 @@ public class UpdateClassImpl extends UpdateImpl{
 					throw new IOException("新文件父目录创建失败:" + newFileParent.getAbsolutePath());
 				}
 				FileUtils.copyFile(f, newFile);
+				LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", f, newFile);
 			}
 		} else if(scaned.isModifyFile()){
 			//删除旧文件
 			for(File f: oldFiles){
-				if(f.exists() && !f.delete()){
-					throw new IOException("旧文件删除失败:" + f.getAbsolutePath());
+				if(f.exists()){
+					if(!f.delete()){
+						throw new IOException("旧文件删除失败:" + f.getAbsolutePath());
+					}
+					LOGGER.info("[执行]-删除文件:[{}]", f);
 				}
 			}
 			//拷贝新文件
@@ -122,12 +131,16 @@ public class UpdateClassImpl extends UpdateImpl{
 					throw new IOException("新文件已经存在:" + f.getAbsolutePath());
 				}
 				FileUtils.copyFile(f, newFile);
+				LOGGER.info("[执行]-修改文件:[{}] ==> [{}]", f, newFile);
 			}
 		} else if(scaned.isDeleteFile()){
 			//删除旧文件
 			for(File f: oldFiles){
-				if(f.exists() && !f.delete()){
-					throw new IOException("旧文件删除失败:" + f.getAbsolutePath());
+				if(f.exists()){
+					if(!f.delete()){
+						throw new IOException("旧文件删除失败:" + f.getAbsolutePath());
+					}
+					LOGGER.info("[执行]-删除文件:[{}]", f);
 				}
 			}
 		}
@@ -154,8 +167,11 @@ public class UpdateClassImpl extends UpdateImpl{
 		File oldPathDir = scaned.getOldFile().getParentFile();
 		for(File f: newFiles){
 			File newFile = new File(oldPathDir, f.getName());
-			if(newFile.exists() && !newFile.delete()){
-				throw new IOException("[恢复]-删除新加文件失败：" + newFile.getAbsolutePath());
+			if(newFile.exists()){
+				if(!newFile.delete()){
+					throw new IOException("[恢复]-删除新加文件失败：" + newFile.getAbsolutePath());
+				}
+				LOGGER.info("[恢复]-删除添加的文件:[{}]", newFile);
 			}
 		}
 	}
@@ -169,6 +185,7 @@ public class UpdateClassImpl extends UpdateImpl{
 				throw new IOException("[恢复]-删除已有旧文件失败：" + f.getAbsolutePath());
 			}
 			FileUtils.copyFile(backupFile, f);
+			LOGGER.info("[恢复]-修改或删除的文件::[{}] ==> [{}]", backupFile, f);
 		}
 	}
 }

@@ -16,6 +16,8 @@ package com.soenter.updiff.upper.update.impl;
 import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.update.Update;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +32,8 @@ import java.io.IOException;
  *
  */
 public class UpdateImpl implements Update{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateImpl.class);
 
 	protected Scaned scaned;
 
@@ -48,29 +52,39 @@ public class UpdateImpl implements Update{
 	}
 
 	public void backup () throws IOException {
-		if(scaned.isModifyFile() || scaned.isDeleteFile()){
+		if(scaned.isModifyFile() || scaned.isDeleteFile() || scaned.hasDiff()){
 			FileUtils.copyFile(scaned.getOldFile(), backupFile);
+			LOGGER.info("[备份]-备份文件:[{}] ==> [{}]", scaned.getOldFile(), backupFile);
 		}
 	}
 
 	public void recovery () throws IOException {
 		if(scaned.isDir()){
 			if(scaned.isAddFile()){
-				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("[恢复]-删除创建文件夹失败：" + scaned.getOldFile().getAbsolutePath());
+				if(scaned.getOldFile().exists()){
+					if(!scaned.getOldFile().delete()){
+						throw new IOException("[恢复]-删除创建文件夹失败：" + scaned.getOldFile().getAbsolutePath());
+					}
+					LOGGER.info("[恢复]-添加的文件夹:[{}]", scaned.getOldFile());
 				}
 			}
 			//文件夹不支持恢复删除修改操作
 		} else {
 			if(scaned.isAddFile()){
-				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("[恢复]-删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+				if(scaned.getOldFile().exists()){
+					if(!scaned.getOldFile().delete()){
+						throw new IOException("[恢复]-删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+					}
+					LOGGER.info("[恢复]-添加的文件:[{}]", scaned.getOldFile());
 				}
 			} else if(scaned.isModifyFile() || scaned.isDeleteFile()){
-				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("[恢复]-删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+				if(scaned.getOldFile().exists()){
+					if(!scaned.getOldFile().delete()){
+						throw new IOException("[恢复]-删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+					}
 				}
 				FileUtils.copyFile(backupFile, scaned.getOldFile());
+				LOGGER.info("[恢复]-修改或删除的文件:[{}] ==> [{}]", backupFile, scaned.getOldFile());
 			}
 		}
 	}
@@ -78,8 +92,12 @@ public class UpdateImpl implements Update{
 	public void execute () throws IOException {
 		if(scaned.isDir()){
 			if(scaned.isAddFile()){
-				if(!scaned.getOldFile().exists() && !scaned.getOldFile().mkdirs()){
-					throw new IOException("创建文件夹失败：" + scaned.getOldFile().getAbsolutePath());
+				if(!scaned.getOldFile().exists()){
+
+					if(!scaned.getOldFile().mkdirs()){
+						throw new IOException("创建文件夹失败：" + scaned.getOldFile().getAbsolutePath());
+					}
+					LOGGER.info("[执行]-创建文件夹:[{}]", scaned.getOldFile());
 				}
 			}
 			//文件夹不支持删除修改
@@ -88,15 +106,20 @@ public class UpdateImpl implements Update{
 				if(!scaned.getOldFile().getParentFile().exists() && !scaned.getOldFile().getParentFile().mkdirs()){
 					throw new IOException("创建父类文件夹失败：" + scaned.getOldFile().getParentFile().getAbsolutePath());
 				}
-				FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
+				FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());;
+				LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", scaned.getNewFile(), scaned.getOldFile());
 			} else if(scaned.isModifyFile()){
 				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
 					throw new IOException("删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
 				}
 				FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
+				LOGGER.info("[执行]-修改文件:[{}] ==> [{}]", scaned.getNewFile(), scaned.getOldFile());
 			} else if(scaned.isDeleteFile()){
-				if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
-					throw new IOException("删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+				if(scaned.getOldFile().exists()){
+					if(!scaned.getOldFile().delete()){
+						throw new IOException("删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
+					}
+					LOGGER.info("[执行]-删除文件:[{}] ==> [{}]", scaned.getNewFile(), scaned.getOldFile());
 				}
 			}
 		}

@@ -11,7 +11,7 @@
  * -------------------------------------------------------------
  * sun.mt@sand.com.cn         2015/8/11        Initailized
  */
-package com.soenter.updiff.common;
+package com.soenter.updiff.common.utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +19,7 @@ import java.util.Date;
 
 /**
  *
- * @ClassName ：com.soenter.updiff.common.DateUtils
+ * @ClassName ：com.soenter.updiff.common.utils.DateUtils
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/11 16:57

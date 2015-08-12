@@ -66,6 +66,15 @@ public class UpdiffMojo extends AbstractMojo {
 	private File outputDirectory;
 
 	/**
+	 * Location of the file.
+	 *
+	 * @parameter expression="${project.build.outputDirectory}"
+	 * @required
+	 * @readonly
+	 */
+	private File classOutputDirectory;
+
+	/**
 	 * 源文件路径.
 	 *
 	 * @parameter expression="${project.build.sourceDirectory}"
@@ -137,7 +146,7 @@ public class UpdiffMojo extends AbstractMojo {
 			return;
 		}
 
-		File outputDif = outputDirectory;
+		File outputDif = new File(classOutputDirectory.getAbsolutePath() + File.separator + "META-INF");
 
 		if (!outputDif.exists()) {
 			outputDif.mkdirs();

@@ -14,9 +14,11 @@
 package com.soenter.updiff.upper.scan.impl;
 
 import com.soenter.updiff.common.FileType;
-import com.soenter.updiff.common.UpiffFileUtils;
+import com.soenter.updiff.common.utils.UpdiffFileUtils;
 import com.soenter.updiff.upper.scan.Scaned;
 import com.soenter.updiff.upper.scan.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Iterator;
@@ -33,6 +35,8 @@ import java.util.List;
  *
  */
 public class ScannerImpl implements Scanner{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScannerImpl.class);
 
 	private File oldDir;
 
@@ -63,12 +67,17 @@ public class ScannerImpl implements Scanner{
 		File[] files = file.listFiles();
 		for (File f: files){
 			if(f.isDirectory()){
-				File realFile = UpiffFileUtils.castControlFile(f);
-				scanFiles.add(new ScanedImpl(getOldFile(realFile), realFile, getRelativePath(realFile)));
+				File realFile = UpdiffFileUtils.castControlFile(f);
+
+				Scaned scaned = new ScanedImpl(getOldFile(realFile), realFile, getRelativePath(realFile));
+				LOGGER.debug("扫描到文件夹： {}", scaned);
+				scanFiles.add(scaned);
 				walkFiles(scanFiles, f);
-			} else if(!f.getName().endsWith(FileType.DIFF.getType()) && !UpiffFileUtils.isInnerClassFile(f)){
-				File realFile = UpiffFileUtils.castControlFile(f);
-				scanFiles.add(new ScanedImpl(getOldFile(realFile), realFile, getRelativePath(realFile)));
+			} else if(!f.getName().endsWith(FileType.DIFF.getType()) && !UpdiffFileUtils.isInnerClassFile(f)){
+				File realFile = UpdiffFileUtils.castControlFile(f);
+				Scaned scaned = new ScanedImpl(getOldFile(realFile), realFile, getRelativePath(realFile));
+				LOGGER.debug("扫描到文件： {}", scaned);
+				scanFiles.add(scaned);
 			}
 		}
 	}

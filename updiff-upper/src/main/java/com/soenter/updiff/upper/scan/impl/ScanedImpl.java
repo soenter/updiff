@@ -13,12 +13,10 @@
  */
 package com.soenter.updiff.upper.scan.impl;
 
-import com.soenter.updiff.common.DiffWriter;
 import com.soenter.updiff.common.FileType;
+import com.soenter.updiff.common.utils.UpdiffFileUtils;
 import com.soenter.updiff.upper.scan.Scaned;
-import com.soenter.updiff.upper.update.Update;
 import org.apache.commons.codec.digest.DigestUtils;
-import sun.applet.Main;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,7 +53,7 @@ public class ScanedImpl implements Scaned {
 	private boolean isModifyFile;
 
 	public ScanedImpl (File oldFile, File newFile, String relativePath) {
-		init(oldFile, newFile, relativePath, false);
+		init(oldFile, newFile, relativePath, true);
 	}
 
 	public ScanedImpl (File oldFile, File newFile, String relativePath, boolean isInnerDiffFile) {
@@ -64,7 +62,7 @@ public class ScanedImpl implements Scaned {
 
 	private void init(File oldFile, File newFile, String relativePath, boolean isInnerDiffFile){
 		if(oldFile.exists() && newFile.exists()){
-			if(oldFile.isFile() != oldFile.isFile()){
+			if(oldFile.isDirectory() != oldFile.isDirectory()){
 				throw new RuntimeException("文件类型必须一样");
 			}
 		}
@@ -74,7 +72,9 @@ public class ScanedImpl implements Scaned {
 
 		String newFilePath = newFile.getAbsolutePath();
 		if(isInnerDiffFile){
-			this.diffFile = new File(newFilePath + "/" + newFile.getName() + FileType.DIFF.getType());
+			if(isJar()){
+				this.diffFile = UpdiffFileUtils.readDiffFileFromJar(newFile);
+			}
 		} else {
 			int newFileDotIndex = newFilePath.lastIndexOf(".");
 
@@ -152,6 +152,7 @@ public class ScanedImpl implements Scaned {
 		sb.append("hasDiff: ").append(hasDiff()).append(", ");
 		sb.append("isAddFile: ").append(isAddFile()).append(", ");
 		sb.append("isModifyFile: ").append(isModifyFile()).append(", ");
+		sb.append("isDeleteFile: ").append(isDeleteFile()).append(", ");
 		sb.append("oldFile: ").append(oldFile).append(", ");
 		sb.append("newFile: ").append(newFile).append(", ");
 		sb.append("diffFile: ").append(diffFile);

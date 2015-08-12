@@ -25,6 +25,7 @@ import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +42,8 @@ import java.util.Iterator;
  */
 public class UpdateJarImpl extends UpdateImpl {
 
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UpdateJarImpl.class);
+
 	public UpdateJarImpl (Scaned scaned, String backupPath) throws IOException {
 		super(scaned, backupPath);
 		if(!scaned.isJar()){
@@ -56,10 +59,8 @@ public class UpdateJarImpl extends UpdateImpl {
 				throw new IOException("创建父类文件夹失败：" + scaned.getOldFile().getParentFile().getAbsolutePath());
 			}
 			FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
+			LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", scaned.getNewFile(), scaned.getOldFile());
 		} else if(scaned.hasDiff()){//存在diff文件
-
-			//0.备份文件
-			FileUtils.copyFile(scaned.getOldFile(), backupFile);
 
 			//1.解压备份jar 到 备份文件夹下 {filename}_old
 			ZipUnArchiver unArchiverOld = new ZipUnArchiver();
@@ -72,6 +73,8 @@ public class UpdateJarImpl extends UpdateImpl {
 			unArchiverOld.setDestDirectory(unjarOld);
 			unArchiverOld.extract();
 
+			LOGGER.info("[执行]-解压旧jar文件:[{}] ==> [{}]", backupFile, unjarOld);
+
 			//2.解压新jar 到 备份文件夹下 {filename}_new
 			ZipUnArchiver unArchiverNew = new ZipUnArchiver();
 			unArchiverNew.enableLogging(new ConsoleLogger(Logger.LEVEL_ERROR,"Package"));
@@ -82,6 +85,8 @@ public class UpdateJarImpl extends UpdateImpl {
 			}
 			unArchiverNew.setDestDirectory(unjarNew);
 			unArchiverNew.extract();
+
+			LOGGER.info("[执行]-解压新jar文件:[{}] ==> [{}]", scaned.getNewFile(), unjarNew);
 
 			//3.根据diff配置更新“{filename}_old”中的文件到“{filename}_new”中
 			Scanner<DiffElement> diffElScanner = new ScannerDiffImpl(scaned.getDiffFile());
@@ -109,18 +114,20 @@ public class UpdateJarImpl extends UpdateImpl {
 
 			//4.打包“{filename}_old”为新jar
 			JarArchiver archiver = new JarArchiver();
-
+			archiver.enableLogging(new ConsoleLogger(Logger.LEVEL_ERROR,"Package"));
 			archiver.addDirectory(unjarOld);
 			File destFile = new File(backupFile.getParent(), backupFile.getName() + "_new.jar");
 			archiver.setDestFile(destFile);
 			archiver.createArchive();
 
+			LOGGER.info("[执行]-打包合成后的jar文件:[{}]", destFile);
 
 			//5.用新jar替换旧文件
 			if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
 				throw new IOException("删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
 			}
 			FileUtils.copyFile(destFile, scaned.getOldFile());
+			LOGGER.info("[执行]-更新jar文件:[{}] ==> [{}]", destFile, scaned.getOldFile());
 		}
 	}
 }

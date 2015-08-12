@@ -11,7 +11,9 @@ public enum FileType {
 	CLASS(".class"),
 	JAR(".jar"),
 	DELETE(".delete"),
-	DIFF(".diff");
+	DIFF(".diff"),
+	ZIP(".zip"),
+	TAR_GZ(".tar.gz");
 
 	String type;
 	FileType(String type){

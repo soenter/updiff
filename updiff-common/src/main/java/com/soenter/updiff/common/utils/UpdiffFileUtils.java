@@ -11,20 +11,28 @@
  * -------------------------------------------------------------
  * sun.mt@sand.com.cn         2015/8/11        Initailized
  */
-package com.soenter.updiff.common;
+package com.soenter.updiff.common.utils;
+
+import com.soenter.updiff.common.FileType;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 /**
  *
- * @ClassName ：com.soenter.updiff.common.UpiffFileUtils
+ * @ClassName ：com.soenter.updiff.common.utils.UpdiffFileUtils
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/11 11:01
  * @version 1.0.0
  *
  */
-public class UpiffFileUtils {
+public class UpdiffFileUtils {
 
 
 	/**
@@ -56,5 +64,31 @@ public class UpiffFileUtils {
 		}
 		return file;
 	}
+
+	/**
+	 * 提取差异文件
+	 * @param jar
+	 * @return
+	 * @throws IOException
+	 */
+	public static File readDiffFileFromJar(File jar){
+		JarFile jarFile = null;
+		try {
+			jarFile = new JarFile(jar);
+
+			String diffFileName = jar.getName().substring(0, jar.getName().length() - FileType.JAR.getType().length()) + FileType.DIFF.getType();
+			JarEntry entry = jarFile.getJarEntry("META-INF/" + diffFileName);
+			if(entry == null) return null;
+
+			File diffFile = new File(jar.getParent(), diffFileName);
+			FileUtils.copyInputStreamToFile(jarFile.getInputStream(entry), diffFile);
+			return diffFile;
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+
+
 
 }
