@@ -15,12 +15,12 @@ package com.sand.updiff.mvnpligin.utils;
 
 /**
  *
- * @ClassName ：com.sand.updiff.mvnpligin.utils.TestRename
+ * @ClassName ：com.sand.updiff.mvnpligin.utils.RenameTest
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/13 18:05
  * @version 1.0.0
  *
  */
-public class TestRename {
+public class RenameTest {
 }
