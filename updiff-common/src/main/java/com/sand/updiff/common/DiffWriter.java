@@ -56,8 +56,8 @@ public class DiffWriter {
 
 		if(file.exists()){
 			SAXReader saxReader = new SAXReader();
-			rootElement = document.getRootElement();
 			document = saxReader.read(file);
+			rootElement = document.getRootElement();
 		} else {
 			document = DocumentFactory.getInstance().createDocument("utf-8");
 			rootElement = document.addElement("diffs");
@@ -86,7 +86,7 @@ public class DiffWriter {
 	}
 	public void addElement(DiffItem element){
 		String newGroupName = element.getNewGroupName();
-		String oldGroupName = element.getNewGroupName();
+		String oldGroupName = element.getOldGroupName();
 		if(newGroupName == null || "".equals(newGroupName)){
 			element.setNewGroupName("other");
 			otherElement.add(element);

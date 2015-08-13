@@ -30,7 +30,7 @@ public class UpdiffMojo extends AbstractMojo {
 
 	/**
 	 * Git新版本号：SHA-1全称，或简称
-	 * @parameter expression="${updiff.newGitVersion}" efault-value="HEAD"
+	 * @parameter expression="${updiff.newGitVersion}" default-value="HEAD"
 	 * @readonly
 	 *
 	 */
