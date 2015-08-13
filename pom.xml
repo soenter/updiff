@@ -48,13 +48,12 @@
                 <!--<version>1.0.2</version>-->
                 <!--<configuration>-->
                     <!--<newGitVersion>HEAD</newGitVersion>-->
-                    <!--<oldGitVersion>e050d8c</oldGitVersion>-->
-                    <!--<detail>${project.build.sourceDirectory}</detail>-->
+                    <!--<oldGitVersion>6c13caf</oldGitVersion>-->
                 <!--</configuration>-->
                 <!--<executions>-->
                     <!--<execution>-->
                         <!--<id>updiff plugin</id>-->
-                        <!--<phase>package</phase>-->
+                        <!--<phase>prepare-package</phase>-->
                         <!--<goals>-->
                             <!--<goal>updiff</goal>-->
                         <!--</goals>-->

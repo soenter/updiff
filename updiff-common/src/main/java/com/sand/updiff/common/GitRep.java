@@ -106,21 +106,34 @@ public class GitRep {
 		//模块文件夹名称
 		String modelDirName = createDiffPrefixByRootDir(this.basePath);
 		for (DiffEntry entry: diffs){
-			String newPath = DiffEntry.DEV_NULL.equals(entry.getNewPath())?null:entry.getNewPath();
-			String oldPath = DiffEntry.DEV_NULL.equals(entry.getOldPath())?null:entry.getOldPath();
+			String path = null;
+			switch (entry.getChangeType()) {
+				case ADD:
+					path = entry.getNewPath();
+					break;
+				case COPY:
+					path = entry.getNewPath();
+					break;
+				case DELETE:
+					path = entry.getOldPath();
+					break;
+				case MODIFY:
+					path = entry.getOldPath();
+					break;
+				case RENAME:
+					path = entry.getNewPath();
+					break;
+			}
 
 			//先模块文件夹名称
-			newPath = removePrefix(modelDirName, newPath);
-			oldPath = removePrefix(modelDirName, oldPath);
+			path = removePrefix(modelDirName, path);
 			//在去除其他前缀
-			String newPathProfix = getPrefix(prefixes, newPath);
-			String oldPathProfix = getPrefix(prefixes, oldPath);
-			newPath = removePrefix(newPathProfix, newPath);
-			oldPath = removePrefix(oldPathProfix, oldPath);
+			String newPathProfix = getPrefix(prefixes, path);
+			path = removePrefix(newPathProfix, path);
 
-			log.info(String.format("变化文件当前路径：%s, 变化文件旧路径：%s,", newPath, oldPath));
+			log.info(String.format("当前路径：%s", path));
 
-			diffEls.add(new DiffItem(newPathProfix, oldPathProfix, entry.getChangeType().name(), newPath, oldPath));
+			diffEls.add(new DiffItem(newPathProfix, entry.getChangeType().name(), path));
 		}
 
 		return diffEls;

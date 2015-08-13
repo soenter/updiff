@@ -26,7 +26,7 @@ public class JGitTest{
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 
 
-		Repository repository = builder.setGitDir(new File("D:\\0005_git\\abacus\\.git"))
+		Repository repository = builder.setGitDir(new File("D:\\0005_git\\updiff\\.git"))
 				.readEnvironment()
 				.findGitDir()
 				.build();
@@ -40,7 +40,7 @@ public class JGitTest{
 		newTreeIterator.reset(reader, newTree);
 
 		CanonicalTreeParser oldTreeIterator = new CanonicalTreeParser();
-		ObjectId oldTree = git.getRepository().resolve("b2408f9^{tree}");
+		ObjectId oldTree = git.getRepository().resolve("8b5adeb^{tree}");
 		oldTreeIterator.reset(reader, oldTree);
 
 		List<DiffEntry> diffs = git.diff()

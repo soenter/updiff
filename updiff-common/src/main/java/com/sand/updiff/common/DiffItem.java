@@ -24,71 +24,52 @@ package com.sand.updiff.common;
  */
 public class DiffItem {
 
-	private String newGroupName;
-
-	private String oldGroupName;
+	private String groupName;
 
 	private String changeName;
 
-	private String newPath;
+	private String path;
 
-	private String oldPath;
-
-	public DiffItem (String newGroupName, String oldGroupName, String changeName, String newPath, String oldPath) {
-		this.newGroupName = newGroupName;
-		this.oldGroupName = oldGroupName;
+	public DiffItem (String groupName, String changeName, String path) {
+		this.groupName = groupName;
 		this.changeName = changeName;
-		this.newPath = newPath;
-		this.oldPath = oldPath;
+		this.path = path;
 	}
 
 	public String getChangeName () {
 		return changeName;
 	}
 
-	public String getNewPath () {
-		return newPath;
+	public String getPath () {
+		return path;
 	}
 
-	public String getOldPath () {
-		return oldPath;
-	}
 
-	public String getNewGroupName () {
-		return newGroupName;
-	}
-
-	public void setNewGroupName (String newGroupName) {
-		this.newGroupName = newGroupName;
-	}
-
-	public String getOldGroupName () {
-		return oldGroupName;
-	}
-
-	public void setOldGroupName (String oldGroupName) {
-		this.oldGroupName = oldGroupName;
+	public String getGroupName () {
+		return groupName;
 	}
 
 
 	public String getCompiledNewPath(){
 
 		String subfix = ".java";
-		if(newPath.endsWith(subfix)){
-			return newPath.substring(0, newPath.length() - subfix.length()) + ".class";
+		if(path.endsWith(subfix)){
+			return path.substring(0, path.length() - subfix.length()) + ".class";
 		}
-		return newPath;
+		return path;
+	}
+
+	public void setGroupName (String groupName) {
+		this.groupName = groupName;
 	}
 
 	@Override
 	public String toString () {
 		StringBuilder sb = new StringBuilder("[");
 
-		sb.append("newGroupName: ").append(newGroupName).append(", ");
-		sb.append("oldGroupName: ").append(oldGroupName).append(", ");
+		sb.append("groupName: ").append(groupName).append(", ");
 		sb.append("changeName: ").append(changeName).append(", ");
-		sb.append("newPath: ").append(newPath).append(", ");
-		sb.append("oldPath: ").append(oldPath);
+		sb.append("path: ").append(path);
 
 		return sb.append("]").toString();
 	}

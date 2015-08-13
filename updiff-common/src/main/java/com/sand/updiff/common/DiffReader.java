@@ -57,9 +57,8 @@ public class DiffReader {
 		for (Element g: group){
 			List<Element> files = g.elements();
 			String gName = g.attributeValue("name");
-			String gOldName = g.attributeValue("oldGroup");
 			for (Element f: files){
-				allEl.add(new DiffItem(gName, gOldName, f.attributeValue("change"), f.attributeValue("path"), f.attributeValue("oldPath")));
+				allEl.add(new DiffItem(gName, f.attributeValue("change"), f.attributeValue("path")));
 			}
 		}
 

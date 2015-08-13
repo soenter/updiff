@@ -85,10 +85,9 @@ public class DiffWriter {
 		}
 	}
 	public void addElement(DiffItem element){
-		String newGroupName = element.getNewGroupName();
-		String oldGroupName = element.getOldGroupName();
+		String newGroupName = element.getGroupName();
 		if(newGroupName == null || "".equals(newGroupName)){
-			element.setNewGroupName("other");
+			element.setGroupName("other");
 			otherElement.add(element);
 			return;
 		}
@@ -103,16 +102,9 @@ public class DiffWriter {
 		Element node = group.addElement("file");
 
 		node.addAttribute("change", element.getChangeName());
-		String newPath = element.getNewPath();
-		if(newPath != null && !"".equals(newPath)){
-			node.addAttribute("path", newPath);
-		}
-		if(oldGroupName != null && !oldGroupName.equals(newGroupName)){
-			node.addAttribute("oldGroup", oldGroupName);
-		}
-		String oldPath = element.getOldPath();
-		if(oldPath != null && !oldPath.equals(newPath)){
-			node.addAttribute("oldPath", oldPath);
+		String path = element.getPath();
+		if(path != null && !"".equals(path)){
+			node.addAttribute("path", path);
 		}
 	}
 
