@@ -12,8 +12,7 @@ set "UPPER_HOME=%cd%"
 cd "%CURRENT_DIR%"
 :gotHome
 if exist "%UPPER_HOME%\bin\upper.bat" goto okHome
-    echo The UPPER_HOME environment variable is not defined correctly
-    echo This environment variable is needed to run this program
+    echo 环境变量UPPER_HOME设置的不正确
 goto end
 :okHome
 
@@ -27,5 +26,5 @@ echo Using UPPER_HOME:   "%UPPER_HOME%"
 
 set JAVA_OPTS=-server -Xms128m -Xmx128m -XX:+UseG1GC -XX:MaxGCPauseMillis=400 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/updiff.memory.dump -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:logs/updiff.gc.log
 
-%JAVA% %JAVA_OPTS% -cp %UPPER_HOME%\lib\* com.soenter.updiff.upper.Upper %1 %2
+%JAVA% %JAVA_OPTS% -cp %UPPER_HOME%\lib\* com.sand.updiff.upper.Upper %*
 

@@ -7,11 +7,8 @@ export LANG=zh_CN.UTF-8
 
 export LC_ALL=zh_CN.UTF-8
 
-cd `dirname $0`
+#cd ..
 
-cd ..
-
-CURRENT_DIR=`pwd`
 #echo ${UPPER_HOME}
 
 if [ -f "${UPPER_HOME}/bin/upper.sh" ];then
@@ -20,8 +17,7 @@ echo "Using UPPER_HOME:   ${UPPER_HOME}"
 
 else
 
-echo "The UPPER_HOME environment variable is not defined correctly"
-echo "This environment variable is needed to run this program"
+echo "环境变量UPPER_HOME设置的不正确"
 
 exit 0
 fi
@@ -31,9 +27,9 @@ echo "Using JAVA_HOME:    ${JAVA_HOME}"
 
 CLASSPATH="."
 
-for n in `find ${UPPER_HOME}/config -name '*.xml' -o -name '*.properties'`;do
- CLASSPATH="${CLASSPATH}:${n}"
-done
+#for n in `find ${UPPER_HOME}/config -name '*.xml' -o -name '*.properties'`;do
+# CLASSPATH="${CLASSPATH}:${n}"
+#done
 
 for n in `find ${UPPER_HOME}/lib -name '*.jar' -o -name '*.zip'`;do
  CLASSPATH="${CLASSPATH}:${n}"
@@ -54,10 +50,10 @@ done
 #-XX:G1HeapRegionSize=n	设置的 G1 区域的大小。值是2的幂，范围是1 MB 到32 MB。目标是根据最小的 Java 堆大小划分出约 2048 个区域。
 
 JAVA_OPTS="-server -Xms128m -Xmx128m -XX:+UseG1GC -XX:MaxGCPauseMillis=400 -XX:+HeapDumpOnOutOfMemoryError
--XX:HeapDumpPath=logs/updiff.memory.dump -XX:+PrintGCDetails -XX:+PrintGCTimeStamps
--XX:+PrintGCApplicationStoppedTime -Xloggc:logs/updiff.gc.log
+-XX:HeapDumpPath=logs/upper.memory.dump -XX:+PrintGCDetails -XX:+PrintGCTimeStamps
+-XX:+PrintGCApplicationStoppedTime -Xloggc:logs/upper.gc.log
 "
 
-java $JAVA_OPTS -classpath $CLASSPATH  com.soenter.updiff.upper.Upper $1 $2
+java $JAVA_OPTS -classpath $CLASSPATH  com.sand.updiff.upper.Upper $@
 
 exit 0
