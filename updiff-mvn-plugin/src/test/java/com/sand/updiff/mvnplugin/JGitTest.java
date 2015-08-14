@@ -1,4 +1,4 @@
-package com.sand.updiff.mvnpligin;
+package com.sand.updiff.mvnplugin;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;

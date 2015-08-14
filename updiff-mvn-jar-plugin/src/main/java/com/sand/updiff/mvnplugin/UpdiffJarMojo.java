@@ -1,4 +1,4 @@
-package com.sand.updiff.mvnpligin;
+package com.sand.updiff.mvnplugin;
 
 import com.sand.updiff.common.DiffWriter;
 import com.sand.updiff.common.FilterItem;

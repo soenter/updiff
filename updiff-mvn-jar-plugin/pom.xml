@@ -3,7 +3,7 @@
     <parent>
         <artifactId>updiff</artifactId>
         <groupId>com.sand.updiff</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>updiff-mvn-jar-plugin</artifactId>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.sand.updiff</groupId>
             <artifactId>updiff-common</artifactId>
-            <version>1.0.2</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>

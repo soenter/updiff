@@ -1,4 +1,4 @@
-package com.sand.updiff.mvnpligin;
+package com.sand.updiff.mvnplugin;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

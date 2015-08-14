@@ -1,4 +1,4 @@
-package com.sand.updiff.mvnpligin;
+package com.sand.updiff.mvnplugin;
 
 import com.sand.updiff.common.DiffItem;
 import com.sand.updiff.common.DiffWriter;
@@ -21,17 +21,15 @@ public class UpdiffMojo extends AbstractMojo {
 
 	/**
 	 * Git旧版本号：SHA-1全称，或简称
-	 * @parameter expression="${updiff.oldGitVersion}"
+	 * @parameter expression="${oldGitVersion}"
 	 * @required
-	 * @readonly
 	 *
 	 */
 	private String oldGitVersion;
 
 	/**
 	 * Git新版本号：SHA-1全称，或简称
-	 * @parameter expression="${updiff.newGitVersion}" default-value="HEAD"
-	 * @readonly
+	 * @parameter expression="${newGitVersion}" default-value="HEAD"
 	 *
 	 */
 	private String newGitVersion;
@@ -40,7 +38,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${session.executionRootDirectory}"
 	 * @required
-	 * @readonly
 	 *
 	 */
 	private File rootDir;
@@ -48,7 +45,6 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * @parameter expression="${project.basedir}"
 	 * @required
-	 * @readonly
 	 */
 	private File baseDir;
 
@@ -58,7 +54,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.directory}"
 	 * @required
-	 * @readonly
 	 */
 	private File outputDirectory;
 
@@ -67,7 +62,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.outputDirectory}"
 	 * @required
-	 * @readonly
 	 */
 	private File classOutputDirectory;
 
@@ -76,7 +70,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.sourceDirectory}"
 	 * @required
-	 * @readonly
 	 */
 	private File sourceDirectory;
 
@@ -85,7 +78,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.testSourceDirectory}"
 	 * @required
-	 * @readonly
 	 */
 	private File testSourceDirectory;
 
@@ -96,7 +88,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.scriptSourceDirectory}"
 	 * @required
-	 * @readonly
 	 */
 	private File scriptSourceDirectory;
 
@@ -105,7 +96,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.resources}"
 	 * @required
-	 * @readonly
 	 */
 	private Resource[] mainResources;
 
@@ -115,7 +105,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.testResources}"
 	 * @required
-	 * @readonly
 	 */
 	private Resource[] testResources;
 
@@ -124,7 +113,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.build.finalName}"
 	 * @required
-	 * @readonly
 	 */
 	private String finalName;
 
@@ -133,7 +121,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 *
 	 * @parameter expression="${project.packaging}"
 	 * @required
-	 * @readonly
 	 */
 	private String packaging;
 
