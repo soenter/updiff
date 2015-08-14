@@ -13,9 +13,6 @@ public interface Update {
 
 	void backup() throws IOException;
 
-	void recovery() throws IOException;
-
 	void execute() throws IOException;
 
-	String getBackupPath();
 }

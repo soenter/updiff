@@ -13,9 +13,12 @@
  */
 package com.sand.updiff.upper.update.impl;
 
+import com.sand.updiff.common.ChangeType;
 import com.sand.updiff.common.DiffItem;
+import com.sand.updiff.common.utils.UpdiffFileUtils;
 import com.sand.updiff.upper.dom.BackupItem;
 import com.sand.updiff.upper.dom.BackupListWriter;
+import com.sand.updiff.upper.dom.RedologItem;
 import com.sand.updiff.upper.scan.Scaned;
 import com.sand.updiff.upper.scan.Scanner;
 import com.sand.updiff.upper.scan.impl.DiffScand;
@@ -31,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Stack;
 
 /**
  *
@@ -66,11 +70,19 @@ public class JarUpdate extends DefaultUpdate {
 	public void execute () throws IOException {
 
 		if(scaned.isAddFile()){//新添加文件
-			if(!scaned.getOldFile().getParentFile().exists() && !scaned.getOldFile().getParentFile().mkdirs()){
-				throw new IOException("创建父类文件夹失败：" + scaned.getOldFile().getParentFile().getAbsolutePath());
+			LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", scaned.getNewFile(), scaned.getOldFile());
+			if(!scaned.getOldFile().getParentFile().exists()){
+				Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scaned.getOldFile().getParentFile());
+				if(mkdirs == null){
+					throw new IOException("创建父类文件夹失败：" + scaned.getOldFile().getParentFile().getAbsolutePath());
+				}
+				while(!mkdirs.isEmpty()){
+					File file = mkdirs.pop();
+					redologWriter.addItem(new RedologItem(true, ChangeType.ADD, null, file, null));
+				}
 			}
 			FileUtils.copyFile(scaned.getNewFile(), scaned.getOldFile());
-			LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", scaned.getNewFile(), scaned.getOldFile());
+			redologWriter.writeItem(new RedologItem(false, ChangeType.ADD, scaned.getNewFile(), scaned.getOldFile(), null));
 		} else if(scaned.hasDiff()){//存在diff文件
 
 			//1.解压备份jar 到 备份文件夹下 {filename}_old
@@ -132,11 +144,12 @@ public class JarUpdate extends DefaultUpdate {
 			LOGGER.info("[执行]-打包合成后的jar文件:[{}]", destFile);
 
 			//5.用新jar替换旧文件
+			LOGGER.info("[执行]-更新jar文件:[{}] ==> [{}]", destFile, scaned.getOldFile());
 			if(scaned.getOldFile().exists() && !scaned.getOldFile().delete()){
 				throw new IOException("删除旧文件失败：" + scaned.getOldFile().getAbsolutePath());
 			}
 			FileUtils.copyFile(destFile, scaned.getOldFile());
-			LOGGER.info("[执行]-更新jar文件:[{}] ==> [{}]", destFile, scaned.getOldFile());
+			redologWriter.writeItem(new RedologItem(false, ChangeType.MODIFY, destFile, scaned.getOldFile(), backupFile));
 		}
 	}
 }

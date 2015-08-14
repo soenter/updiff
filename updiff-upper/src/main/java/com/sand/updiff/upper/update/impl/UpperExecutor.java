@@ -36,51 +36,25 @@ public class UpperExecutor implements Executor{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpperExecutor.class);
 
-	private Stack<Update> updateStack;
-
 	private int retryNum = 3;
 	private int retryIndex = 0;
 
 	private long sleepTime = 5000;
 
 	public UpperExecutor () {
-		this.updateStack = new Stack<Update>();
 	}
 
 	public UpperExecutor (int retryNum) {
 		this.retryNum = retryNum;
-		this.updateStack = new Stack<Update>();
 	}
 
 	public void recovery() throws IOException {
 
-		while (!updateStack.isEmpty()){
-			Update popUpdate = updateStack.pop();
-			try {
-				popUpdate.recovery();
-			} catch (Exception e){
-				updateStack.push(popUpdate);
-				LOGGER.error("恢复过程出现异常，尝试重试{}次, 没隔{}ms一次, 第{}次重试", retryNum, sleepTime, retryIndex + 1);
-				LOGGER.error("恢复过程出现异常信息：", e);
-				retryIndex ++;
-				if(retryIndex >= retryNum){
-					throw new IOException(String.format("尝试恢复 %s 次均失败", retryNum + ""), e);
-				}
-
-				try {
-					Thread.currentThread().sleep(sleepTime);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-				return;
-			}
-		}
 	}
 
 	public boolean execute (Task task) {
 		try {
 			Update update = UpdateFactory.create(task.getScand(), task.getBackupDir());
-			updateStack.push(update);
 			update.backup();
 			update.execute();
 			return true;

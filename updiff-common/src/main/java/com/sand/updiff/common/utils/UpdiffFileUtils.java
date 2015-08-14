@@ -18,6 +18,9 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -86,7 +89,26 @@ public class UpdiffFileUtils {
 		}
 	}
 
+	public static Stack<File> mkdirs(File file){
+		if(file.exists()){
+			return null;
+		}
+		Stack<File> files = new Stack<File>();
 
+		files.push(file);
+
+		File parent = file.getParentFile();
+		while(parent != null && !parent.exists()){
+			files.push(parent);
+			parent = parent.getParentFile();
+		}
+
+		if(!file.mkdirs()){
+			return null;
+		}
+
+		return files;
+	}
 
 
 }

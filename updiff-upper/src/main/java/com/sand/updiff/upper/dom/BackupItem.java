@@ -22,7 +22,7 @@ package com.sand.updiff.upper.dom;
  * @version 1.0.0
  *
  */
-public class BackupItem {
+public class BackupItem  implements Item{
 
 	private String fromPath;
 

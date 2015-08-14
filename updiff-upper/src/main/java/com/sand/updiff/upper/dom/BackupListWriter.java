@@ -35,54 +35,17 @@ import java.io.IOException;
  * @version 1.0.0
  *
  */
-public class BackupListWriter {
-
-	private XMLWriter writer;
-
-	private Document document;
-
-	private Element rootElement;
+public class BackupListWriter extends AbstractWriter{
 
 	public BackupListWriter (String backupDir) throws IOException {
-		File backupDirFile = new File(backupDir);
-		init(new File(backupDirFile, backupDirFile.getName() + FileType.BAK_XML.getType()));
+		super(backupDir,FileType.BAK_XML, "backups");
 	}
 
-	private void init(File savePath) throws IOException {
-
-		if(savePath.exists()){
-			SAXReader saxReader = new SAXReader();
-			try {
-				document = saxReader.read(savePath);
-			} catch (DocumentException e) {
-				throw new IOException( e);
-			}
-			rootElement = document.getRootElement();
-		} else {
-			document = DocumentFactory.getInstance().createDocument("utf-8");
-			rootElement = document.addElement("backups");
-		}
-
-		OutputFormat format = OutputFormat.createPrettyPrint();
-		writer = new XMLWriter(new FileWriter(savePath), format);
-
-	}
-
-	public void addItem(BackupItem item){
+	public void addItem(Item item){
+		BackupItem backupItem = (BackupItem)item;
 		Element itemEl = rootElement.addElement("item");
-		itemEl.addAttribute("from", item.getFromPath());
-		itemEl.addAttribute("to", item.getToPath());
-	}
-
-	public void writeItem(BackupItem item) throws IOException {
-		addItem(item);
-		write();
-	}
-
-	public void write() throws IOException{
-		writer.write(document);
-		writer.flush();
-		writer.close();
+		itemEl.addAttribute("from", backupItem.getFromPath());
+		itemEl.addAttribute("to", backupItem.getToPath());
 	}
 
 }

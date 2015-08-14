@@ -14,7 +14,8 @@ public enum FileType {
 	DIFF(".diff"),
 	ZIP(".zip"),
 	TAR_GZ(".tar.gz"),
-	BAK_XML(".backup.xml");
+	BAK_XML(".backup.xml"),
+	REDOLOG(".redolog");
 
 	String type;
 	FileType(String type){

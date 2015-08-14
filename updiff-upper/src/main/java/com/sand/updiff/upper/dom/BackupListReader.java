@@ -34,36 +34,21 @@ import java.util.List;
  * @version 1.0.0
  *
  */
-public class BackupListReader {
-
-	private XMLReader reader;
-
-	private Document document;
-
-	private Element rootElement;
+public class BackupListReader extends AbstractReader{
 
 	public BackupListReader (String backupDir) throws IOException {
-		File backupDirFile = new File(backupDir);
-
-		SAXReader saxReader = new SAXReader();
-		try {
-			document = saxReader.read(new File(backupDirFile, backupDirFile.getName() + FileType.BAK_XML.getType()));
-		} catch (DocumentException e) {
-			throw new IOException(e);
-		}
-		rootElement = document.getRootElement();
+		super(backupDir);
 	}
 
-	public List<BackupItem> readAll(){
+	public List<Item> readAll(){
 
-		List<BackupItem> allEl = new LinkedList<BackupItem>();
+		List<Item> allEl = new LinkedList<Item>();
 
 		List<Element> els = rootElement.elements();
 
 		for (Element e: els){
 			allEl.add(new BackupItem(e.attributeValue("from"), e.attributeValue("to")));
 		}
-
 		return allEl;
 	}
 }
