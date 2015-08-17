@@ -15,14 +15,11 @@ package com.sand.updiff.upper;
 
 import com.sand.updiff.common.FileType;
 import com.sand.updiff.common.utils.DateUtils;
-import com.sand.updiff.upper.dom.BackupItem;
-import com.sand.updiff.upper.dom.BackupListReader;
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.dom.RedologWriter;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
 import com.sand.updiff.upper.scan.impl.DefaultScanner;
 import com.sand.updiff.upper.update.Executor;
-import com.sand.updiff.upper.update.impl.BackupExecutor;
-import com.sand.updiff.upper.update.impl.DefaultTask;
 import com.sand.updiff.upper.update.impl.UpperExecutor;
 import org.apache.commons.io.FileUtils;
 import org.codehaus.plexus.archiver.AbstractUnArchiver;
@@ -35,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  *
@@ -55,15 +51,6 @@ public class Upper {
 	private String newPath;
 
 	private String backupDir;
-
-	public Upper (String oldPath) {
-		this.oldPath = oldPath;
-		File oldFile = new File(oldPath);
-		if(!oldFile.exists()){
-			LOGGER.error("要更新的文件夹不存在：{}", oldPath);
-			return;
-		}
-	}
 
 	public Upper (String oldPath, String newPath) {
 		init(oldPath, newPath, null);
@@ -87,6 +74,9 @@ public class Upper {
 		LOGGER.info("更新包或文件夹:{}", newPath);
 		LOGGER.info("备份文件夹:{}", this.backupDir);
 
+		if(new File(this.backupDir).exists()){
+			throw new RuntimeException(String.format("备份文件夹已经存在：%s", this.backupDir));
+		}
 
 		this.oldPath = oldPath;
 		File oldFile = new File(oldPath);
@@ -144,78 +134,60 @@ public class Upper {
 			this.newPath = unpackFile.getAbsolutePath();
 
 
-			LOGGER.info("更新包加压后路径:{}", this.newPath);
+			LOGGER.info("更新包解压后路径:{}", this.newPath);
 		} else {
 			this.newPath = newPath;
 		}
 	}
 
-
+	/**
+	 * 先备份，再执行更新，最后如果出现异常就恢复。
+	 * @return
+	 */
 	public boolean up(){
-		Scanner<Scaned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
-		Iterator<Scaned> it = scanner.iterator();
+		Scanner<Scanned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
+		Iterator<Scanned> backupIt = scanner.iterator();
+		Executor executor = new UpperExecutor(backupDir);
 
-		Executor executor = new UpperExecutor();
-		while(it.hasNext()){
-			if(!executor.execute(new DefaultTask(it.next(), backupDir))){
+		while(backupIt.hasNext()){
+			if(!executor.backup(backupIt.next())){
+				return false;
+			}
+		}
+		Iterator<Scanned> excuteIt = scanner.iterator();
+		while(excuteIt.hasNext()){
+			if(!executor.execute(excuteIt.next())){
 				return false;
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * 仅备份
+	 * @return
+	 */
 	public boolean backup(){
-		Scanner<Scaned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
-		Iterator<Scaned> it = scanner.iterator();
+		Scanner<Scanned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
+		Iterator<Scanned> it = scanner.iterator();
 
-		Executor executor = new BackupExecutor();
+		Executor executor = new UpperExecutor(backupDir);
 		while(it.hasNext()){
-			if(!executor.execute(new DefaultTask(it.next(), backupDir))){
+			if(!executor.backup(it.next())){
 				return false;
 			}
 		}
 		return true;
 	}
 
-
-	public boolean recovery(String backupDir){
-
-		try {
-			File newFile = new File(backupDir);
-			if(!newFile.exists()){
-				LOGGER.error("备份文件夹不存在：{}", backupDir);
-				return false;
-			}
-			BackupListReader backupListReader = new BackupListReader(backupDir);
-
-			List<BackupItem> backupItems = backupListReader.readAll();
-
-			for(BackupItem item: backupItems){
-
-				File fromFile = new File(item.getFromPath());
-				File toFile = new File(item.getToPath());
-				if(!toFile.exists()){
-					LOGGER.error("恢复]-备份文件不存在: [{}]", toFile);
-					return false;
-				}
-				//1.删除更新过的文件
-				if(fromFile.exists()){
-					if(!fromFile.delete()){
-						LOGGER.error("恢复]-删除更新文件失败: [{}]", fromFile);
-						return false;
-					}
-					LOGGER.error("[恢复]-删除更新文件: [{}]", fromFile);
-				}
-				//2.拷贝备份文件
-				FileUtils.copyFile(toFile, fromFile);
-				LOGGER.error("[恢复]-恢复备份文件: [{}] ==> [{}]", toFile, fromFile);
-			}
-			return true;
-
-		} catch (Exception e) {
-			LOGGER.error("恢复失败:", e);
-		}
-		return false;
+	/**
+	 * 仅恢复
+	 * @param backupDir
+	 * @return
+	 */
+	public static boolean recovery(String backupDir){
+		Executor executor = new UpperExecutor(backupDir);
+		return executor.recovery();
 	}
 
 	public static void main(String[] args){
@@ -236,9 +208,8 @@ public class Upper {
 					upper = new Upper(args[1], args[2], args[3]);
 				}
 				isScussess = upper.backup();
-			} else if("recovery".equals(args[0]) && args.length == 3){
-				upper = new Upper(args[1]);
-				isScussess = upper.recovery(args[2]);
+			} else if("recovery".equals(args[0]) && args.length == 2){
+				isScussess = recovery(args[1]);
 			}  else {
 				LOGGER.error(String.format("用法错误： %s ", getCommond(args)));
 				printUsage();
@@ -267,7 +238,7 @@ public class Upper {
 		System.out.println("     upper backup oldDir newPath [backupPath]   执行备份，仅备份不做更新");
 		System.out.println("                                                backupDir 可选，默认值为：oldDir_backup_yyyyMMddHHssmm");
 		System.out.println("或：");
-		System.out.println("     upper recovery oldDir backupDir            执行恢复，根据指定备份文件恢复");
+		System.out.println("     upper recovery backupDir                   执行恢复，根据指定备份文件恢复");
 		System.out.println("其中：");
 		System.out.println("     oldDir   要更新的文件夹");
 		System.out.println("     newPath  更新包或文件夹，它的文件结构必须和oldDir的一致。更新包格式只能为.zip或.tar.gz，如果包内只有一个文");
@@ -283,6 +254,5 @@ public class Upper {
 		}
 		return sb.toString();
 	}
-
 
 }

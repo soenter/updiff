@@ -15,7 +15,7 @@ package com.sand.updiff.upper.scan.impl;
 
 import com.sand.updiff.common.FileType;
 import com.sand.updiff.common.utils.UpdiffFileUtils;
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +42,7 @@ public class DefaultScanner implements Scanner {
 
 	private File newDir;
 
+	private List<Scanned> scanFiles;
 
 	public DefaultScanner (File oldDir, File newDir) {
 
@@ -53,31 +54,32 @@ public class DefaultScanner implements Scanner {
 		this.newDir = newDir;
 	}
 
-	public Iterator<Scaned> iterator () {
+	public Iterator<Scanned> iterator () {
 
-		List<Scaned> scanFiles = new LinkedList<Scaned>();
-
-		walkFiles(scanFiles, newDir);
+		if(scanFiles == null){
+			scanFiles = new LinkedList<Scanned>();
+			walkFiles(scanFiles, newDir);
+		}
 
 		return scanFiles.iterator();
 	}
 
-	private void walkFiles(List<Scaned> scanFiles, File file){
+	private void walkFiles(List<Scanned> scanFiles, File file){
 
 		File[] files = file.listFiles();
 		for (File f: files){
 			if(f.isDirectory()){
 				File realFile = UpdiffFileUtils.castControlFile(f);
 
-				Scaned scaned = new DefaultScaned(getOldFile(realFile), realFile, getRelativePath(realFile));
-				LOGGER.debug("扫描到文件夹： {}", scaned);
-				scanFiles.add(scaned);
+				Scanned scanned = new DefaultScanned(getOldFile(realFile), realFile, getRelativePath(realFile));
+				LOGGER.debug("扫描到文件夹： {}", scanned);
+				scanFiles.add(scanned);
 				walkFiles(scanFiles, f);
 			} else if(!f.getName().endsWith(FileType.DIFF.getType()) && !UpdiffFileUtils.isInnerClassFile(f)){
 				File realFile = UpdiffFileUtils.castControlFile(f);
-				Scaned scaned = new DefaultScaned(getOldFile(realFile), realFile, getRelativePath(realFile));
-				LOGGER.debug("扫描到文件： {}", scaned);
-				scanFiles.add(scaned);
+				Scanned scanned = new DefaultScanned(getOldFile(realFile), realFile, getRelativePath(realFile));
+				LOGGER.debug("扫描到文件： {}", scanned);
+				scanFiles.add(scanned);
 			}
 		}
 	}

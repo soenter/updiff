@@ -99,12 +99,12 @@ public class DiffWriter {
 			groupMap.put(newGroupName, group);
 		}
 
-		Element node = group.addElement("file");
+		Element fileEl = group.addElement("file");
 
-		node.addAttribute("change", element.getChangeName());
+		fileEl.addElement("change").setText(element.getChangeName());
 		String path = element.getPath();
 		if(path != null && !"".equals(path)){
-			node.addAttribute("path", path);
+			fileEl.addElement("path").setText(path);
 		}
 	}
 

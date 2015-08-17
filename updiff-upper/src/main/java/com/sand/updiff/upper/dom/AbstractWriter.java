@@ -38,7 +38,7 @@ import java.io.IOException;
 public abstract class AbstractWriter {
 
 
-	protected XMLWriter writer;
+	protected File savePath;
 
 	protected Document document;
 
@@ -46,11 +46,14 @@ public abstract class AbstractWriter {
 
 	public AbstractWriter (String backupDir, FileType fileType, String rootDomName) throws IOException {
 		File backupDirFile = new File(backupDir);
+		if(!backupDirFile.exists() && !backupDirFile.mkdirs()){
+			throw new IOException("备份文件夹创建失败：" + backupDirFile.getAbsolutePath());
+		}
 		init(new File(backupDirFile, backupDirFile.getName() + fileType.getType()), rootDomName);
 	}
 
 	private void init(File savePath, String rootDomName) throws IOException {
-
+		this.savePath = savePath;
 		if(savePath.exists()){
 			SAXReader saxReader = new SAXReader();
 			try {
@@ -63,10 +66,6 @@ public abstract class AbstractWriter {
 			document = DocumentFactory.getInstance().createDocument("utf-8");
 			rootElement = document.addElement(rootDomName);
 		}
-
-		OutputFormat format = OutputFormat.createPrettyPrint();
-		writer = new XMLWriter(new FileWriter(savePath), format);
-
 	}
 
 	public abstract void addItem(Item item);
@@ -77,8 +76,16 @@ public abstract class AbstractWriter {
 	}
 
 	public void write() throws IOException{
-		writer.write(document);
-		writer.flush();
-		writer.close();
+		XMLWriter writer = null;
+		try {
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			writer = new XMLWriter(new FileWriter(savePath), format);
+			writer.write(document);
+			writer.flush();
+		} finally {
+			if(writer != null){
+				writer.close();
+			}
+		}
 	}
 }

@@ -31,7 +31,7 @@ public class UpperTest {
 
 		String oldPath = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0";
 		String newPath = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0-assembly.new.tar.gz";
-		Upper.main(new String[]{"upper", oldPath, newPath});
+		Upper.main(new String[]{"up", oldPath, newPath});
 	}
 
 	@Test
@@ -45,8 +45,7 @@ public class UpperTest {
 	@Test
 	public void test_call_recovery(){
 
-		String oldPath = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0";
-		String backupDir = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0_backup_20150813160902";
-		Upper.main(new String[]{"recovery", oldPath, backupDir});
+		String backupDir = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0_backup_20150817155749";
+		Upper.main(new String[]{"recovery", backupDir});
 	}
 }

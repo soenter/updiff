@@ -23,4 +23,19 @@ public enum ChangeType {
 	/** Copy an existing file to a new location, keeping the original */
 	COPY;
 
+	public static ChangeType get(String type){
+
+		if(ADD.name().equals(type)){
+			return ADD;
+		} else if(MODIFY.name().equals(type)){
+			return MODIFY;
+		} else if(DELETE.name().equals(type)){
+			return DELETE;
+		} else if(RENAME.name().equals(type)){
+			return RENAME;
+		} else if(COPY.name().equals(type)){
+			return COPY;
+		}
+		return null;
+	}
 }

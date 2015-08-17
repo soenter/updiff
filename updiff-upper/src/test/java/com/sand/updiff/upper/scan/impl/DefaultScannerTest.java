@@ -13,7 +13,7 @@
  */
 package com.sand.updiff.upper.scan.impl;
 
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
 import org.junit.Test;
 
@@ -39,7 +39,7 @@ public class DefaultScannerTest {
 				new File("D:\\0005_git\\abacus\\abacus-annotation")
 		);
 
-		Iterator<Scaned> it = scanner.iterator();
+		Iterator<Scanned> it = scanner.iterator();
 
 		while(it.hasNext()){
 			System.out.println(it.next());

@@ -13,7 +13,7 @@
  */
 package com.sand.updiff.upper.update.impl;
 
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.update.Task;
 
 /**
@@ -27,17 +27,17 @@ import com.sand.updiff.upper.update.Task;
  */
 public class DefaultTask implements Task{
 
-	private Scaned scaned;
+	private Scanned scanned;
 
 	private String backupDif;
 
-	public DefaultTask (Scaned scaned, String backupDif) {
-		this.scaned = scaned;
+	public DefaultTask (Scanned scanned, String backupDif) {
+		this.scanned = scanned;
 		this.backupDif = backupDif;
 	}
 
-	public Scaned getScand () {
-		return scaned;
+	public Scanned getScand () {
+		return scanned;
 	}
 
 	public String getBackupDir () {

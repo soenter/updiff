@@ -20,18 +20,18 @@ import java.io.File;
 
 /**
  *
- * @ClassName ：com.sand.updiff.upper.scan.impl.DiffScand
+ * @ClassName ：com.sand.updiff.upper.scan.impl.DiffScanned
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/10 14:45
  * @version 1.0.0
  *
  */
-public class DiffScand extends DefaultScaned {
+public class DiffScanned extends DefaultScanned {
 
 	private DiffItem diffItem;
 
-	public DiffScand (File oldFile, File newFile, String relativePath, DiffItem diffItem) {
+	public DiffScanned (File oldFile, File newFile, String relativePath, DiffItem diffItem) {
 		super(oldFile, newFile, relativePath);
 		this.diffItem = diffItem;
 	}

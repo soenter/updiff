@@ -15,9 +15,9 @@ package com.sand.updiff.upper.update;
 
 import com.sand.updiff.common.DiffItem;
 import com.sand.updiff.upper.scan.Scanner;
-import com.sand.updiff.upper.scan.impl.DiffScand;
+import com.sand.updiff.upper.scan.impl.DiffScanned;
 import com.sand.updiff.upper.scan.impl.DiffScanner;
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.impl.DefaultScanner;
 import com.sand.updiff.upper.update.impl.DefaultTask;
 import com.sand.updiff.upper.update.impl.UpperExecutor;
@@ -59,14 +59,14 @@ public class UpdateTest {
 		File oldDir = new File("D:\\0000_test\\updiff\\abacus_up");
 		String backupDif = "D:\\0000_test\\updiff\\abacus_backup_" + System.currentTimeMillis();
 
-		UpperExecutor executor = new UpperExecutor();
+		UpperExecutor executor = new UpperExecutor(backupDif);
 		while(it.hasNext()){
 			DiffItem diffItem = it.next();
 			File newFile = new File(newDir.getAbsolutePath() + File.separator + diffItem.getCompiledNewPath());
 			File oldFile = new File(oldDir.getAbsolutePath() + File.separator + diffItem.getCompiledNewPath());
 
-			Scaned scaned = new DiffScand(newFile, oldFile, diffItem.getCompiledNewPath(), diffItem);
-			if(!executor.execute(new DefaultTask(scaned, backupDif))){
+			Scanned scanned = new DiffScanned(newFile, oldFile, diffItem.getCompiledNewPath(), diffItem);
+			if(!executor.execute(scanned)){
 				break;
 			}
 
@@ -95,14 +95,14 @@ public class UpdateTest {
 		File newDir = new File("D:\\0000_test\\updiff\\abacus");
 		File oldDir = new File("D:\\0000_test\\updiff\\abacus_up");
 
-		Scanner<Scaned> scanner = new DefaultScanner(newDir, oldDir);
-		Iterator<Scaned> it = scanner.iterator();
+		Scanner<Scanned> scanner = new DefaultScanner(newDir, oldDir);
+		Iterator<Scanned> it = scanner.iterator();
 
 		String backupDif = "D:\\0000_test\\updiff\\abacus_backup_" + System.currentTimeMillis();
 
-		UpperExecutor executor = new UpperExecutor();
+		UpperExecutor executor = new UpperExecutor(backupDif);
 		while(it.hasNext()){
-			if(!executor.execute(new DefaultTask(it.next(), backupDif))){
+			if(!executor.execute(it.next())){
 				break;
 			}
 		}

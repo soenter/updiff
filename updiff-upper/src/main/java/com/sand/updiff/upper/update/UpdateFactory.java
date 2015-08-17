@@ -14,7 +14,7 @@
 package com.sand.updiff.upper.update;
 
 import com.sand.updiff.common.FileType;
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.update.impl.ClassUpdate;
 import com.sand.updiff.upper.update.impl.DefaultUpdate;
 import com.sand.updiff.upper.update.impl.JarUpdate;
@@ -33,14 +33,13 @@ import java.io.IOException;
 public class UpdateFactory {
 
 
-	public static Update create(Scaned scaned, String backpath) throws IOException {
-		String newFileName = scaned.getNewFile().getName();
-		 if(scaned.isJar()){
-			return new JarUpdate(scaned, backpath);
-		} else if(newFileName.endsWith(FileType.CLASS.getType())){
-			 return new ClassUpdate(scaned, backpath);
+	public static Update create(Scanned scanned, String backpath) throws IOException {
+		 if(scanned.isJar()){
+			return new JarUpdate(scanned, backpath);
+		} else if(scanned.getNewFile().getName().endsWith(FileType.CLASS.getType())){
+			 return new ClassUpdate(scanned, backpath);
 		 } else {
-			return new DefaultUpdate(scaned, backpath);
+			return new DefaultUpdate(scanned, backpath);
 		}
 	}
 }

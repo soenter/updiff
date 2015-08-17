@@ -44,8 +44,8 @@ public class BackupListWriter extends AbstractWriter{
 	public void addItem(Item item){
 		BackupItem backupItem = (BackupItem)item;
 		Element itemEl = rootElement.addElement("item");
-		itemEl.addAttribute("from", backupItem.getFromPath());
-		itemEl.addAttribute("to", backupItem.getToPath());
+		itemEl.addElement("from").setText(backupItem.getFromPath());
+		itemEl.addElement("to").setText(backupItem.getToPath());
 	}
 
 }

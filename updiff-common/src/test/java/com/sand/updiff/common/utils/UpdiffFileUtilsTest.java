@@ -11,7 +11,7 @@
  * -------------------------------------------------------------
  * sun.mt@sand.com.cn         2015/8/12        Initailized
  */
-package com.sand.updiff.mvnplugin.utils;
+package com.sand.updiff.common.utils;
 
 import com.sand.updiff.common.utils.UpdiffFileUtils;
 import org.junit.Test;

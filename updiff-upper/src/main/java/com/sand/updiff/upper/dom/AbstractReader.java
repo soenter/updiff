@@ -40,17 +40,17 @@ public abstract class AbstractReader {
 
 	protected Element rootElement;
 
-	public AbstractReader (String backupDir) throws IOException {
+	public AbstractReader (String backupDir, FileType fileType) throws IOException {
 		File backupDirFile = new File(backupDir);
 
 		SAXReader saxReader = new SAXReader();
 		try {
-			document = saxReader.read(new File(backupDirFile, backupDirFile.getName() + FileType.BAK_XML.getType()));
+			document = saxReader.read(new File(backupDirFile, backupDirFile.getName() + fileType.getType()));
 		} catch (DocumentException e) {
 			throw new IOException(e);
 		}
 		rootElement = document.getRootElement();
 	}
 
-	public abstract List<Item> readAll() ;
+	public abstract List<? extends  Item> readAll() ;
 }

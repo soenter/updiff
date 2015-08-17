@@ -37,7 +37,7 @@ import java.util.List;
 public class BackupListReader extends AbstractReader{
 
 	public BackupListReader (String backupDir) throws IOException {
-		super(backupDir);
+		super(backupDir, FileType.REDOLOG);
 	}
 
 	public List<Item> readAll(){
@@ -47,7 +47,7 @@ public class BackupListReader extends AbstractReader{
 		List<Element> els = rootElement.elements();
 
 		for (Element e: els){
-			allEl.add(new BackupItem(e.attributeValue("from"), e.attributeValue("to")));
+			allEl.add(new BackupItem(e.elementText("from"), e.elementText("to")));
 		}
 		return allEl;
 	}

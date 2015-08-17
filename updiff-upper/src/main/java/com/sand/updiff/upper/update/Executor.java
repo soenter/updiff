@@ -13,11 +13,7 @@
  */
 package com.sand.updiff.upper.update;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.Stack;
+import com.sand.updiff.upper.scan.Scanned;
 
 /**
  *
@@ -30,5 +26,11 @@ import java.util.Stack;
  */
 public interface Executor {
 
-	boolean execute(Task task);
+
+	boolean backup(Scanned scanned);
+
+	boolean execute(Scanned scanned);
+
+	boolean recovery();
+
 }

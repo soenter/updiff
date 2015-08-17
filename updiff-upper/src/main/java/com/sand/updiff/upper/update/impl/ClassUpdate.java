@@ -19,7 +19,7 @@ import com.sand.updiff.common.utils.UpdiffFileUtils;
 import com.sand.updiff.upper.dom.BackupItem;
 import com.sand.updiff.upper.dom.BackupListWriter;
 import com.sand.updiff.upper.dom.RedologItem;
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,26 +48,26 @@ public class ClassUpdate extends DefaultUpdate {
 
 
 
-	public ClassUpdate (Scaned scaned, String backupPath) throws IOException {
-		super(scaned, backupPath);
+	public ClassUpdate (Scanned scanned, String backupPath) throws IOException {
+		super(scanned, backupPath);
 
-		if(scaned.isDir() || !scaned.getNewFile().getName().endsWith(FileType.CLASS.getType())){
+		if(scanned.isDir() || !scanned.getNewFile().getName().endsWith(FileType.CLASS.getType())){
 			throw new IOException("ClassUpdate 只能处理以.class结尾的文件");
 		}
 
-		String name = scaned.getNewFile().getName();
+		String name = scanned.getNewFile().getName();
 
-		File oldParent = scaned.getOldFile().getParentFile();
+		File oldParent = scanned.getOldFile().getParentFile();
 		oldFiles = genInnerClassList(oldParent, name);
 
-		File newParent = scaned.getNewFile().getParentFile();
+		File newParent = scanned.getNewFile().getParentFile();
 		newFiles = genInnerClassList(newParent, name);
 
 
 	}
 
 	public void backup () throws IOException {
-		if(!scaned.isAddFile()){
+		if(!scanned.isAddFile()){
 			File backupDirFile = new File(backupPath).getParentFile();
 
 			if(!backupDirFile.exists() && !backupDirFile.mkdirs()){
@@ -75,26 +75,29 @@ public class ClassUpdate extends DefaultUpdate {
 			}
 			BackupListWriter backupListWriter = new BackupListWriter(this.backupDir);
 
-			for(File f: oldFiles){
-				File backupFile = new File(backupDirFile, f.getName());
-				if(backupFile.exists()){
-					throw new IOException("[备份]-备份文件已经存在:" + backupFile.getAbsolutePath());
+			try {
+				for(File f: oldFiles){
+					File backupFile = new File(backupDirFile, f.getName());
+					if(backupFile.exists()){
+						throw new IOException("[备份]-备份文件已经存在:" + backupFile.getAbsolutePath());
+					}
+					FileUtils.copyFile(f, backupFile);
+
+					LOGGER.info("[备份]-备份文件:[{}] ==> [{}]", f, backupFile);
+
+					backupListWriter.addItem(new BackupItem(f.getAbsolutePath(), backupFile.getAbsolutePath()));
 				}
-				FileUtils.copyFile(f, backupFile);
-
-				LOGGER.info("[备份]-备份文件:[{}] ==> [{}]", f, backupFile);
-
-				backupListWriter.addItem(new BackupItem(f.getAbsolutePath(), backupFile.getAbsolutePath()));
+			} finally {
+				backupListWriter.write();
 			}
-			backupListWriter.write();
 		}
 	}
 
 	public void execute () throws IOException {
 
-		if(scaned.isAddFile()){
+		if(scanned.isAddFile()){
 			//拷贝新文件
-			File oldPathDir = scaned.getOldFile().getParentFile();
+			File oldPathDir = scanned.getOldFile().getParentFile();
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
 				if(newFile.exists()){
@@ -107,16 +110,20 @@ public class ClassUpdate extends DefaultUpdate {
 					if(mkdirs == null){
 						throw new IOException("[执行]-新文件父目录创建失败:" + newFileParent.getAbsolutePath());
 					}
-					while(!mkdirs.isEmpty()){
-						File file = mkdirs.pop();
-						redologWriter.addItem(new RedologItem(true, ChangeType.ADD, null, file, null));
+					try {
+						while(!mkdirs.isEmpty()){
+							File file = mkdirs.pop();
+							redologWriter.addItem(new RedologItem(true, ChangeType.ADD, null, file, null));
+						}
+					} finally {
+						redologWriter.write();
 					}
 				}
 				LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", f, newFile);
 				FileUtils.copyFile(f, newFile);
 				redologWriter.writeItem(new RedologItem(false, ChangeType.ADD, f, newFile, null));
 			}
-		} else if(scaned.isModifyFile()){
+		} else if(scanned.isModifyFile()){
 			//删除旧文件
 			for(File f: oldFiles){
 				if(f.exists()){
@@ -127,7 +134,7 @@ public class ClassUpdate extends DefaultUpdate {
 				}
 			}
 			//拷贝新文件
-			File oldPathDir = scaned.getOldFile().getParentFile();
+			File oldPathDir = scanned.getOldFile().getParentFile();
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
 				if(newFile.exists()){
@@ -136,8 +143,8 @@ public class ClassUpdate extends DefaultUpdate {
 				LOGGER.info("[执行]-修改文件:[{}] ==> [{}]", f, newFile);
 				FileUtils.copyFile(f, newFile);
 			}
-			redologWriter.writeItem(new RedologItem(false, ChangeType.MODIFY, scaned.getNewFile(), scaned.getOldFile(), backupFile));
-		} else if(scaned.isDeleteFile()){
+			redologWriter.writeItem(new RedologItem(false, ChangeType.MODIFY, scanned.getNewFile(), scanned.getOldFile(), backupFile));
+		} else if(scanned.isDeleteFile()){
 			//删除旧文件
 			for(File f: oldFiles){
 				if(f.exists()){
@@ -148,10 +155,65 @@ public class ClassUpdate extends DefaultUpdate {
 				}
 			}
 
-			redologWriter.writeItem(new RedologItem(false, ChangeType.DELETE, scaned.getNewFile(), scaned.getOldFile(), backupFile));
+			redologWriter.writeItem(new RedologItem(false, ChangeType.DELETE, scanned.getNewFile(), scanned.getOldFile(), backupFile));
 		}
 
 
+	}
+
+
+	@Override
+	public void recovery () throws IOException {
+		if(scanned.isAddFile()){
+			//删除添加的文件
+			for(File f: newFiles){
+				if(f.exists()){
+					if(!f.delete()){
+						throw new IOException("[恢复]-旧文件删除失败:" + f.getAbsolutePath());
+					}
+					LOGGER.info("[恢复]-删除添加的文件:[{}]", f);
+				}
+			}
+		} else if (scanned.isModifyFile()){
+			//删除新文件
+			File oldPathDir = scanned.getOldFile().getParentFile();
+			for(File f: newFiles){
+				File newFile = new File(oldPathDir, f.getName());
+				if(newFile.exists()){
+					LOGGER.info("[恢复]-删除添加的文件:[{}]", newFile);
+					if(!newFile.delete()){
+						throw new IOException("[恢复]-删除添加的文件失败:" + newFile.getAbsolutePath());
+					}
+				}
+			}
+			//恢复旧文件
+			File backupDirFile = new File(backupPath).getParentFile();
+			for(File f: oldFiles){
+				File backupFile = new File(backupDirFile, f.getName());
+				LOGGER.info("[恢复]-修改过的文件:[{}] ==> [{}]", backupFile, f);
+				if(!backupFile.exists()){
+					throw new IOException("[恢复]-备份文件不存在无法恢复：" + backupFile.getAbsolutePath());
+				}
+				if(f.exists() && !f.delete()){
+					throw new IOException("[恢复]-旧文件无法删除：" + f.getAbsolutePath());
+				}
+				FileUtils.copyFile(backupFile, f);
+			}
+		} else if(scanned.isDeleteFile()){
+			//恢复旧文件
+			File backupDirFile = new File(backupPath).getParentFile();
+			for(File f: oldFiles){
+				File backupFile = new File(backupDirFile, f.getName());
+				LOGGER.info("[恢复]-修改过的文件:[{}] ==> [{}]", backupFile, f);
+				if(!backupFile.exists()){
+					throw new IOException("[恢复]-备份文件不存在无法恢复：" + backupFile.getAbsolutePath());
+				}
+				if(f.exists() && !f.delete()){
+					throw new IOException("[恢复]-旧文件无法删除：" + f.getAbsolutePath());
+				}
+				FileUtils.copyFile(backupFile, f);
+			}
+		}
 	}
 
 	private static List<File> genInnerClassList(File file, String name){

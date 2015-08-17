@@ -15,7 +15,7 @@ package com.sand.updiff.upper.scan.impl;
 
 import com.sand.updiff.common.FileType;
 import com.sand.updiff.common.utils.UpdiffFileUtils;
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.File;
@@ -25,14 +25,14 @@ import java.io.InputStream;
 
 /**
  *
- * @ClassName ：com.sand.updiff.upper.scan.impl.DefaultScaned
+ * @ClassName ：com.sand.updiff.upper.scan.impl.DefaultScanned
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 14:38
  * @version 1.0.0
  *
  */
-public class DefaultScaned implements Scaned {
+public class DefaultScanned implements Scanned {
 
 	private File oldFile;
 
@@ -52,11 +52,11 @@ public class DefaultScaned implements Scaned {
 
 	private boolean isModifyFile;
 
-	public DefaultScaned (File oldFile, File newFile, String relativePath) {
+	public DefaultScanned (File oldFile, File newFile, String relativePath) {
 		init(oldFile, newFile, relativePath, true);
 	}
 
-	public DefaultScaned (File oldFile, File newFile, String relativePath, boolean isInnerDiffFile) {
+	public DefaultScanned (File oldFile, File newFile, String relativePath, boolean isInnerDiffFile) {
 		init(oldFile, newFile, relativePath, isInnerDiffFile);
 	}
 

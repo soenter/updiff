@@ -1,6 +1,6 @@
 package com.sand.updiff.upper.update;
 
-import com.sand.updiff.upper.scan.Scaned;
+import com.sand.updiff.upper.scan.Scanned;
 
 /**
  * @author : sun.mt@sand.com.cn
@@ -11,7 +11,7 @@ import com.sand.updiff.upper.scan.Scaned;
  */
 public interface Task {
 
-	Scaned getScand();
+	Scanned getScand();
 
 	String getBackupDir();
 }

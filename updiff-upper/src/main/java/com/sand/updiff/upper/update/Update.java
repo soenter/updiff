@@ -15,4 +15,6 @@ public interface Update {
 
 	void execute() throws IOException;
 
+	void recovery() throws IOException;
+
 }
