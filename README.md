@@ -12,9 +12,9 @@ updiff 是一个增量更新的工具，支持备份、更新、恢复功能。�
 	<artifactId>updiff-mvn-plugin</artifactId>
 	<version>1.0.4</version>
 	<configuration>
-		<!-- HEAD 为距git版本最新版本-->
+		<!-- HEAD 为最新版本-->
 		<newGitVersion>HEAD</newGitVersion>
-		<!-- 83d583f 为上线版本 v0.1.3 的git版本-->
+		<!-- 83d583f 为最后一次上线版本-->
 		<oldGitVersion>83d583f</oldGitVersion>
 	</configuration>
 	<executions>
