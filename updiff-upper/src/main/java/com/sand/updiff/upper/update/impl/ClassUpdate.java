@@ -57,8 +57,10 @@ public class ClassUpdate extends DefaultUpdate {
 
 		String name = scanned.getNewFile().getName();
 
-		File oldParent = scanned.getOldFile().getParentFile();
-		oldFiles = genInnerClassList(oldParent, name);
+		if(!scanned.isAddFile()){
+			File oldParent = scanned.getOldFile().getParentFile();
+			oldFiles = genInnerClassList(oldParent, name);
+		}
 
 		File newParent = scanned.getNewFile().getParentFile();
 		newFiles = genInnerClassList(newParent, name);
