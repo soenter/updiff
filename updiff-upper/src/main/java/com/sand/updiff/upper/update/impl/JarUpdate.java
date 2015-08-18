@@ -74,7 +74,7 @@ public class JarUpdate extends DefaultUpdate {
 	public void execute () throws IOException {
 
 		if(scanned.isAddFile()){//新添加文件
-			LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
+			LOGGER.info("[更新]-添加文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
 			if(!scanned.getOldFile().getParentFile().exists()){
 				Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scanned.getOldFile().getParentFile());
 				if(mkdirs == null){
@@ -98,7 +98,7 @@ public class JarUpdate extends DefaultUpdate {
 			if(!workDir.exists() && !workDir.mkdirs()){
 				throw new IOException("创建工作路径失败：" + workDir.getAbsolutePath());
 			}
-			LOGGER.info("[执行]-创建工作路径:[{}]", workDir);
+			LOGGER.info("[更新]-创建工作路径:[{}]", workDir);
 
 			//1.解压旧jar 到 备份文件夹下 {filename}_old_{time}
 			String  time = DateUtils.format("yyyyMMddHHmmss");
@@ -112,7 +112,7 @@ public class JarUpdate extends DefaultUpdate {
 			unArchiverOld.setDestDirectory(unjarOld);
 			unArchiverOld.extract();
 
-			LOGGER.info("[执行]-解压旧jar文件:[{}] ==> [{}]", scanned.getOldFile(), unjarOld);
+			LOGGER.info("[更新]-解压旧jar文件:[{}] ==> [{}]", scanned.getOldFile(), unjarOld);
 
 			//2.解压新jar 到 备份文件夹下 {filename}_new_{time}
 			ZipUnArchiver unArchiverNew = new ZipUnArchiver();
@@ -125,7 +125,7 @@ public class JarUpdate extends DefaultUpdate {
 			unArchiverNew.setDestDirectory(unjarNew);
 			unArchiverNew.extract();
 
-			LOGGER.info("[执行]-解压新jar文件:[{}] ==> [{}]", scanned.getNewFile(), unjarNew);
+			LOGGER.info("[更新]-解压新jar文件:[{}] ==> [{}]", scanned.getNewFile(), unjarNew);
 
 			//3.根据diff配置更新“{filename}_old”中的文件到“{filename}_new”中
 			Scanner<DiffItem> diffElScanner = new DiffScanner(scanned.getDiffFile());
@@ -155,11 +155,11 @@ public class JarUpdate extends DefaultUpdate {
 			//再执行
 			for(Scanned scanned: scannedList){
 				if(!executor.execute(scanned)){
-					throw new IOException("配置合成新jar结构文件执行出错");
+					throw new IOException("配置合成新jar结构文件更新出错");
 				}
 			}
 
-			LOGGER.info("[执行]-配置合成新jar结构文件:[{}]", updateJarBack);
+			LOGGER.info("[更新]-配置合成新jar结构文件:[{}]", updateJarBack);
 
 			//4.打包“{filename}_old”为新jar
 			JarArchiver archiver = new JarArchiver();
@@ -169,10 +169,10 @@ public class JarUpdate extends DefaultUpdate {
 			archiver.setDestFile(newJarFile);
 			archiver.createArchive();
 
-			LOGGER.info("[执行]-打包合成后的jar文件:[{}] ==> [{}]", unjarOld, newJarFile);
+			LOGGER.info("[更新]-打包合成后的jar文件:[{}] ==> [{}]", unjarOld, newJarFile);
 
 			//5.用新jar替换旧文件
-			LOGGER.info("[执行]-更新jar文件:[{}] ==> [{}]", newJarFile, scanned.getOldFile());
+			LOGGER.info("[更新]-更新jar文件:[{}] ==> [{}]", newJarFile, scanned.getOldFile());
 			if(scanned.getOldFile().exists() && !scanned.getOldFile().delete()){
 				throw new IOException("删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
 			}

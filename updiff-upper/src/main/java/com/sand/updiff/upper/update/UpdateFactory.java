@@ -36,7 +36,7 @@ public class UpdateFactory {
 	public static Update create(Scanned scanned, String backpath) throws IOException {
 		 if(scanned.isJar()){
 			return new JarUpdate(scanned, backpath);
-		} else if(scanned.getNewFile().getName().endsWith(FileType.CLASS.getType())){
+		} else if(scanned.getNewFile() != null && scanned.getNewFile().getName().endsWith(FileType.CLASS.getType())){
 			 return new ClassUpdate(scanned, backpath);
 		 } else {
 			return new DefaultUpdate(scanned, backpath);

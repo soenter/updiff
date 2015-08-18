@@ -101,14 +101,14 @@ public class ClassUpdate extends DefaultUpdate {
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
 				if(newFile.exists()){
-					throw new IOException("[执行]-新文件已经存在:" + newFile.getAbsolutePath());
+					throw new IOException("[更新]-新文件已经存在:" + newFile.getAbsolutePath());
 				}
 				File newFileParent = newFile.getParentFile();
 
 				if(!newFileParent.exists()){
 					Stack<File> mkdirs = UpdiffFileUtils.mkdirs(newFileParent);
 					if(mkdirs == null){
-						throw new IOException("[执行]-新文件父目录创建失败:" + newFileParent.getAbsolutePath());
+						throw new IOException("[更新]-新文件父目录创建失败:" + newFileParent.getAbsolutePath());
 					}
 					try {
 						while(!mkdirs.isEmpty()){
@@ -119,7 +119,7 @@ public class ClassUpdate extends DefaultUpdate {
 						redologWriter.write();
 					}
 				}
-				LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", f, newFile);
+				LOGGER.info("[更新]-添加文件:[{}] ==> [{}]", f, newFile);
 				FileUtils.copyFile(f, newFile);
 				redologWriter.writeItem(new RedologItem(false, ChangeType.ADD, f, newFile, null));
 			}
@@ -127,9 +127,9 @@ public class ClassUpdate extends DefaultUpdate {
 			//删除旧文件
 			for(File f: oldFiles){
 				if(f.exists()){
-					LOGGER.info("[执行]-删除文件:[{}]", f);
+					LOGGER.info("[更新]-删除文件:[{}]", f);
 					if(!f.delete()){
-						throw new IOException("[执行]-旧文件删除失败:" + f.getAbsolutePath());
+						throw new IOException("[更新]-旧文件删除失败:" + f.getAbsolutePath());
 					}
 				}
 			}
@@ -138,9 +138,9 @@ public class ClassUpdate extends DefaultUpdate {
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
 				if(newFile.exists()){
-					throw new IOException("[执行]-新文件已经存在:" + f.getAbsolutePath());
+					throw new IOException("[更新]-新文件已经存在:" + f.getAbsolutePath());
 				}
-				LOGGER.info("[执行]-修改文件:[{}] ==> [{}]", f, newFile);
+				LOGGER.info("[更新]-修改文件:[{}] ==> [{}]", f, newFile);
 				FileUtils.copyFile(f, newFile);
 			}
 			redologWriter.writeItem(new RedologItem(false, ChangeType.MODIFY, scanned.getNewFile(), scanned.getOldFile(), backupFile));
@@ -148,10 +148,10 @@ public class ClassUpdate extends DefaultUpdate {
 			//删除旧文件
 			for(File f: oldFiles){
 				if(f.exists()){
+					LOGGER.info("[更新]-删除文件:[{}]", f);
 					if(!f.delete()){
-						throw new IOException("[执行]-旧文件删除失败:" + f.getAbsolutePath());
+						throw new IOException("[更新]-旧文件删除失败:" + f.getAbsolutePath());
 					}
-					LOGGER.info("[执行]-删除文件:[{}]", f);
 				}
 			}
 
@@ -168,10 +168,10 @@ public class ClassUpdate extends DefaultUpdate {
 			//删除添加的文件
 			for(File f: newFiles){
 				if(f.exists()){
+					LOGGER.info("[恢复]-删除添加的文件:[{}]", f);
 					if(!f.delete()){
 						throw new IOException("[恢复]-旧文件删除失败:" + f.getAbsolutePath());
 					}
-					LOGGER.info("[恢复]-删除添加的文件:[{}]", f);
 				}
 			}
 		} else if (scanned.isModifyFile()){

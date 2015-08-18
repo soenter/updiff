@@ -14,12 +14,11 @@
 package com.sand.updiff.upper.update;
 
 import com.sand.updiff.common.DiffItem;
+import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
+import com.sand.updiff.upper.scan.impl.DefaultScanner;
 import com.sand.updiff.upper.scan.impl.DiffScanned;
 import com.sand.updiff.upper.scan.impl.DiffScanner;
-import com.sand.updiff.upper.scan.Scanned;
-import com.sand.updiff.upper.scan.impl.DefaultScanner;
-import com.sand.updiff.upper.update.impl.DefaultTask;
 import com.sand.updiff.upper.update.impl.UpperExecutor;
 import org.junit.Test;
 

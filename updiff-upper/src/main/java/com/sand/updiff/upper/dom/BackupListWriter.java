@@ -14,16 +14,9 @@
 package com.sand.updiff.upper.dom;
 
 import com.sand.updiff.common.FileType;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentFactory;
+import com.sand.updiff.common.utils.DomUtils;
 import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -44,8 +37,9 @@ public class BackupListWriter extends AbstractWriter{
 	public void addItem(Item item){
 		BackupItem backupItem = (BackupItem)item;
 		Element itemEl = rootElement.addElement("item");
-		itemEl.addElement("from").setText(backupItem.getFromPath());
-		itemEl.addElement("to").setText(backupItem.getToPath());
+
+		DomUtils.setElementText(itemEl.addElement("from"), backupItem.getFromPath());
+		DomUtils.setElementText(itemEl.addElement("to"), backupItem.getToPath());
 	}
 
 }

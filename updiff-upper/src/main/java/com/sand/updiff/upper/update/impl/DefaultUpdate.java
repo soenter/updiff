@@ -14,6 +14,7 @@
 package com.sand.updiff.upper.update.impl;
 
 import com.sand.updiff.common.ChangeType;
+import com.sand.updiff.common.utils.StringUtils;
 import com.sand.updiff.common.utils.UpdiffFileUtils;
 import com.sand.updiff.upper.dom.BackupItem;
 import com.sand.updiff.upper.dom.BackupListWriter;
@@ -55,8 +56,10 @@ public class DefaultUpdate implements Update {
 	public DefaultUpdate (Scanned scanned, String backupDir) throws IOException{
 		this.scanned = scanned;
 		this.backupDir = backupDir;
-		this.backupPath = backupDir + File.separator + scanned.getRelativePath();
-		this.backupFile = new File(this.backupPath);
+		if(!StringUtils.isBlank(scanned.getRelativePath())){
+			this.backupPath = backupDir + File.separator + scanned.getRelativePath();
+			this.backupFile = new File(this.backupPath);
+		}
 
 		redologWriter = RedologWriter.getInstance(backupDir);
 	}
@@ -74,13 +77,13 @@ public class DefaultUpdate implements Update {
 	public void execute () throws IOException {
 		if(scanned.isDir()){
 			if(scanned.isAddFile()){
-				LOGGER.info("[执行]-创建文件夹:[{}]", scanned.getOldFile());
+				LOGGER.info("[更新]-创建文件夹:[{}]", scanned.getOldFile());
 				if(scanned.getOldFile().exists()){
-					throw new IOException("[执行]-要添加的文件夹已经存在：" + scanned.getOldFile().getAbsolutePath());
+					throw new IOException("[更新]-要添加的文件夹已经存在：" + scanned.getOldFile().getAbsolutePath());
 				}
 				Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scanned.getOldFile());
 				if(mkdirs == null){
-					throw new IOException("[执行]-创建添加的文件夹失败：" + scanned.getOldFile().getAbsolutePath());
+					throw new IOException("[更新]-创建添加的文件夹失败：" + scanned.getOldFile().getAbsolutePath());
 				}
 				try {
 					while (!mkdirs.isEmpty()){
@@ -92,26 +95,26 @@ public class DefaultUpdate implements Update {
 				}
 			} else if(scanned.isModifyFile()){
 				//文件夹不支持修改
-				LOGGER.warn("[执行]-文件夹不支持修改:[{}]", scanned.getOldFile());
+				LOGGER.warn("[更新]-文件夹不支持修改:[{}]", scanned.getOldFile());
 			} else if(scanned.isDeleteFile()){
 				if(scanned.getOldFile().exists()){
-					LOGGER.info("[执行]-删除旧文件夹:[{}]", scanned.getOldFile());
+					LOGGER.info("[更新]-删除旧文件夹:[{}]", scanned.getOldFile());
 					if(!scanned.getOldFile().delete()){
-						throw new IOException("[执行]-删除旧文件夹失败：" + scanned.getOldFile().getAbsolutePath());
+						throw new IOException("[更新]-删除旧文件夹失败：" + scanned.getOldFile().getAbsolutePath());
 					}
 					redologWriter.writeItem(new RedologItem(true, ChangeType.DELETE, null, scanned.getOldFile(), null));
 				} else {
-					LOGGER.warn("[执行]-旧文件夹不存在无法删除:[{}]", scanned.getOldFile());
+					LOGGER.warn("[更新]-旧文件夹不存在无需删除:[{}]", scanned.getOldFile());
 				}
 			}
 
 		} else {
 			if(scanned.isAddFile()){
-				LOGGER.info("[执行]-添加文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
+				LOGGER.info("[更新]-添加文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
 				if(!scanned.getOldFile().getParentFile().exists()){
 					Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scanned.getOldFile().getParentFile());
 					if(mkdirs == null){
-						throw new IOException("[执行]-创建父类文件夹失败：" + scanned.getOldFile().getParentFile().getAbsolutePath());
+						throw new IOException("[更新]-创建父类文件夹失败：" + scanned.getOldFile().getParentFile().getAbsolutePath());
 					}
 					try {
 						while(!mkdirs.isEmpty()){
@@ -125,21 +128,21 @@ public class DefaultUpdate implements Update {
 				FileUtils.copyFile(scanned.getNewFile(), scanned.getOldFile());
 				redologWriter.writeItem(new RedologItem(false, ChangeType.ADD, scanned.getNewFile(), scanned.getOldFile(), backupFile));
 			} else if(scanned.isModifyFile()){
-				LOGGER.info("[执行]-修改文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
+				LOGGER.info("[更新]-修改文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
 				if(scanned.getOldFile().exists() && !scanned.getOldFile().delete()){
-					throw new IOException("[执行]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
+					throw new IOException("[更新]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
 				}
 				FileUtils.copyFile(scanned.getNewFile(), scanned.getOldFile());
 				redologWriter.writeItem(new RedologItem(false, ChangeType.MODIFY, scanned.getNewFile(), scanned.getOldFile(), backupFile));
 			} else if(scanned.isDeleteFile()){
 				if(scanned.getOldFile().exists()){
-					LOGGER.info("[执行]-删除文件:[{}]", scanned.getOldFile());
+					LOGGER.info("[更新]-删除文件:[{}]", scanned.getOldFile());
 					if(!scanned.getOldFile().delete()) {
-						throw new IOException("[执行]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
+						throw new IOException("[更新]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
 					}
 					redologWriter.writeItem(new RedologItem(false, ChangeType.DELETE, null, scanned.getOldFile(), backupFile));
 				} else {
-					LOGGER.warn("[执行]-旧文件不存在无法删除:[{}]", scanned.getOldFile());
+					LOGGER.warn("[更新]-旧文件不存在无法删除:[{}]", scanned.getOldFile());
 				}
 			}
 		}
@@ -148,34 +151,44 @@ public class DefaultUpdate implements Update {
 	public void recovery () throws IOException {
 		if(scanned.isDir()){
 			if(scanned.isAddFile()){
-				LOGGER.info("[恢复]-创建的文件夹:[{}]", scanned.getOldFile());
 				if(scanned.getOldFile().exists()){
+					LOGGER.info("[恢复]-创建的文件夹:[{}]", scanned.getOldFile());
 					if(!scanned.getOldFile().delete()){
-						throw new IOException("[恢复]-删除创建文件夹：" + scanned.getOldFile().getAbsolutePath());
+						throw new IOException("[恢复]-删除创建的文件夹失败：" + scanned.getOldFile().getAbsolutePath());
 					}
+				} else {
+					LOGGER.warn("[恢复]-创建的文件夹不存在无需删除:[{}]", scanned.getOldFile());
 				}
 			} else if(scanned.isModifyFile()){
 				//文件夹不支持修改恢复
 				LOGGER.warn("[恢复]-文件夹不支持修改恢复:[{}]", scanned.getOldFile());
 			} else if(scanned.isDeleteFile()){
 				if(!scanned.getOldFile().exists()){
-					LOGGER.info("[恢复]-删除的文件夹:[{}]", scanned.getOldFile());
+					LOGGER.info("[恢复]-创建删除的文件夹:[{}]", scanned.getOldFile());
 					if(!scanned.getOldFile().mkdir()){
-						throw new IOException("[恢复]-删除旧文件夹：" + scanned.getOldFile().getAbsolutePath());
+						throw new IOException("[恢复]-创建删除的文件夹失败：" + scanned.getOldFile().getAbsolutePath());
 					}
+				} else {
+					LOGGER.warn("[恢复]-创建的文件夹已存在无需创建:[{}]", scanned.getOldFile());
 				}
 			}
 
 		} else {
 			if(scanned.isAddFile()){
-				LOGGER.info("[恢复]-添加的文件:[{}]", scanned.getOldFile());
-				if (scanned.getOldFile().exists() && !scanned.getOldFile().delete()){
-					throw new IOException("[恢复]-删除添加的文件：" + scanned.getOldFile().getAbsolutePath());
+				if (scanned.getOldFile().exists()){
+					LOGGER.info("[恢复]-添加的文件:[{}]", scanned.getOldFile());
+					if(!scanned.getOldFile().delete()){
+						throw new IOException("[恢复]-删除添加的文件：" + scanned.getOldFile().getAbsolutePath());
+					}
+				} else {
+					LOGGER.warn("[恢复]-添加的文件不存在无需删除:[{}]", scanned.getOldFile());
 				}
 			} else if (scanned.isModifyFile()){
 				LOGGER.info("[恢复]-修改的文件:[{}] ==> [{}]", backupFile, scanned.getOldFile());
-				if(scanned.getOldFile().exists() && !scanned.getOldFile().delete()){
-					throw new IOException("[恢复]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
+				if(scanned.getOldFile().exists()){
+					if(!scanned.getOldFile().delete()){
+						throw new IOException("[恢复]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());
+					}
 				}
 				FileUtils.copyFile(backupFile, scanned.getOldFile());
 			} else if(scanned.isDeleteFile()){
@@ -183,7 +196,7 @@ public class DefaultUpdate implements Update {
 					LOGGER.info("[恢复]-删除的文件:[{}]", scanned.getOldFile());
 					FileUtils.copyFile(backupFile, scanned.getOldFile());
 				} else {
-					LOGGER.warn("[恢复]-删除的文件已经存在无法恢复：[{}]", scanned.getOldFile());
+					LOGGER.warn("[恢复]-删除的文件已经存在无需恢复：[{}]", scanned.getOldFile());
 				}
 			}
 		}

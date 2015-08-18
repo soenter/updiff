@@ -13,6 +13,7 @@
  */
 package com.sand.updiff.common;
 
+import com.sand.updiff.common.utils.DomUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
@@ -24,7 +25,10 @@ import org.dom4j.io.XMLWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -77,11 +81,11 @@ public class DiffWriter {
 
 		if(FilterItem.Type.INCLUDE == item.getType()){
 			Element include = filters.addElement("include");
-			include.setText(item.getValue());
+			DomUtils.setElementText(include, item.getValue());
 		}
 		if(FilterItem.Type.EXCLUDE == item.getType()){
-			Element include = filters.addElement("exclude");
-			include.setText(item.getValue());
+			Element exclude = filters.addElement("exclude");
+			DomUtils.setElementText(exclude, item.getValue());
 		}
 	}
 	public void addElement(DiffItem element){
@@ -100,11 +104,10 @@ public class DiffWriter {
 		}
 
 		Element fileEl = group.addElement("file");
-
-		fileEl.addElement("change").setText(element.getChangeName());
+		DomUtils.setElementText(fileEl.addElement("change"), element.getChangeName());
 		String path = element.getPath();
 		if(path != null && !"".equals(path)){
-			fileEl.addElement("path").setText(path);
+			DomUtils.setElementText(fileEl.addElement("path"), path);
 		}
 	}
 

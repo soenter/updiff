@@ -13,6 +13,7 @@
  */
 package com.sand.updiff.upper.update.impl;
 
+import com.sand.updiff.common.ChangeType;
 import com.sand.updiff.upper.dom.RedologItem;
 import com.sand.updiff.upper.dom.RedologReader;
 import com.sand.updiff.upper.scan.Scanned;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,8 +91,10 @@ public class UpperExecutor implements Executor{
 
 			List<RedologItem> redologItems = redologReader.readAll();
 
-			for (RedologItem item: redologItems){
+			//倒序恢复
+			for(int i = redologItems.size() - 1; i >= 0; i --){
 
+				RedologItem item = redologItems.get(i);
 				Scanned scanned = new RedologScanned(item);
 
 				Update update = UpdateFactory.create(scanned, this.backupDir);
@@ -103,4 +107,5 @@ public class UpperExecutor implements Executor{
 			return false;
 		}
 	}
+
 }

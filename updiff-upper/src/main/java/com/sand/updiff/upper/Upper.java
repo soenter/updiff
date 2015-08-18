@@ -217,9 +217,9 @@ public class Upper {
 			}
 
 			if(isScussess){
-				LOGGER.info(String.format("执行成功： %s", getCommond(args)));
+				LOGGER.info(String.format("更新成功： %s", getCommond(args)));
 			} else {
-				LOGGER.error(String.format("执行失败： %s", getCommond(args)));
+				LOGGER.error(String.format("更新失败： %s", getCommond(args)));
 			}
 		} catch (Exception e){
 			LOGGER.error("出错：", e);
