@@ -1,10 +1,16 @@
 # updiff 是什么？
 
-updiff 是一个增量更新的工具，支持备份、更新、恢复功能。依据 Git 两个提交版本号提取差异文件进行更新操作。
+updiff 是一个增量更新(升级)的工具，支持备份、更新、异常恢复功能。依据 Git 两个提交版本号提取差异文件进行更新操作。依赖maven、git并可以和jenkins无缝隙集成。
+
+# updiff 能做什么？
+
+1、大型项目模块化后，会分解为很多子模块，当升级时需要靠人工挑选那些包需要升级（每次升级都全量部署安装的不适用updiff），然而人工出包会出现少打包、打错包等问题。updiff可以依赖两次提交的Git版本提取差异文件进行升级操作。
+
+2、当升级后发现有错误，想退回到之前版本，updiff可以一键恢复。
 
 # 如何使用？
 
-## 出增量包时，增加maven插件并指定 Git 的提交版本
+### 出增量包时，增加maven插件并指定 Git 的提交版本
 
 ```
 <plugin>
@@ -30,24 +36,24 @@ updiff 是一个增量更新的工具，支持备份、更新、恢复功能。�
 
 ```
 
-## 编译打包updiff upper升级工具
+### 编译打包updiff upper升级工具
 
-### 在updiff根目录下执行以下命令
+#### 在updiff根目录下执行以下命令
 
 ```
 clean package -DskipTests=true
 ```
 
-## 安装updiff-upper-1.0.4-assembly.tar.gz
+### 安装updiff-upper-1.0.4-assembly.tar.gz
 
-### 解压
+#### 解压
 ```
 cd $HOME
 
 tar -zxvf updiff-upper-1.0.4-assembly.tar.gz
 
 ```
-### 增加 UPPER_HOME 环境变量
+#### 增加 UPPER_HOME 环境变量
 ```
 # 编辑profile
 vi .bash_profile
@@ -59,7 +65,7 @@ export PATH=$UPPER_HOME/bin:$PATH
 # 使profile生效
 source .bash_profile
 ```
-### 键入 upper 回车 出现以下信息证明安装成功
+#### 键入 upper 回车 出现以下信息证明安装成功
 ```
 ----------------------------------------------------------------------------------------------------
 用法：
