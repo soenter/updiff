@@ -12,7 +12,7 @@ MAINTAINER Victor Coisne victor.coisne@dotcloud.com
 RUN apt-get update
 
 # install maven
-RUN apt-get install maven
+RUN sudo apt-get install maven
 
 # build updiff
 RUN mvn clean package -DskipTests=true
