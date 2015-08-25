@@ -236,7 +236,7 @@ public class Upper {
 		System.out.println("     upper up oldDir newPath                    执行更新，包括：备份、更新、恢复");
 		System.out.println("或：");
 		System.out.println("     upper backup oldDir newPath [backupPath]   执行备份，仅备份不做更新");
-		System.out.println("                                                backupDir 可选，默认值为：oldDir_backup_yyyyMMddHHssmm");
+		System.out.println("                                                backupDir 可选，默认值为：oldDir_backup_yyyyMMddHHmmss");
 		System.out.println("或：");
 		System.out.println("     upper recovery backupDir                   执行恢复，根据指定备份文件恢复");
 		System.out.println("其中：");

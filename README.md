@@ -72,7 +72,7 @@ source .bash_profile
      upper up oldDir newPath                    执行更新，包括：备份、更新、恢复
 或：
      upper backup oldDir newPath [backupPath]   执行备份，仅备份不做更新
-                                                backupDir 可选，默认值为：oldDir_backup_yyyyMMddHHssmm
+                                                backupDir 可选，默认值为：oldDir_backup_yyyyMMddHHmmss
 或：
      upper recovery backupDir                   执行恢复，根据指定备份文件恢复
 其中：
