@@ -8,7 +8,7 @@ FROM ubuntu
 MAINTAINER Victor Coisne victor.coisne@dotcloud.com
 
 # make sure the package repository is up to date
-RUN echo "http://mirrors.163.com/ubuntu/ precise main restricted universe multiverse" > /etc/apt/sources.list
+# RUN echo "http://mirrors.163.com/ubuntu/ precise main restricted universe multiverse" > /etc/apt/sources.list
 RUN apt-get update
 
 # install maven
