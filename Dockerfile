@@ -24,6 +24,9 @@ RUN sudo apt-get install maven -y
 # install wget
 RUN sudo apt-get install wget -y
 
+# install unzip
+RUN sudo apt-get install unzip -y
+
 # build updiff
 RUN cd $HOME
 
