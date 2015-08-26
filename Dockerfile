@@ -44,5 +44,6 @@ ENV PATH $UPPER_HOME/bin:$PATH
 
 # run updiff
 
-CMD ["$UPPER_HOME/bin/upper"]
+# Set default container command
+ENTRYPOINT $UPPER_HOME/bin/upper
 
