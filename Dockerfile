@@ -25,22 +25,17 @@ RUN sudo apt-get install maven -y
 RUN sudo apt-get install curl -y
 
 # build updiff
-RUN cd $HOME
 
 RUN curl -sf -o $HOME/updiff-1.0.4.tar.gz -L https://github.com/soenter/updiff/archive/v1.0.4.tar.gz
 
-RUN tar -zxvf updiff-1.0.4.tar.gz
+RUN tar -zxvf $HOME/updiff-1.0.4.tar.gz
 
-RUN cd $HOME/updiff-1.0.4
-
-RUN mvn clean package -DskipTests=true
+RUN mvn -f $HOME/updiff-1.0.4/pom.xml clean package -DskipTests=true
 
 # install upper
-RUN mv updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/
+RUN mv $HOME/updiff-1.0.4/updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/
 
-RUN cd $HOME
-
-RUN tar -zxvf updiff-upper-1.0.4-assembly.tar.gz
+RUN tar -zxvf $HOME/updiff-upper-1.0.4-assembly.tar.gz
 
 ENV UPPER_HOME $HOME/updiff-upper-1.0.4
 ENV PATH $UPPER_HOME/bin:$PATH
