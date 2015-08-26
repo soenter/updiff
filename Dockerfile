@@ -42,7 +42,7 @@ RUN mv updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/
 
 RUN cd $HOME
 
-RUN tar -zxvf updiff-upper-1.0.4-assembly.tar.gz
+RUN tar -zxvf v1.0.4.zip
 
 ENV UPPER_HOME $HOME/updiff-upper-1.0.4
 ENV PATH $UPPER_HOME/bin:$PATH
