@@ -44,5 +44,5 @@ ENV PATH $UPPER_HOME/bin:$PATH
 
 # run updiff
 
-RUN upper
+CMD ["$UPPER_HOME/bin/upper"]
 
