@@ -15,7 +15,7 @@ RUN apt-get update
 # install java
 RUN sudo apt-get install openjdk-7-jdk -y
 
-RUN echo "JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/" > $HOME/.bashrc
+RUN echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/" > $HOME/.bashrc
 
 # install maven
 RUN sudo apt-get install maven -y
