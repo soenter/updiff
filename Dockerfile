@@ -9,8 +9,12 @@ MAINTAINER Victor Coisne victor.coisne@dotcloud.com
 
 # make sure the package repository is up to date
 # RUN echo "http://mirrors.163.com/ubuntu/ precise main restricted universe multiverse" > /etc/apt/sources.list
+
+RUN sudo add-apt-repository ppa:webupd8team/java
+
 RUN apt-get update
 
+# install java
 RUN sudo apt-get install oracle-java7-set-default -y
 
 # install maven
