@@ -31,7 +31,7 @@ RUN cd $HOME
 
 RUN wget https://github.com/soenter/updiff/archive/v1.0.4.zip
 
-RUN tar -zxvf updiff-1.0.4.zip
+RUN tar -zxvf v1.0.4.zip
 
 RUN cd $HOME/updiff-1.0.4
 
@@ -42,7 +42,7 @@ RUN mv updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/
 
 RUN cd $HOME
 
-RUN tar -zxvf v1.0.4.zip
+RUN tar -zxvf updiff-upper-1.0.4-assembly.tar.gz
 
 ENV UPPER_HOME $HOME/updiff-upper-1.0.4
 ENV PATH $UPPER_HOME/bin:$PATH
