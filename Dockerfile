@@ -34,7 +34,7 @@ RUN cd $HOME
 
 RUN wget https://github.com/soenter/updiff/archive/v1.0.4.zip
 
-RUN unzip -zxvf v1.0.4.zip
+RUN unzip v1.0.4.zip
 
 RUN cd $HOME/updiff-1.0.4
 
