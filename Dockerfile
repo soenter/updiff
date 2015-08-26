@@ -21,10 +21,15 @@ ENV PATH $PATH:$JAVA_HOME/bin
 # install maven
 RUN sudo apt-get install maven -y
 
+# install wget
+RUN sudo apt-get install wget -y
+
 # build updiff
 RUN cd $HOME
 
-RUN curl -sf -o $HOME/updiff-1.0.4.zip -L https://github.com/soenter/updiff/archive/v1.0.4.zip
+#RUN curl -sf -o $HOME/updiff-1.0.4.zip -L https://github.com/soenter/updiff/archive/v1.0.4.zip
+
+RUN wget https://github.com/soenter/updiff/archive/v1.0.4.zip
 
 RUN tar -zxvf updiff-1.0.4.zip
 
