@@ -15,52 +15,29 @@
         <module>updiff-common</module>
     </modules>
 
-    <repositories>
-        <repository>
-            <id>nexus</id>
-            <name>nexus</name>
-            <url>http://172.28.250.240:8084/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-        </repository>
-    </repositories>
+    <!--<repositories>-->
+        <!--<repository>-->
+            <!--<id>nexus</id>-->
+            <!--<name>nexus</name>-->
+            <!--<url>http://172.28.250.240:8084/nexus/content/groups/public</url>-->
+            <!--<releases>-->
+                <!--<enabled>true</enabled>-->
+                <!--<updatePolicy>always</updatePolicy>-->
+            <!--</releases>-->
+        <!--</repository>-->
+    <!--</repositories>-->
 
-    <distributionManagement>
-        <repository>
-            <id>sand-releases</id>
-            <name>sand of releases</name>
-            <url>http://172.28.250.240:8084/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>sand-snapshots</id>
-            <name>sand of snapshots</name>
-            <url>http://172.28.250.240:8084/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <build>
-        <plugins>
-            <!--<plugin>-->
-                <!--<groupId>com.sand.updiff</groupId>-->
-                <!--<artifactId>updiff-mvn-plugin</artifactId>-->
-                <!--<version>1.0.2</version>-->
-                <!--<configuration>-->
-                    <!--<newGitVersion>HEAD</newGitVersion>-->
-                    <!--<oldGitVersion>6c13caf</oldGitVersion>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>updiff plugin</id>-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>updiff</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-        </plugins>
-    </build>
+    <!--<distributionManagement>-->
+        <!--<repository>-->
+            <!--<id>sand-releases</id>-->
+            <!--<name>sand of releases</name>-->
+            <!--<url>http://172.28.250.240:8084/nexus/content/repositories/releases/</url>-->
+        <!--</repository>-->
+        <!--<snapshotRepository>-->
+            <!--<id>sand-snapshots</id>-->
+            <!--<name>sand of snapshots</name>-->
+            <!--<url>http://172.28.250.240:8084/nexus/content/repositories/snapshots/</url>-->
+        <!--</snapshotRepository>-->
+    <!--</distributionManagement>-->
 
 </project>
