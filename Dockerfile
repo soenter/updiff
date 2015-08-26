@@ -24,7 +24,7 @@ RUN sudo apt-get install maven -y
 # build updiff
 RUN cd $HOME
 
-RUN wget https://github.com/soenter/updiff/archive/v1.0.4.zip
+RUN curl -sf -o $HOME/updiff-1.0.4.zip -L https://github.com/soenter/updiff/archive/v1.0.4.zip
 
 RUN tar -zxvf updiff-1.0.4.zip
 
