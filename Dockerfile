@@ -28,14 +28,14 @@ RUN sudo apt-get install curl -y
 
 RUN curl -sf -o $HOME/updiff-1.0.4.tar.gz -L https://github.com/soenter/updiff/archive/v1.0.4.tar.gz
 
-RUN tar -zxvf $HOME/updiff-1.0.4.tar.gz
+RUN tar -zxvf $HOME/updiff-1.0.4.tar.gz -C $HOME/
 
 RUN mvn -f $HOME/updiff-1.0.4/pom.xml clean package -DskipTests=true
 
 # install upper
 RUN mv $HOME/updiff-1.0.4/updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/
 
-RUN tar -zxvf $HOME/updiff-upper-1.0.4-assembly.tar.gz
+RUN tar -zxvf $HOME/updiff-upper-1.0.4-assembly.tar.gz -C $HOME/
 
 ENV UPPER_HOME $HOME/updiff-upper-1.0.4
 ENV PATH $UPPER_HOME/bin:$PATH
