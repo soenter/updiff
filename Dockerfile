@@ -15,25 +15,32 @@ RUN apt-get update
 # install java
 RUN sudo apt-get install openjdk-7-jdk -y
 
-RUN echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/" >> $HOME/.bashrc
-
-RUN source $HOME/.bashrc
+ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
+ENV PATH $PATH:$JAVA_HOME/bin
 
 # install maven
 RUN sudo apt-get install maven -y
 
 # build updiff
+RUN cd $HOME
+
+RUN wget https://github.com/soenter/updiff/archive/v1.0.4.zip
+
+RUN tar -zxvf updiff-1.0.4.zip
+
+RUN cd $HOME/updiff-1.0.4
+
 RUN mvn clean package -DskipTests=true
 
-# install updiff
+# install upper
 RUN mv updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/
 
 RUN cd $HOME
 
-RUN echo "export UPPER_HOME=$HOME/updiff-upper-1.0.4" >> $HOME/.bashrc
-RUN echo "export PATH=$UPPER_HOME/bin:$PATH" >> $HOME/.bashrc
+RUN tar -zxvf updiff-upper-1.0.4-assembly.tar.gz
 
-RUN source $HOME/.bashrc
+ENV UPPER_HOME $HOME/updiff-upper-1.0.4
+ENV PATH $UPPER_HOME/bin:$PATH
 
 # run updiff
 
