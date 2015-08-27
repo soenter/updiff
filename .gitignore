@@ -2,7 +2,8 @@
 .idea/
 *.iml
 *~
-*log*
+log/
+*.log
 .settings/
 .project
 .classpath

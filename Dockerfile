@@ -8,14 +8,26 @@ FROM ubuntu
 MAINTAINER Victor Coisne victor.coisne@dotcloud.com
 
 # make sure the package repository is up to date
-# RUN echo "http://mirrors.163.com/ubuntu/ precise main restricted universe multiverse" > /etc/apt/sources.list
+RUN echo "deb http://mirrors.163.com/ubuntu/ wily main restricted universe multiverse" > /etc/apt/sources.list
+RUN echo "deb http://mirrors.163.com/ubuntu/ wily-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.163.com/ubuntu/ wily-updates main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.163.com/ubuntu/ wily-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.163.com/ubuntu/ wily-backports main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.163.com/ubuntu/ wily main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.163.com/ubuntu/ wily-security main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.163.com/ubuntu/ wily-updates main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.163.com/ubuntu/ wily-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+RUN echo "deb-src http://mirrors.163.com/ubuntu/ wily-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
-RUN apt-get update
+RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu precise main" | tee /etc/apt/sources.list.d/webupd8team-java.list
+RUN echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu precise main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
+RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
 
-# install java
-RUN sudo apt-get install openjdk-7-jdk -y
+RUN sudo apt-get update
 
-ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
+RUN sudo apt-get install oracle-java7-installer -y
+
+ENV JAVA_HOME /usr/lib/jvm/java-7-oracle/
 ENV PATH $PATH:$JAVA_HOME/bin
 
 # install maven
@@ -30,7 +42,7 @@ RUN curl -sf -o $HOME/updiff-1.0.4.tar.gz -L https://github.com/soenter/updiff/a
 
 RUN tar -zxvf $HOME/updiff-1.0.4.tar.gz -C $HOME/
 
-RUN mvn -f $HOME/updiff-1.0.4/pom.xml clean package -DskipTests=true
+RUN mvn -f $HOME/updiff-1.0.4/pom.xml clean package -DskipTests=true -Pchina
 
 # install upper
 RUN mv $HOME/updiff-1.0.4/updiff-upper/target/updiff-upper-1.0.4-assembly.tar.gz $HOME/

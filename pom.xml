@@ -15,30 +15,60 @@
         <module>updiff-common</module>
     </modules>
 
-    <!--<repositories>-->
-        <!--<repository>-->
-            <!--<id>nexus</id>-->
-            <!--<name>nexus</name>-->
-            <!--<url>http://172.28.250.240:8084/nexus/content/groups/public</url>-->
-            <!--<releases>-->
-                <!--<enabled>true</enabled>-->
-                <!--<updatePolicy>always</updatePolicy>-->
-            <!--</releases>-->
-        <!--</repository>-->
-    <!--</repositories>-->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-    <!--<distributionManagement>-->
-        <!--<repository>-->
-            <!--<id>sand-releases</id>-->
-            <!--<name>sand of releases</name>-->
-            <!--<url>http://172.28.250.240:8084/nexus/content/repositories/releases/</url>-->
-        <!--</repository>-->
-        <!--<snapshotRepository>-->
-            <!--<id>sand-snapshots</id>-->
-            <!--<name>sand of snapshots</name>-->
-            <!--<url>http://172.28.250.240:8084/nexus/content/repositories/snapshots/</url>-->
-        <!--</snapshotRepository>-->
-    <!--</distributionManagement>-->
+    <repositories>
+        <repository>
+            <id>repository</id>
+            <name>repository</name>
+            <url>${maven.repository.url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repository</id>
+            <name>repository</name>
+            <url>${maven.repository.url}</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>sand</id>
+            <properties>
+                <maven.repository.url>http://172.28.250.240:8084/nexus/content/groups/public/</maven.repository.url>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>china</id>
+            <properties>
+                <maven.repository.url>http://maven.oschina.net/content/groups/public/</maven.repository.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>other</id>
+            <properties>
+                <maven.repository.url>http://repo.maven.apache.org/maven2</maven.repository.url>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -49,6 +79,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>

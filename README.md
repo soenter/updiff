@@ -41,7 +41,7 @@ updiff 是一个增量更新(升级)的工具，支持备份、更新、异常�
 #### 在updiff根目录下执行以下命令
 
 ```
-clean package -DskipTests=true
+clean package -DskipTests=true -Pchina
 ```
 
 ### 安装updiff-upper-1.0.4-assembly.tar.gz
