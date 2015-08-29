@@ -13,6 +13,7 @@
  */
 package com.sand.updiff.common.utils;
 
+import org.apache.maven.model.Resource;
 import org.junit.Test;
 
 /**
@@ -38,6 +39,22 @@ public class FilePathUtilsTest {
 
 		System.out.println(samePath);
 		assert samePath.equals("1/2/3/4.java");
+	}
+
+	@Test
+	public void test_resource_filted(){
+
+		Resource resource = new Resource();
+		resource.setFiltering(true);
+		resource.addInclude("config/*");
+		resource.addExclude("bin/*");
+
+		assert !FilePathUtils.isFilted(resource, "config/1.conf");
+		assert !FilePathUtils.isFilted(resource, "config/a/1.conf");
+		assert FilePathUtils.isFilted(resource, "bins/a/1.conf");
+
+
+
 	}
 
 }

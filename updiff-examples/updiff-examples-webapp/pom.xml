@@ -34,6 +34,13 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>springloaded</artifactId>
+            <version>1.2.4.RELEASE</version>
+        </dependency>
+
     </dependencies>
     <build>
         <finalName>updiff-examples-webapp</finalName>
@@ -52,6 +59,16 @@
                     <newGitVersion>HEAD</newGitVersion>
                     <!-- 83d583f 为最后一次上线版本-->
                     <oldGitVersion>bf64f7e</oldGitVersion>
+
+                    <!--
+                    -   默认包含在rc/main/java、src/main/resource、src/main/script以及
+                    -   extResources结构中的所有子文件才会依赖Git版本差异进行增量升级，
+                    -   其他则依赖比较文件sha-1值判断是否相等进行升级
+                    -->
+                    <extResources>
+                        <resource>src/main/webapp</resource>
+                    </extResources>
+
                 </configuration>
                 <executions>
                     <execution>

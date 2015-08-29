@@ -33,23 +33,24 @@ public class ChangeListServlet extends HttpServlet{
 
 		PrintWriter out = resp.getWriter();
 
-		InputStream in = getClass().getClassLoader().getResourceAsStream("updiff-examples-webapp-1.0.4.diff");
+		InputStream in = getClass().getClassLoader().getResourceAsStream("META-INF/updiff-examples-webapp.diff");
 
 		if(in == null){
 			out.println("change list is empty!");
-		}
+			return;
+		} else {
+			try {
+				DiffReader reader = new DiffReader(in);
 
-		try {
-			DiffReader reader = new DiffReader(in);
+				List<DiffItem> list = reader.readAll();
 
-			List<DiffItem> list = reader.readAll();
+				for (DiffItem item: list){
+					out.println(item.toString());
+				}
 
-			for (DiffItem item: list){
-				out.println(item.toString());
+			} catch (DocumentException e) {
+				out.println("read change list file error!");
 			}
-
-		} catch (DocumentException e) {
-			out.println("read change list file error!");
 		}
 		out.println("done");
 

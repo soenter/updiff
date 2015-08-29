@@ -13,6 +13,7 @@
  */
 package com.sand.updiff.common;
 
+import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 import org.eclipse.jgit.api.DiffCommand;
@@ -28,8 +29,8 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -91,14 +92,14 @@ public class GitRep {
 		this.diffs = command.call();
 	}
 
-	public List<DiffItem> getDiffItems(List<File> sourceStructFiles){
+	public List<DiffItem> getDiffItems(List<Resource> sourceStructFiles){
 
-		String[] prefixes = new String[sourceStructFiles.size()];
+		Map<String, Resource> resourceMap = new HashMap<String, Resource>();
 		int index = 0;
-		for (File file: sourceStructFiles){
-			String prefix = createDiffPrefixByBasePath(file.getAbsolutePath());
-			prefixes[index ++] = prefix;
-			log.info(String.format("源文件接口目录: %s", prefix));
+		for (Resource resource: sourceStructFiles){
+			String prefix = createDiffPrefixByBasePath(resource.getDirectory());
+			resourceMap.put(prefix, resource);
+			log.info(String.format("要更新的目录结构有: %s", prefix));
 		}
 
 		List<DiffItem> diffEls = new ArrayList<DiffItem>(diffs.size());
@@ -128,10 +129,15 @@ public class GitRep {
 			//先模块文件夹名称
 			path = removePrefix(modelDirName, path);
 			//在去除其他前缀
-			String newPathProfix = getPrefix(prefixes, path);
-			path = removePrefix(newPathProfix, path);
+			String newPathProfix = getPrefixByGitPath(resourceMap, path);
+			if(newPathProfix != null){
+				path = removePrefix(newPathProfix, path);
 
-			log.info(String.format("当前路径：%s", path));
+
+				log.info(String.format("需要更新的文件：%s", path));
+			} else {
+				log.info(String.format("不需要更新的文件：%s", path));
+			}
 
 			diffEls.add(new DiffItem(newPathProfix, entry.getChangeType().name(), path));
 		}
@@ -176,16 +182,19 @@ public class GitRep {
 		return gitPath;
 	}
 
-	private static String getPrefix(String[] prefixes, String gitPath){
+	private static String getPrefixByGitPath(Map<String, Resource> resourceMap, String gitPath){
 		if(gitPath == null) return null;
 
-		for (String prefix: prefixes){
-			if(gitPath.indexOf(prefix) == 0){
-				return prefix;
+		Set<String> keys = resourceMap.keySet();
+
+		for(String key: keys){
+			if(gitPath.indexOf(key) == 0){
+				return key;
 			}
 		}
-		return "";
+		return null;
 	}
+
 
 
 }

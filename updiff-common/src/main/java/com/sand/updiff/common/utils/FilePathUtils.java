@@ -13,8 +13,12 @@
  */
 package com.sand.updiff.common.utils;
 
+import org.apache.maven.model.Resource;
+
 import java.io.File;
+import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -78,5 +82,38 @@ public class FilePathUtils {
 		}
 
 		return null;
+	}
+
+	public static boolean isFilted(Resource resource, String path){
+
+		if(resource.isFiltering()){
+			boolean isInclude = false;
+			List<String> includes = resource.getIncludes();
+			if(includes != null && !includes.isEmpty()){
+				for (String include: includes){
+					if(Pattern.compile(include).matcher(path).find()){
+						isInclude = true;
+						break;
+					}
+				}
+			} else {
+				isInclude = true;
+			}
+
+			boolean isExclude = false;
+			List<String> excludes = resource.getExcludes();
+			if(excludes != null && !excludes.isEmpty()){
+				for (String exclude: excludes){
+					if(Pattern.compile(exclude).matcher(path).find()){
+						isExclude = true;
+						break;
+					}
+				}
+			}
+
+			return isExclude && !isInclude;
+		}
+
+		return false;
 	}
 }

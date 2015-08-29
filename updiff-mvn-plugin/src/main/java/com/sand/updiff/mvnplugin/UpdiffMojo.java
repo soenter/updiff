@@ -36,14 +36,14 @@ public class UpdiffMojo extends AbstractMojo {
 
 	/**
 	 *
-	 * @parameter expression="${session.executionRootDirectory}"
+	 * @parameter expression="${rootDir}" default-value="${session.executionRootDirectory}"
 	 * @required
 	 *
 	 */
 	private File rootDir;
 
 	/**
-	 * @parameter expression="${project.basedir}"
+	 * @parameter expression="${baseDir}" default-value="${project.basedir}"
 	 * @required
 	 */
 	private File baseDir;
@@ -52,7 +52,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * Location of the file.
 	 *
-	 * @parameter expression="${project.build.directory}"
+	 * @parameter expression="${outputDirectory}" default-value="${project.build.directory}"
 	 * @required
 	 */
 	private File outputDirectory;
@@ -60,7 +60,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * Location of the file.
 	 *
-	 * @parameter expression="${project.build.outputDirectory}"
+	 * @parameter expression="${classOutputDirectory}" default-value="${project.build.outputDirectory}"
 	 * @required
 	 */
 	private File classOutputDirectory;
@@ -68,7 +68,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 源文件路径.
 	 *
-	 * @parameter expression="${project.build.sourceDirectory}"
+	 * @parameter expression="${sourceDirectory}" default-value="${project.build.sourceDirectory}"
 	 * @required
 	 */
 	private File sourceDirectory;
@@ -76,7 +76,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 测试源文件路径.
 	 *
-	 * @parameter expression="${project.build.testSourceDirectory}"
+	 * @parameter expression="${testSourceDirectory}" default-value="${project.build.testSourceDirectory}"
 	 * @required
 	 */
 	private File testSourceDirectory;
@@ -86,7 +86,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 脚本文件路径.
 	 *
-	 * @parameter expression="${project.build.scriptSourceDirectory}"
+	 * @parameter expression="${scriptSourceDirectory}" default-value="${project.build.scriptSourceDirectory}"
 	 * @required
 	 */
 	private File scriptSourceDirectory;
@@ -94,7 +94,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 资源文件路径.
 	 *
-	 * @parameter expression="${project.build.resources}"
+	 * @parameter expression="${mainResources}" default-value="${project.build.resources}"
 	 * @required
 	 */
 	private Resource[] mainResources;
@@ -103,7 +103,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 测试源文件路径.
 	 *
-	 * @parameter expression="${project.build.testResources}"
+	 * @parameter expression="${testResources}" default-value="${project.build.testResources}"
 	 * @required
 	 */
 	private Resource[] testResources;
@@ -111,7 +111,7 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 最终名称
 	 *
-	 * @parameter expression="${project.build.finalName}"
+	 * @parameter expression="${finalName}" default-value="${project.build.finalName}"
 	 * @required
 	 */
 	private String finalName;
@@ -119,10 +119,18 @@ public class UpdiffMojo extends AbstractMojo {
 	/**
 	 * 打包方式
 	 *
-	 * @parameter expression="${project.packaging}"
+	 * @parameter expression="${packaging}" default-value="${project.packaging}"
 	 * @required
 	 */
 	private String packaging;
+
+	/**
+	 * 扩展资源
+	 *
+	 * @parameter expression="${extResources}"
+	 * @required
+	 */
+	private Resource[] extResources;
 
 	public void execute () throws MojoExecutionException {
 
@@ -153,6 +161,13 @@ public class UpdiffMojo extends AbstractMojo {
 			}
 			for (Resource resource: testResources){
 				sourceStructFiles.add(new File(resource.getDirectory()));
+			}
+
+			if(extResources != null){
+				for(Resource resource: extResources){
+					getLog().info("@@@@@@@@@@@@@@@@@@@" + resource.getDirectory());
+					sourceStructFiles.add(new File(resource.getDirectory()));
+				}
 			}
 
 			List<DiffItem> diffs = gitRep.getDiffItems(sourceStructFiles);

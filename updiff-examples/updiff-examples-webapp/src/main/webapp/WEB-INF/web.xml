@@ -12,6 +12,6 @@
     
     <servlet-mapping>
         <servlet-name>changeList</servlet-name>
-        <url-pattern>changeList</url-pattern>
+        <url-pattern>/changeList</url-pattern>
     </servlet-mapping>
 </web-app>
