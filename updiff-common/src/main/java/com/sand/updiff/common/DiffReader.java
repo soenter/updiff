@@ -20,6 +20,9 @@ import org.dom4j.io.SAXReader;
 import org.xml.sax.XMLReader;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +46,19 @@ public class DiffReader {
 
 	public DiffReader (File diffFile) throws DocumentException {
 
+		try {
+			init(new FileInputStream(diffFile));
+		} catch (FileNotFoundException e) {
+			throw new DocumentException(e);
+		}
+	}
+	public DiffReader (InputStream inputStream) throws DocumentException {
+		init(inputStream);
+	}
+
+	private void init(InputStream in) throws DocumentException {
 		SAXReader saxReader = new SAXReader();
-		document = saxReader.read(diffFile);
+		document = saxReader.read(in);
 		rootElement = document.getRootElement();
 	}
 
