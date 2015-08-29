@@ -34,14 +34,14 @@ public class ScanedDiffImplTest {
 
 	@Test
 	public void test_call() throws IOException {
-		File diffFile = new File("D:\\0005_git\\abacus\\abacus-product-bootstrap\\target\\abacus-product-bootstrap-1.0.0.diff");
-		Scanner<DiffItem> scanner = new DiffScanner(diffFile);
-
-		Iterator<DiffItem> it = scanner.iterator();
-
-		while(it.hasNext()){
-			System.out.println(it.next());
-		}
+//		File diffFile = new File("D:\\0005_git\\abacus\\abacus-product-bootstrap\\target\\abacus-product-bootstrap-1.0.0.diff");
+//		Scanner<DiffItem> scanner = new DiffScanner(diffFile);
+//
+//		Iterator<DiffItem> it = scanner.iterator();
+//
+//		while(it.hasNext()){
+//			System.out.println(it.next());
+//		}
 
 	}
 }

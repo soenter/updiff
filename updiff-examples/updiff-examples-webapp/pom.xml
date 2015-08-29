@@ -57,8 +57,12 @@
                 <configuration>
                     <!-- HEAD 为最新版本-->
                     <newGitVersion>HEAD</newGitVersion>
-                    <!-- 83d583f 为最后一次上线版本-->
-                    <oldGitVersion>bf64f7e</oldGitVersion>
+                    <!--
+                    - 最后一次上线版本
+                    -   bf64f7e 为出事版本
+                    -   655bd0a 为第一次增量升级版本
+                    -->
+                    <oldGitVersion>655bd0a</oldGitVersion>
 
                     <!--
                     -   默认包含在rc/main/java、src/main/resource、src/main/script以及

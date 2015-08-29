@@ -128,20 +128,15 @@ public class JarUpdate extends DefaultUpdate {
 			LOGGER.info("[更新]-解压新jar文件:[{}] ==> [{}]", scanned.getNewFile(), unjarNew);
 
 			//3.根据diff配置更新“{filename}_old”中的文件到“{filename}_new”中
-			Scanner<DiffItem> diffElScanner = new DiffScanner(scanned.getDiffFile());
-			Iterator<DiffItem> diffIt = diffElScanner.iterator();
+			Scanner<Scanned> diffElScanner = new DiffScanner(unjarOld, unjarNew, scanned.getDiffFile());
+			Iterator<Scanned> diffIt = diffElScanner.iterator();
 			File updateJarBack = new File(workDir, scanned.getOldFile().getName() + "_bak_" + time);
 
 			Executor executor = new UpperExecutor(updateJarBack.getAbsolutePath());
 			List<Scanned> scannedList = new LinkedList<Scanned>();
 			while(diffIt.hasNext()){
-				DiffItem element = diffIt.next();
-				String compliedPath = element.getCompiledNewPath();
-				File oldFile = new File(unjarOld.getAbsolutePath() + File.separator + compliedPath);
-				File newFile = new File(unjarNew.getAbsolutePath() + File.separator + compliedPath);
-				Scanned scanned = new DiffScanned(oldFile, newFile, compliedPath, element);
-
-				if(newFile.exists() || scanned.isDeleteFile()){
+				Scanned scanned = diffIt.next();
+				if(scanned.getNewFile().exists() || scanned.isDeleteFile()){
 					scannedList.add(scanned);
 				}
 			}

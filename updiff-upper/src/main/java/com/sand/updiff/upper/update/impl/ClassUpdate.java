@@ -63,7 +63,9 @@ public class ClassUpdate extends DefaultUpdate {
 		}
 
 		File newParent = scanned.getNewFile().getParentFile();
-		newFiles = genInnerClassList(newParent, name);
+		if(newParent != null){
+			newFiles = genInnerClassList(newParent, name);
+		}
 
 
 	}

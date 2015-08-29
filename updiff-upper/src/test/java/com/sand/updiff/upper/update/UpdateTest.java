@@ -50,21 +50,17 @@ public class UpdateTest {
 	public void test_call_with_scand_diff_file_1(boolean isRecovery) throws IOException {
 
 		File diffFile = new File("D:\\0000_test\\updiff\\abacus_up\\abacus_up.diff");
-		Scanner<DiffItem> scanner = new DiffScanner(diffFile);
-
-		Iterator<DiffItem> it = scanner.iterator();
-
 		File newDir = new File("D:\\0000_test\\updiff\\abacus");
 		File oldDir = new File("D:\\0000_test\\updiff\\abacus_up");
+		Scanner<Scanned> scanner = new DiffScanner(oldDir, newDir, diffFile);
+
+		Iterator<Scanned> it = scanner.iterator();
+
 		String backupDif = "D:\\0000_test\\updiff\\abacus_backup_" + System.currentTimeMillis();
 
 		UpperExecutor executor = new UpperExecutor(backupDif);
 		while(it.hasNext()){
-			DiffItem diffItem = it.next();
-			File newFile = new File(newDir.getAbsolutePath() + File.separator + diffItem.getCompiledNewPath());
-			File oldFile = new File(oldDir.getAbsolutePath() + File.separator + diffItem.getCompiledNewPath());
-
-			Scanned scanned = new DiffScanned(newFile, oldFile, diffItem.getCompiledNewPath(), diffItem);
+			Scanned scanned = it.next();
 			if(!executor.execute(scanned)){
 				break;
 			}

@@ -19,6 +19,7 @@ import com.sand.updiff.upper.dom.RedologWriter;
 import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
 import com.sand.updiff.upper.scan.impl.DefaultScanner;
+import com.sand.updiff.upper.scan.impl.DiffScanner;
 import com.sand.updiff.upper.update.Executor;
 import com.sand.updiff.upper.update.impl.UpperExecutor;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Iterator;
 
 /**
@@ -51,6 +53,8 @@ public class Upper {
 	private String newPath;
 
 	private String backupDir;
+
+	private boolean isUpWar = false;
 
 	public Upper (String oldPath, String newPath) {
 		init(oldPath, newPath, null);
@@ -92,7 +96,7 @@ public class Upper {
 		if(!newFile.isDirectory()){
 			AbstractUnArchiver unArchiverOld;
 
-			if(newPath.endsWith(FileType.ZIP.getType()) || newPath.endsWith(FileType.WAR.getType())){
+			if(newPath.endsWith(FileType.ZIP.getType()) || (isUpWar = newPath.endsWith(FileType.WAR.getType()))){
 				unArchiverOld = new ZipUnArchiver();
 			} else if(newPath.endsWith(FileType.TAR_GZ.getType())){
 				unArchiverOld = new TarGZipUnArchiver();
@@ -140,12 +144,35 @@ public class Upper {
 		}
 	}
 
+	private Scanner<Scanned> createScanner() throws IOException {
+		Scanner<Scanned> scanner = null;
+		File warDiffFileParent = null;
+		File warDiffFile = null;
+		if(isUpWar && (warDiffFileParent = new File(newPath, "META-INF")).exists()){
+			File[] files = warDiffFileParent.listFiles();
+			for(File file: files){
+				if(!file.isDirectory() && file.getName().endsWith(FileType.DIFF.getType())){
+					warDiffFile = file;
+					break;
+				}
+			}
+		}
+		if(warDiffFile != null) {
+			scanner = new DiffScanner(new File(oldPath), new File(newPath), warDiffFile);
+		} else {
+			scanner = new DefaultScanner(new File(oldPath), new File(newPath));
+		}
+		return scanner;
+	}
+
+
 	/**
 	 * 先备份，再执行更新，最后如果出现异常就恢复。
 	 * @return
 	 */
-	public boolean up(){
-		Scanner<Scanned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
+	public boolean up() throws IOException {
+		Scanner<Scanned> scanner = createScanner();
+
 		Iterator<Scanned> backupIt = scanner.iterator();
 		Executor executor = new UpperExecutor(backupDir);
 
@@ -167,8 +194,8 @@ public class Upper {
 	 * 仅备份
 	 * @return
 	 */
-	public boolean backup(){
-		Scanner<Scanned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
+	public boolean backup() throws IOException {
+		Scanner<Scanned> scanner = createScanner();
 		Iterator<Scanned> it = scanner.iterator();
 
 		Executor executor = new UpperExecutor(backupDir);
