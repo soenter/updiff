@@ -9,6 +9,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -74,16 +75,6 @@ public class UpdiffMojo extends AbstractMojo {
 	private File sourceDirectory;
 
 	/**
-	 * 测试源文件路径.
-	 *
-	 * @parameter expression="${testSourceDirectory}" default-value="${project.build.testSourceDirectory}"
-	 * @required
-	 */
-	private File testSourceDirectory;
-
-
-
-	/**
 	 * 脚本文件路径.
 	 *
 	 * @parameter expression="${scriptSourceDirectory}" default-value="${project.build.scriptSourceDirectory}"
@@ -100,13 +91,6 @@ public class UpdiffMojo extends AbstractMojo {
 	private Resource[] mainResources;
 
 
-	/**
-	 * 测试源文件路径.
-	 *
-	 * @parameter expression="${testResources}" default-value="${project.build.testResources}"
-	 * @required
-	 */
-	private Resource[] testResources;
 
 	/**
 	 * 最终名称
@@ -138,7 +122,15 @@ public class UpdiffMojo extends AbstractMojo {
 			return;
 		}
 
-		File outputDif = new File(classOutputDirectory.getAbsolutePath() + File.separator + "META-INF");
+		File outputDif = null;
+		if("jar".equals(packaging)){
+			outputDif = new File(classOutputDirectory,  "META-INF");
+		} else if("war".equals(packaging)){
+			outputDif = new File(outputDirectory.getAbsoluteFile() + File.separator + finalName,  "META-INF");
+		} else {
+			getLog().warn("updiff 不支持的 packaging : " + packaging);
+			return;
+		}
 
 		if (!outputDif.exists()) {
 			outputDif.mkdirs();
@@ -161,14 +153,7 @@ public class UpdiffMojo extends AbstractMojo {
 			scriptSourceDirectoryResource.setDirectory(scriptSourceDirectory.getAbsolutePath());
 			resources.add(scriptSourceDirectoryResource);
 
-			Resource testSourceDirectoryResource = new Resource();
-			testSourceDirectoryResource.setDirectory(testSourceDirectory.getAbsolutePath());
-			resources.add(testSourceDirectoryResource);
-
 			for (Resource resource: mainResources){
-				resources.add(resource);
-			}
-			for (Resource resource: testResources){
 				resources.add(resource);
 			}
 

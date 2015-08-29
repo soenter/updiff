@@ -14,6 +14,7 @@ public enum FileType {
 	DIFF(".diff"),
 	ZIP(".zip"),
 	TAR_GZ(".tar.gz"),
+	WAR(".war"),
 	BAK_XML(".backup.xml"),
 	REDOLOG(".redolog");
 

@@ -60,10 +60,10 @@ public class FilePathUtilsTest {
 
 
 		Resource resourceExclude2 = new Resource();
-		resourceExclude2.addInclude("*/*");
-		resourceExclude2.addExclude("*/*");
+		resourceExclude2.addExclude("*.test");
 
-		assert FilePathUtils.isFiltered(resourceExclude2, "bin/a/1.conf");
+		assert FilePathUtils.isFiltered(resourceExclude2, "1.test");
+		assert FilePathUtils.isFiltered(resourceExclude2, "bin/a/1.test");
 	}
 
 }

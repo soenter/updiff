@@ -33,7 +33,10 @@ public class ChangeListServlet extends HttpServlet{
 
 		PrintWriter out = resp.getWriter();
 
-		InputStream in = getClass().getClassLoader().getResourceAsStream("META-INF/updiff-examples-webapp.diff");
+		String realRootPath = req.getRealPath("/");
+
+		InputStream in = new FileInputStream(realRootPath + "/META-INF/updiff-examples-webapp.diff");
+
 
 		if(in == null){
 			out.println("change list is empty!");

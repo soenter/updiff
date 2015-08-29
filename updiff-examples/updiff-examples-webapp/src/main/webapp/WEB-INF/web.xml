@@ -14,4 +14,15 @@
         <servlet-name>changeList</servlet-name>
         <url-pattern>/changeList</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>changeAnalysis</servlet-name>
+        <servlet-class>com.sand.updiff.examples.ChangeAnalysisServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>changeAnalysis</servlet-name>
+        <url-pattern>/changeAnalysis</url-pattern>
+    </servlet-mapping>
+
 </web-app>

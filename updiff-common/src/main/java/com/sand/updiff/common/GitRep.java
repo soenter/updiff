@@ -100,7 +100,7 @@ public class GitRep {
 		for (Resource resource: sourceStructFiles){
 			String prefix = createDiffPrefixByBasePath(resource.getDirectory());
 			resourceMap.put(prefix, resource);
-			log.info(String.format("要更新的目录结构有: %s", prefix));
+			log.info(String.format("依据Git提交版本取差异更新的目录结构有: %s", prefix));
 		}
 
 		List<DiffItem> diffEls = new ArrayList<DiffItem>(diffs.size());
@@ -143,9 +143,9 @@ public class GitRep {
 			}
 
 			if(isNeedUpdate){
-				log.info(String.format("需要更新的文件：%s", path));
+				log.info(String.format("需要更新，所在目录：%s，文件路径：%s", newPathProfix, path));
 			} else {
-				log.info(String.format("不需要更新的文件：%s", path));
+				log.info(String.format("不需要更新，文件路径：%s", path));
 			}
 
 		}

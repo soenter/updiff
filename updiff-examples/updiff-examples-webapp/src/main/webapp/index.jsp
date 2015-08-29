@@ -8,8 +8,14 @@
 </head>
 <body>
 <h2>Hello updiff webapp example!</h2>
+
 <form action="changeList" method="post">
     <input type="submit" value="get change list">
+</form>
+
+<h3>First incremental update</h3>
+<form action="changeAnalysis" method="post">
+    <input type="submit" value="get change analysis">
 </form>
 </body>
 </html>

@@ -92,12 +92,12 @@ public class Upper {
 		if(!newFile.isDirectory()){
 			AbstractUnArchiver unArchiverOld;
 
-			if(newPath.endsWith(FileType.ZIP.getType())){
+			if(newPath.endsWith(FileType.ZIP.getType()) || newPath.endsWith(FileType.WAR.getType())){
 				unArchiverOld = new ZipUnArchiver();
 			} else if(newPath.endsWith(FileType.TAR_GZ.getType())){
 				unArchiverOld = new TarGZipUnArchiver();
 			} else {
-				throw new RuntimeException(String.format("仅支持.zip .tar.gz 压缩格式，非法文件格式： {}", newPath));
+				throw new RuntimeException(String.format("仅支持.zip或.tar.gz或.war 压缩格式，非法文件格式： {}", newPath));
 			}
 
 			unArchiverOld.enableLogging(new ConsoleLogger(Logger.LEVEL_ERROR, "Package"));
@@ -241,8 +241,8 @@ public class Upper {
 		System.out.println("     upper recovery backupDir                   执行恢复，根据指定备份文件恢复");
 		System.out.println("其中：");
 		System.out.println("     oldDir   要更新的文件夹");
-		System.out.println("     newPath  更新包或文件夹，它的文件结构必须和oldDir的一致。更新包格式只能为.zip或.tar.gz，如果包内只有一个文");
-		System.out.println("              件夹且名字和oldDir相等，则认为是更新包的根路径");
+		System.out.println("     newPath  更新包或文件夹，它的文件结构必须和oldDir的一致。更新包格式只能为.zip或.tar.gz或.war，");
+		System.out.println("              如果包内只有一个文件夹且名字和oldDir相等，则认为是更新包的根路径");
 		System.out.println("----------------------------------------------------------------------------------------------------");
 	}
 
