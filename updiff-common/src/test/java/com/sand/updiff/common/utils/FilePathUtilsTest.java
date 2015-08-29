@@ -44,17 +44,26 @@ public class FilePathUtilsTest {
 	@Test
 	public void test_resource_filted(){
 
-		Resource resource = new Resource();
-		resource.setFiltering(true);
-		resource.addInclude("config/*");
-		resource.addExclude("bin/*");
+		Resource resourceInclude = new Resource();
+		resourceInclude.addInclude("config/*");
 
-		assert !FilePathUtils.isFilted(resource, "config/1.conf");
-		assert !FilePathUtils.isFilted(resource, "config/a/1.conf");
-		assert FilePathUtils.isFilted(resource, "bins/a/1.conf");
-
+		assert !FilePathUtils.isFiltered(resourceInclude, "config/1.conf");
+		assert !FilePathUtils.isFiltered(resourceInclude, "config/a/1.conf");
+		assert FilePathUtils.isFiltered(resourceInclude, "bin/a/1.conf");
+		assert FilePathUtils.isFiltered(resourceInclude, "2.conf");
 
 
+		Resource resourceExclude = new Resource();
+		resourceExclude.addExclude("bin/*");
+
+		assert FilePathUtils.isFiltered(resourceExclude, "bin/a/1.conf");
+
+
+		Resource resourceExclude2 = new Resource();
+		resourceExclude2.addInclude("*/*");
+		resourceExclude2.addExclude("*/*");
+
+		assert FilePathUtils.isFiltered(resourceExclude2, "bin/a/1.conf");
 	}
 
 }

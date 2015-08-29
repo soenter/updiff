@@ -152,25 +152,33 @@ public class UpdiffMojo extends AbstractMojo {
 					newGitVersion,
 					baseDir.getAbsolutePath());
 
-			List<File> sourceStructFiles = new ArrayList<File>();
-			sourceStructFiles.add(sourceDirectory);
-			sourceStructFiles.add(scriptSourceDirectory);
-			sourceStructFiles.add(testSourceDirectory);
+			List<Resource> resources = new ArrayList<Resource>();
+			Resource sourceDirectoryResource = new Resource();
+			sourceDirectoryResource.setDirectory(sourceDirectory.getAbsolutePath());
+			resources.add(sourceDirectoryResource);
+
+			Resource scriptSourceDirectoryResource = new Resource();
+			scriptSourceDirectoryResource.setDirectory(scriptSourceDirectory.getAbsolutePath());
+			resources.add(scriptSourceDirectoryResource);
+
+			Resource testSourceDirectoryResource = new Resource();
+			testSourceDirectoryResource.setDirectory(testSourceDirectory.getAbsolutePath());
+			resources.add(testSourceDirectoryResource);
+
 			for (Resource resource: mainResources){
-				sourceStructFiles.add(new File(resource.getDirectory()));
+				resources.add(resource);
 			}
 			for (Resource resource: testResources){
-				sourceStructFiles.add(new File(resource.getDirectory()));
+				resources.add(resource);
 			}
 
 			if(extResources != null){
 				for(Resource resource: extResources){
-					getLog().info("@@@@@@@@@@@@@@@@@@@" + resource.getDirectory());
-					sourceStructFiles.add(new File(resource.getDirectory()));
+					resources.add(resource);
 				}
 			}
 
-			List<DiffItem> diffs = gitRep.getDiffItems(sourceStructFiles);
+			List<DiffItem> diffs = gitRep.getDiffItems(resources);
 
 			if(diffs != null && diffs.size() > 0){
 				diffWriter = new DiffWriter(outputDif, finalName, packaging);

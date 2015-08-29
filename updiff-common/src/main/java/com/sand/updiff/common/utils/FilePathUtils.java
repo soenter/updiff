@@ -14,6 +14,7 @@
 package com.sand.updiff.common.utils;
 
 import org.apache.maven.model.Resource;
+import org.codehaus.plexus.util.SelectorUtils;
 
 import java.io.File;
 import java.util.List;
@@ -84,36 +85,31 @@ public class FilePathUtils {
 		return null;
 	}
 
-	public static boolean isFilted(Resource resource, String path){
+	public static boolean isFiltered(Resource resource, String path){
 
-		if(resource.isFiltering()){
-			boolean isInclude = false;
-			List<String> includes = resource.getIncludes();
-			if(includes != null && !includes.isEmpty()){
-				for (String include: includes){
-					if(Pattern.compile(include).matcher(path).find()){
-						isInclude = true;
-						break;
-					}
-				}
-			} else {
-				isInclude = true;
-			}
-
-			boolean isExclude = false;
-			List<String> excludes = resource.getExcludes();
-			if(excludes != null && !excludes.isEmpty()){
-				for (String exclude: excludes){
-					if(Pattern.compile(exclude).matcher(path).find()){
-						isExclude = true;
-						break;
-					}
+		List<String> excludes = resource.getExcludes();
+		if(excludes != null && !excludes.isEmpty()){
+			for (String exclude: excludes){
+				if(SelectorUtils.matchPath(exclude, path, true)){
+					return true;
 				}
 			}
-
-			return isExclude && !isInclude;
 		}
 
-		return false;
+		boolean isInclude = false;
+		List<String> includes = resource.getIncludes();
+		if(includes != null && !includes.isEmpty()){
+			for (String include: includes){
+				if(SelectorUtils.matchPath(include, path, true)){
+					isInclude = true;
+					break;
+				}
+			}
+		} else {
+			isInclude = true;
+		}
+
+		return !isInclude;
+
 	}
 }

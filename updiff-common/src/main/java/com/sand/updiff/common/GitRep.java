@@ -13,6 +13,7 @@
  */
 package com.sand.updiff.common;
 
+import com.sand.updiff.common.utils.FilePathUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
@@ -61,7 +62,7 @@ public class GitRep {
 		this.newGitVersion = newGitVersion;
 		this.basePath = basePath;
 
-		log.info(String.format("根目录:%s, 新版本:%s, 旧版本:%s, 模块目录:%s", rootDir, newGitVersion, oldGitVersion, basePath));
+		log.info(String.format("Git 根目录:%s, Git 新版本号:%s, Git 旧版本号:%s, 模块目录:%s", rootDir, newGitVersion, oldGitVersion, basePath));
 
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.setGitDir(new File(getGitDirByRootDir(rootDir)))
@@ -86,7 +87,7 @@ public class GitRep {
 				.setOldTree(oldTreeIterator);
 		String pathFilter = createDiffPrefixByRootDir(this.basePath);
 		if(!"".equals(pathFilter)){
-			log.info(String.format("路径过滤:%s", pathFilter));
+			log.info(String.format("Git 路径过滤:%s", pathFilter));
 			command.setPathFilter(PathFilter.create(pathFilter));
 		}
 		this.diffs = command.call();
@@ -130,16 +131,23 @@ public class GitRep {
 			path = removePrefix(modelDirName, path);
 			//在去除其他前缀
 			String newPathProfix = getPrefixByGitPath(resourceMap, path);
+			boolean isNeedUpdate = false;
 			if(newPathProfix != null){
 				path = removePrefix(newPathProfix, path);
 
+				Resource resource = resourceMap.get(newPathProfix);
+				if(!FilePathUtils.isFiltered(resource, path)){
+					diffEls.add(new DiffItem(newPathProfix, entry.getChangeType().name(), path));
+					isNeedUpdate = true;
+				}
+			}
 
+			if(isNeedUpdate){
 				log.info(String.format("需要更新的文件：%s", path));
 			} else {
 				log.info(String.format("不需要更新的文件：%s", path));
 			}
 
-			diffEls.add(new DiffItem(newPathProfix, entry.getChangeType().name(), path));
 		}
 
 		return diffEls;
@@ -159,14 +167,13 @@ public class GitRep {
 	}
 
 	private static String createDiffPrefix (String basePath, String path){
-		if(path.length() > basePath.length() && path.indexOf(basePath) == 0){
+		if(path.indexOf(basePath) == 0){
 			path = path.substring(basePath.length()).replace("\\", "/");
-			if(path.indexOf("/") == 0){
-				path = path.substring(1);
-			}
-			return path;
 		}
-		return "";
+		if(path.indexOf("/") == 0){
+			path = path.substring(1);
+		}
+		return path;
 	}
 
 	private static String removePrefix (String prefix, String gitPath){
