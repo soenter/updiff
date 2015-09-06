@@ -14,6 +14,7 @@
 package com.sand.updiff.common;
 
 import com.sand.updiff.common.utils.DomUtils;
+import com.sand.updiff.common.utils.FilePathUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentFactory;
@@ -53,7 +54,13 @@ public class DiffWriter {
 
 	private Element filters;
 
-	public DiffWriter(File savePath, String fileName, String packaging) throws IOException, DocumentException {
+	public DiffWriter(
+			File savePath,
+			String fileName,
+			String packaging,
+			String mainJavaGroup,
+			String[] mainResourceGroups
+	) throws IOException, DocumentException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
 
 		File file = new File(savePath, fileName + FileType.DIFF.getType());
@@ -66,6 +73,16 @@ public class DiffWriter {
 			document = DocumentFactory.getInstance().createDocument("utf-8");
 			rootElement = document.addElement("diffs");
 			rootElement.addAttribute("packaging", packaging);
+			rootElement.addAttribute("mainJavaGroup", mainJavaGroup);
+
+			StringBuilder sb = new StringBuilder();
+			for(int i = 0; i < mainResourceGroups.length; i++){
+				if(i != 0){
+					sb.append(",");
+				}
+				sb.append(mainResourceGroups[i]);
+			}
+			rootElement.addAttribute("mainResourceGroups", sb.toString());
 		}
 		writer = new XMLWriter(new FileWriter(file), format);
 	}

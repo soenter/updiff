@@ -89,7 +89,7 @@ public class DefaultScanned implements Scanned {
 
 		this.isAddFile = !oldFile.exists();
 
-		this.isModifyFile = getModifyFile();
+		this.isModifyFile = _isModifyFile();
 
 		this.isDeleteFile = new File(newFile.getParent(), newFile.getName() + FileType.DELETE.getType()).exists();
 	}
@@ -160,7 +160,7 @@ public class DefaultScanned implements Scanned {
 		return sb.append("]").toString();
 	}
 
-	private boolean getModifyFile(){
+	private boolean _isModifyFile (){
 		if(!newFile.exists() || !oldFile.exists() || newFile.isDirectory() || oldFile.isDirectory()){
 			return false;
 		}
@@ -181,7 +181,7 @@ public class DefaultScanned implements Scanned {
 				oldFileSha1 = DigestUtils.sha1Hex(oldFileIs);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("newFile 或 oldFile 文件不存在 ");
+			throw new RuntimeException("newFile 或 oldFile 文件不存在 ", e);
 		} finally {
 			try {
 				if(newFileIs != null){
@@ -191,7 +191,7 @@ public class DefaultScanned implements Scanned {
 					oldFileIs.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				//忽略
 			}
 		}
 		return !newFileSha1.equals(oldFileSha1);

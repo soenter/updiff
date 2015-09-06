@@ -136,10 +136,9 @@ public class GitRep {
 				path = removePrefix(newPathProfix, path);
 
 				Resource resource = resourceMap.get(newPathProfix);
-				if(!FilePathUtils.isFiltered(resource, path)){
-					diffEls.add(new DiffItem(newPathProfix, entry.getChangeType().name(), path));
-					isNeedUpdate = true;
-				}
+
+				isNeedUpdate = !FilePathUtils.isFiltered(resource, path);
+				diffEls.add(new DiffItem(newPathProfix, entry.getChangeType().name(), isNeedUpdate, path));
 			}
 
 			if(isNeedUpdate){
@@ -155,25 +154,15 @@ public class GitRep {
 
 
 	private String createDiffPrefixByRootDir (String path){
-		return createDiffPrefix(this.rootDir, path);
+		return FilePathUtils.getDiffPrefixPath(this.rootDir, path);
 	}
 
 	private String createDiffPrefixByBasePath (String path){
-		return createDiffPrefix(this.basePath, path);
+		return FilePathUtils.getDiffPrefixPath(this.basePath, path);
 	}
 
 	private static String getGitDirByRootDir(String rootDir){
 		return rootDir + "/.git";
-	}
-
-	private static String createDiffPrefix (String basePath, String path){
-		if(path.indexOf(basePath) == 0){
-			path = path.substring(basePath.length()).replace("\\", "/");
-		}
-		if(path.indexOf("/") == 0){
-			path = path.substring(1);
-		}
-		return path;
 	}
 
 	private static String removePrefix (String prefix, String gitPath){

@@ -28,12 +28,38 @@ public class DiffItem {
 
 	private String changeName;
 
+	private boolean isExcluded;
+
 	private String path;
 
-	public DiffItem (String groupName, String changeName, String path) {
+	private String mainJavaGroup;
+
+	private String[] mainResourceGroups;
+
+	public DiffItem (
+			String groupName,
+			String changeName,
+			boolean isExcluded,
+			String path) {
 		this.groupName = groupName;
 		this.changeName = changeName;
+		this.isExcluded = isExcluded;
 		this.path = path;
+	}
+
+	public DiffItem (
+			String groupName,
+			String changeName,
+			boolean isExcluded,
+			String path,
+			String mainJavaGroup,
+			String[] mainResourceGroups) {
+		this.groupName = groupName;
+		this.changeName = changeName;
+		this.isExcluded = isExcluded;
+		this.path = path;
+		this.mainJavaGroup = mainJavaGroup;
+		this.mainResourceGroups = mainResourceGroups;
 	}
 
 	public String getChangeName () {
@@ -49,6 +75,9 @@ public class DiffItem {
 		return groupName;
 	}
 
+	public boolean isExcluded () {
+		return isExcluded;
+	}
 
 	public String getCompiledNewPath(){
 
@@ -72,5 +101,13 @@ public class DiffItem {
 		sb.append("path: ").append(path);
 
 		return sb.append("]").toString();
+	}
+
+	public String getMainJavaGroup () {
+		return mainJavaGroup;
+	}
+
+	public String[] getMainResourceGroups () {
+		return mainResourceGroups;
 	}
 }

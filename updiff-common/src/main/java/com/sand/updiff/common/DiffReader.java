@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,11 +69,23 @@ public class DiffReader {
 
 		List<Element> group = rootElement.elements();
 
+		String mainJavaGroup = rootElement.attributeValue("mainJavaGroup");
+		String mainResourceGroups = rootElement.attributeValue("mainResourceGroups");
+
 		for (Element g: group){
 			List<Element> filesEl = g.elements();
 			String gName = g.attributeValue("name");
 			for (Element f: filesEl){
-				allEl.add(new DiffItem(gName, f.elementText("change"), f.elementText("path")));
+				boolean isExclued = Boolean.valueOf(f.elementText("isExcluded"));
+				allEl.add(new DiffItem(
+								gName,
+								f.elementText("change"),
+								isExclued,
+								f.elementText("path"),
+								mainJavaGroup,
+								mainResourceGroups.split(",")
+						)
+				);
 			}
 		}
 

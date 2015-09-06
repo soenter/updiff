@@ -112,4 +112,14 @@ public class FilePathUtils {
 		return !isInclude;
 
 	}
+
+	public static String getDiffPrefixPath(String basePath, String path){
+		if(path.indexOf(basePath) == 0){
+			path = path.substring(basePath.length()).replace("\\", "/");
+		}
+		if(path.indexOf("/") == 0){
+			path = path.substring(1);
+		}
+		return path;
+	}
 }

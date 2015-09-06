@@ -48,4 +48,12 @@ public class UpperTest {
 		String backupDir = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0_backup_20150818094730";
 		Upper.main(new String[]{"recovery", backupDir});
 	}
+
+	@Test
+	public void test_call_webapp(){
+
+		String oldPath = "D:\\0010_bin\\apache-tomcat-7.0.57\\webapps\\updiff-examples-webapp";
+		String newPath = "D:\\0000_test\\updiff\\updiff-examples-webapp.war";
+		Upper.main(new String[]{"up", oldPath, newPath});
+	}
 }

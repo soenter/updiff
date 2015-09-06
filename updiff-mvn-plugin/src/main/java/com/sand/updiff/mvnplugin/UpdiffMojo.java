@@ -3,6 +3,7 @@ package com.sand.updiff.mvnplugin;
 import com.sand.updiff.common.DiffItem;
 import com.sand.updiff.common.DiffWriter;
 import com.sand.updiff.common.GitRep;
+import com.sand.updiff.common.utils.FilePathUtils;
 import org.apache.maven.model.Resource;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -90,8 +91,6 @@ public class UpdiffMojo extends AbstractMojo {
 	 */
 	private Resource[] mainResources;
 
-
-
 	/**
 	 * 最终名称
 	 *
@@ -153,8 +152,11 @@ public class UpdiffMojo extends AbstractMojo {
 			scriptSourceDirectoryResource.setDirectory(scriptSourceDirectory.getAbsolutePath());
 			resources.add(scriptSourceDirectoryResource);
 
+			String[] mainResourceGroup = new String[mainResources.length];
+			int index = 0;
 			for (Resource resource: mainResources){
 				resources.add(resource);
+				mainResourceGroup[index ++] = FilePathUtils.getDiffPrefixPath(baseDir.getAbsolutePath(), resource.getDirectory());
 			}
 
 			if(extResources != null){
@@ -166,7 +168,8 @@ public class UpdiffMojo extends AbstractMojo {
 			List<DiffItem> diffs = gitRep.getDiffItems(resources);
 
 			if(diffs != null && diffs.size() > 0){
-				diffWriter = new DiffWriter(outputDif, finalName, packaging);
+				String mainJavaGroup = FilePathUtils.getDiffPrefixPath(baseDir.getAbsolutePath(), sourceDirectory.getAbsolutePath());
+				diffWriter = new DiffWriter(outputDif, finalName, packaging, mainJavaGroup, mainResourceGroup);
 				for (DiffItem element: diffs){
 					diffWriter.addElement(element);
 				}
