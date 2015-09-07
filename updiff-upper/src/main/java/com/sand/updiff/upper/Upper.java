@@ -70,8 +70,9 @@ public class Upper {
 
 		String time = DateUtils.format("yyyyMMddHHmmss");
 
+		File oldFile = new File(oldPath);
 		if(backupDir == null || "".equals(backupDir)){
-			this.backupDir = oldPath + "_backup_" + time;
+			this.backupDir = oldFile.getName() + "_backup_" + time;
 		} else {
 			this.backupDir = backupDir;
 		}
@@ -85,7 +86,6 @@ public class Upper {
 		}
 
 		this.oldPath = oldPath;
-		File oldFile = new File(oldPath);
 		if(!oldFile.exists()){
 			throw new RuntimeException(String.format("要更新的文件夹不存在：%s", oldPath));
 		}
@@ -152,11 +152,10 @@ public class Upper {
 	 */
 	public boolean up() throws IOException {
 		if(isUpWar){
-			upWar(false);
+			return upWar(false);
 		} else {
-			upDefault(false);
+			return upDefault(false);
 		}
-		return true;
 	}
 
 	public boolean upDefault(boolean onlyBackup) throws IOException {
@@ -257,11 +256,10 @@ public class Upper {
 	 */
 	public boolean backup() throws IOException {
 		if(isUpWar){
-			upWar(true);
+			return upWar(true);
 		} else {
-			upDefault(true);
+			return upDefault(true);
 		}
-		return true;
 	}
 
 	/**

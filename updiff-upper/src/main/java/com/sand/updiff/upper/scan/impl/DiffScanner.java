@@ -17,8 +17,6 @@ import com.sand.updiff.common.DiffItem;
 import com.sand.updiff.common.DiffReader;
 import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
-import com.sand.updiff.upper.update.Executor;
-import com.sand.updiff.upper.update.impl.UpperExecutor;
 import org.dom4j.DocumentException;
 
 import java.io.File;
@@ -67,7 +65,7 @@ public class DiffScanner implements Scanner<Scanned> {
 			Iterator<DiffItem> diffIt = diffReader.readAll().iterator();
 			scanFiles = new LinkedList<Scanned>();
 
-			String packing = diffReader.getPacking();
+			String packing = diffReader.getPackaging();
 			boolean isWar = "war".equalsIgnoreCase(packing);
 			Map<String, Boolean> needCompileMap = null;
 			if(isWar){

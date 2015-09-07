@@ -75,7 +75,7 @@ public class DefaultScanner implements Scanner {
 				LOGGER.debug("扫描到文件夹： {}", scanned);
 				scanFiles.add(scanned);
 				walkFiles(scanFiles, f);
-			} else if(!f.getName().endsWith(FileType.DIFF.getType()) && !UpdiffFileUtils.isInnerClassFile(f)){
+			} else if(!UpdiffFileUtils.isInnerClassFile(f)){
 				File realFile = UpdiffFileUtils.castControlFile(f);
 				Scanned scanned = new DefaultScanned(getOldFile(realFile), realFile, getRelativePath(realFile));
 				LOGGER.debug("扫描到文件： {}", scanned);

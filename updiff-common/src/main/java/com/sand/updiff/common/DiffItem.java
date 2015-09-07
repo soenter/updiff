@@ -32,7 +32,7 @@ public class DiffItem {
 
 	private String path;
 
-	private String packing;
+	private String packaging;
 
 	private String mainJavaGroup;
 
@@ -54,14 +54,14 @@ public class DiffItem {
 			String changeName,
 			boolean isExcluded,
 			String path,
-			String packing,
+			String packaging,
 			String mainJavaGroup,
 			String[] mainResourceGroups) {
 		this.groupName = groupName;
 		this.changeName = changeName;
 		this.isExcluded = isExcluded;
 		this.path = path;
-		this.packing = packing;
+		this.packaging = packaging;
 		this.mainJavaGroup = mainJavaGroup;
 		this.mainResourceGroups = mainResourceGroups;
 	}
@@ -107,8 +107,8 @@ public class DiffItem {
 		return sb.append("]").toString();
 	}
 
-	public String getPacking () {
-		return packing;
+	public String getPackaging () {
+		return packaging;
 	}
 
 	public String getMainJavaGroup () {

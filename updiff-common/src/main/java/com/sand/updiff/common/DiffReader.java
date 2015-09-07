@@ -69,7 +69,7 @@ public class DiffReader {
 
 		List<Element> group = rootElement.elements();
 
-		String packing = rootElement.attributeValue("packing");
+		String packaging = rootElement.attributeValue("packaging");
 		String mainJavaGroup = rootElement.attributeValue("mainJavaGroup");
 		String mainResourceGroups = rootElement.attributeValue("mainResourceGroups");
 
@@ -83,7 +83,7 @@ public class DiffReader {
 								f.elementText("change"),
 								isExclued,
 								f.elementText("path"),
-								packing,
+								packaging,
 								mainJavaGroup,
 								mainResourceGroups.split(",")
 						)
@@ -94,8 +94,8 @@ public class DiffReader {
 		return allEl;
 	}
 
-	public String getPacking(){
-		return rootElement.attributeValue("packing");
+	public String getPackaging (){
+		return rootElement.attributeValue("packaging");
 	}
 
 	public String getMainJavaGroup(){
