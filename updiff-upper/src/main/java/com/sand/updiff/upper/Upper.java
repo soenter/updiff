@@ -33,11 +33,13 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
- * @ClassName ��com.sand.updiff.upper.Upper
+ * @ClassName : com.sand.updiff.upper.Upper
  * @Description : 
  * @author : sun.mt@sand.com.cn
  * @Date : 2015/8/7 13:20
@@ -144,34 +146,21 @@ public class Upper {
 		}
 	}
 
-	private Scanner<Scanned> createScanner() throws IOException {
-		Scanner<Scanned> scanner = null;
-		File warDiffFileParent = null;
-		File warDiffFile = null;
-		if(isUpWar && (warDiffFileParent = new File(newPath, "META-INF")).exists()){
-			File[] files = warDiffFileParent.listFiles();
-			for(File file: files){
-				if(!file.isDirectory() && file.getName().endsWith(FileType.DIFF.getType())){
-					warDiffFile = file;
-					break;
-				}
-			}
-		}
-		if(warDiffFile != null) {
-			scanner = new DiffScanner(new File(oldPath), new File(newPath), warDiffFile);
-		} else {
-			scanner = new DefaultScanner(new File(oldPath), new File(newPath));
-		}
-		return scanner;
-	}
-
-
 	/**
 	 * 先备份，再执行更新，最后如果出现异常就恢复。
 	 * @return
 	 */
 	public boolean up() throws IOException {
-		Scanner<Scanned> scanner = createScanner();
+		if(isUpWar){
+			upWar(false);
+		} else {
+			upDefault(false);
+		}
+		return true;
+	}
+
+	public boolean upDefault(boolean onlyBackup) throws IOException {
+		Scanner<Scanned> scanner = new DefaultScanner(new File(oldPath), new File(newPath));
 
 		Iterator<Scanned> backupIt = scanner.iterator();
 		Executor executor = new UpperExecutor(backupDir);
@@ -181,28 +170,96 @@ public class Upper {
 				return false;
 			}
 		}
-		Iterator<Scanned> excuteIt = scanner.iterator();
-		while(excuteIt.hasNext()){
-			if(!executor.execute(excuteIt.next())){
-				return false;
+		if(!onlyBackup){
+			Iterator<Scanned> excuteIt = scanner.iterator();
+			while(excuteIt.hasNext()){
+				if(!executor.execute(excuteIt.next())){
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
+	public boolean upWar(boolean onlyBackup) throws IOException {
+
+		Map<String, Object> updatedMap = new HashMap<String, Object>();
+
+		//1、先根据 .diff 文件更新差异
+		Scanner<Scanned> diffScanner = null;
+		File warDiffFile = null;
+		File warDiffFileParent = new File(newPath, "META-INF");
+		if(warDiffFileParent.exists()){
+			File[] files = warDiffFileParent.listFiles();
+			for(File file: files){
+				if(!file.isDirectory() && file.getName().endsWith(FileType.DIFF.getType())){
+					warDiffFile = file;
+					break;
+				}
+			}
+		}
+		if(warDiffFile != null) {
+			diffScanner = new DiffScanner(new File(oldPath), new File(newPath), warDiffFile);
+		} else {
+			throw new RuntimeException("war 不包含 .diff 差异文件");
+		}
+
+		Iterator<Scanned> backupIt = diffScanner.iterator();
+		Executor executor = new UpperExecutor(backupDir);
+
+		while(backupIt.hasNext()){
+			if(!executor.backup(backupIt.next())){
+				return false;
+			}
+		}
+		if(!onlyBackup){
+			Iterator<Scanned> excuteIt = diffScanner.iterator();
+			while(excuteIt.hasNext()){
+				Scanned scanned = excuteIt.next();
+				updatedMap.put(scanned.getNewFile().getAbsolutePath(), scanned);
+				if(!executor.execute(scanned)){
+					return false;
+				}
+			}
+		}
+
+		//2、再根据遍历目录更新未被更新的文件
+		Scanner<Scanned> dirScanner = new DefaultScanner(new File(oldPath), new File(newPath));
+
+		Iterator<Scanned> dirScannerIt = dirScanner.iterator();
+		Executor dirScannerExecutor = new UpperExecutor(backupDir);
+
+		while(dirScannerIt.hasNext()){
+			Scanned scanned = dirScannerIt.next();
+			if(!updatedMap.containsKey(scanned.getNewFile().getAbsolutePath())){
+				if(!dirScannerExecutor.backup(scanned)){
+					return false;
+				}
+			}
+		}
+		if(!onlyBackup){
+			Iterator<Scanned> dirScannerExcuteIt = dirScanner.iterator();
+			while(dirScannerExcuteIt.hasNext()){
+				Scanned scanned = dirScannerExcuteIt.next();
+				if(!updatedMap.containsKey(scanned.getNewFile().getAbsolutePath())){
+					if(!dirScannerExecutor.execute(scanned)){
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
 	/**
 	 * 仅备份
 	 * @return
 	 */
 	public boolean backup() throws IOException {
-		Scanner<Scanned> scanner = createScanner();
-		Iterator<Scanned> it = scanner.iterator();
-
-		Executor executor = new UpperExecutor(backupDir);
-		while(it.hasNext()){
-			if(!executor.backup(it.next())){
-				return false;
-			}
+		if(isUpWar){
+			upWar(true);
+		} else {
+			upDefault(true);
 		}
 		return true;
 	}

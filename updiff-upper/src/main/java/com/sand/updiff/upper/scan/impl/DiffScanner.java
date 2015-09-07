@@ -23,9 +23,7 @@ import org.dom4j.DocumentException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -68,16 +66,39 @@ public class DiffScanner implements Scanner<Scanned> {
 		if(scanFiles == null){
 			Iterator<DiffItem> diffIt = diffReader.readAll().iterator();
 			scanFiles = new LinkedList<Scanned>();
+
+			String packing = diffReader.getPacking();
+			boolean isWar = "war".equalsIgnoreCase(packing);
+			Map<String, Boolean> needCompileMap = null;
+			if(isWar){
+				needCompileMap = new HashMap<String, Boolean>();
+				needCompileMap.put(diffReader.getMainJavaGroup(), true);
+				String[] mainResources = diffReader.getMainResourceGroups();
+				for(String resource: mainResources){
+					needCompileMap.put(resource, true);
+				}
+			}
+
 			while(diffIt.hasNext()){
 				DiffItem item = diffIt.next();
+
 				String compliedPath = item.getCompiledNewPath();
-				File oldFile = new File(oldDir, compliedPath);
-				File newFile = new File(newDir, compliedPath);
+				File oldFile = null;
+				File newFile = null;
+				if(isWar && needCompileMap.containsKey(item.getGroupName())){
+					oldFile = new File(oldDir, "WEB-INF/classes/" + compliedPath);
+					newFile = new File(newDir, "WEB-INF/classes/" + compliedPath);
+				} else {
+					oldFile = new File(oldDir, compliedPath);
+					newFile = new File(newDir, compliedPath);
+				}
+
 				Scanned scanned = new DiffScanned(oldFile, newFile, compliedPath, item);
-					scanFiles.add(scanned);
+				scanFiles.add(scanned);
 			}
 		}
 
 		return scanFiles.iterator();
 	}
+
 }
