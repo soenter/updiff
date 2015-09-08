@@ -79,7 +79,8 @@ public class DefaultUpdate implements Update {
 			if(scanned.isAddFile()){
 				LOGGER.info("[更新]-创建文件夹:[{}]", scanned.getOldFile());
 				if(scanned.getOldFile().exists()){
-					throw new IOException("[更新]-要添加的文件夹已经存在：" + scanned.getOldFile().getAbsolutePath());
+					//throw new IOException("[更新]-要添加的文件夹已经存在：" + scanned.getOldFile().getAbsolutePath());
+					return;
 				}
 				Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scanned.getOldFile());
 				if(mkdirs == null){

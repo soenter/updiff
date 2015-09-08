@@ -104,9 +104,6 @@ public class ClassUpdate extends DefaultUpdate {
 			File oldPathDir = scanned.getOldFile().getParentFile();
 			for(File f: newFiles){
 				File newFile = new File(oldPathDir, f.getName());
-				if(newFile.exists()){
-					throw new IOException("[更新]-新文件已经存在:" + newFile.getAbsolutePath());
-				}
 				File newFileParent = newFile.getParentFile();
 
 				if(!newFileParent.exists()){
