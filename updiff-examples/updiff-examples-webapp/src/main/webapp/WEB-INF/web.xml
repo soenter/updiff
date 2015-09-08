@@ -7,7 +7,7 @@
 
     <servlet>
         <servlet-name>changeList</servlet-name>
-        <servlet-class>com.sand.updiff.examples.ChangeListServlet</servlet-class>
+        <servlet-class>com.sand.updiff.examples.webapp.ChangeListServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
@@ -17,7 +17,7 @@
 
     <servlet>
         <servlet-name>changeAnalysis</servlet-name>
-        <servlet-class>com.sand.updiff.examples.ChangeAnalysisServlet</servlet-class>
+        <servlet-class>com.sand.updiff.examples.webapp.ChangeAnalysisServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

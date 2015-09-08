@@ -1,0 +1,30 @@
+<assembly>
+  <id>assembly</id>
+  <formats>
+    <format>tar.gz</format><!--gz,tar,tar.gz,tar.bz2。-->
+  </formats>
+
+  <includeBaseDirectory>true</includeBaseDirectory>
+
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+  </dependencySets>
+
+  <fileSets>
+      <fileSet>
+          <directory>src/main/assembly/bin</directory>
+          <outputDirectory>bin</outputDirectory>
+          <fileMode>0755</fileMode>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+      </fileSet>
+      <fileSet>
+          <directory>src/main/assembly/config/vm</directory>
+          <outputDirectory>config/vm</outputDirectory>
+          <fileMode>0755</fileMode>
+      </fileSet>
+  </fileSets>
+</assembly>

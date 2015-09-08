@@ -1,4 +1,4 @@
-package com.sand.updiff.examples;
+package com.sand.updiff.examples.webapp;
 
 import com.sand.updiff.common.DiffItem;
 import com.sand.updiff.common.DiffReader;

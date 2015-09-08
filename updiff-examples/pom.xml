@@ -11,6 +11,7 @@
     <description>updiff例子</description>
     <modules>
         <module>updiff-examples-webapp</module>
+        <module>updiff-examples-assembly</module>
     </modules>
 
 

@@ -1,4 +1,4 @@
-package com.sand.updiff.examples;
+package com.sand.updiff.examples.webapp;
 
 /**
  * @ClassName : com.sand.updiff.examples.ClassFile1

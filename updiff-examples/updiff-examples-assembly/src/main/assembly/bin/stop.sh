@@ -1,0 +1,1 @@
+ps aux|grep abacus|grep abacus-product-bootstrap|awk '{print $2}'|xargs kill -9
