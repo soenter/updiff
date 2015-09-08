@@ -142,9 +142,9 @@ public class GitRep {
 			}
 
 			if(isNeedUpdate){
-				log.info(String.format("需要更新，所在目录：%s，文件路径：%s", newPathProfix, path));
+				log.info(String.format("根据Git差异更新，所在目录：%s，文件路径：%s", newPathProfix, path));
 			} else {
-				log.info(String.format("不需要更新，文件路径：%s", path));
+				log.info(String.format("不根据Git差异更新，文件路径：%s", path));
 			}
 
 		}

@@ -19,7 +19,7 @@ public class ChangeList {
 
 	public void print (){
 
-		InputStream in = getClass().getClassLoader().getResourceAsStream("/META-INF/updiff-examples-assembly-1.0.0.diff");
+		InputStream in = getClass().getClassLoader().getResourceAsStream("META-INF/updiff-examples-assembly-1.0.4.diff");
 
 		if(in == null){
 			System.out.println("change list is empty!");
