@@ -77,11 +77,11 @@ public class DefaultUpdate implements Update {
 	public void execute () throws IOException {
 		if(scanned.isDir()){
 			if(scanned.isAddFile()){
-				LOGGER.info("[更新]-创建文件夹:[{}]", scanned.getOldFile());
 				if(scanned.getOldFile().exists()){
-					//throw new IOException("[更新]-要添加的文件夹已经存在：" + scanned.getOldFile().getAbsolutePath());
+					LOGGER.warn("[更新]-要添加的文件夹已经存在:[{}]", scanned.getOldFile());
 					return;
 				}
+				LOGGER.info("[更新]-创建文件夹:[{}]", scanned.getOldFile());
 				Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scanned.getOldFile());
 				if(mkdirs == null){
 					throw new IOException("[更新]-创建添加的文件夹失败：" + scanned.getOldFile().getAbsolutePath());
@@ -111,6 +111,10 @@ public class DefaultUpdate implements Update {
 
 		} else {
 			if(scanned.isAddFile()){
+				if(!scanned.getNewFile().exists()){
+					LOGGER.warn("[更新]-添加的新文件不存在:[{}]", scanned.getNewFile());
+					return;
+				}
 				LOGGER.info("[更新]-添加文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
 				if(!scanned.getOldFile().getParentFile().exists()){
 					Stack<File> mkdirs = UpdiffFileUtils.mkdirs(scanned.getOldFile().getParentFile());
@@ -129,6 +133,10 @@ public class DefaultUpdate implements Update {
 				FileUtils.copyFile(scanned.getNewFile(), scanned.getOldFile());
 				redologWriter.writeItem(new RedologItem(false, ChangeType.ADD, scanned.getNewFile(), scanned.getOldFile(), backupFile));
 			} else if(scanned.isModifyFile()){
+				if(!scanned.getNewFile().exists()){
+					LOGGER.warn("[更新]-修改的新文件不存在:[{}]", scanned.getNewFile());
+					return;
+				}
 				LOGGER.info("[更新]-修改文件:[{}] ==> [{}]", scanned.getNewFile(), scanned.getOldFile());
 				if(scanned.getOldFile().exists() && !scanned.getOldFile().delete()){
 					throw new IOException("[更新]-删除旧文件失败：" + scanned.getOldFile().getAbsolutePath());

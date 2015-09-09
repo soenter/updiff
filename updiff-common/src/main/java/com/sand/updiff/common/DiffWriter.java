@@ -87,24 +87,6 @@ public class DiffWriter {
 		writer = new XMLWriter(new FileWriter(file), format);
 	}
 
-	public void addElement(FilterItem item){
-
-		if(filters == null){
-			filters = rootElement.element("filters");
-			if(filters == null){
-				filters = rootElement.addElement("filters");
-			}
-		}
-
-		if(FilterItem.Type.INCLUDE == item.getType()){
-			Element include = filters.addElement("include");
-			DomUtils.setElementText(include, item.getValue());
-		}
-		if(FilterItem.Type.EXCLUDE == item.getType()){
-			Element exclude = filters.addElement("exclude");
-			DomUtils.setElementText(exclude, item.getValue());
-		}
-	}
 	public void addElement(DiffItem element){
 		String newGroupName = element.getGroupName();
 		if(newGroupName == null || "".equals(newGroupName)){
@@ -136,8 +118,6 @@ public class DiffWriter {
 
 		writer.write(document);
 	}
-
-
 
 	/**
 	 * 关闭

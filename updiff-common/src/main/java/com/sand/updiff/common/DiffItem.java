@@ -102,6 +102,7 @@ public class DiffItem {
 
 		sb.append("groupName: ").append(groupName).append(", ");
 		sb.append("changeName: ").append(changeName).append(", ");
+		sb.append("isExcluded: ").append(isExcluded).append(", ");
 		sb.append("path: ").append(path);
 
 		return sb.append("]").toString();

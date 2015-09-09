@@ -7,7 +7,7 @@
     <groupId>com.sand.updiff</groupId>
     <artifactId>updiff</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <modules>
         <module>updiff-common</module>
         <module>updiff-mvn-plugin</module>
@@ -81,6 +81,18 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>sand-releases</id>
+            <name>sand of releases</name>
+            <url>http://172.28.250.240:8084/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sand-snapshots</id>
+            <name>sand of snapshots</name>
+            <url>http://172.28.250.240:8084/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <repositories>
         <repository>
