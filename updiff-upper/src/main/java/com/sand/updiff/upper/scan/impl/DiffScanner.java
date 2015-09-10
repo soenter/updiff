@@ -66,9 +66,9 @@ public class DiffScanner implements Scanner<Scanned> {
 	public Iterator<Scanned> iterator () {
 
 		if(scanFiles == null){
+			scanFiles = new LinkedList<Scanned>();
 			for(DiffReader reader: diffReaders){
 				Iterator<DiffItem> diffIt = reader.readAll().iterator();
-				scanFiles = new LinkedList<Scanned>();
 
 				String packing = reader.getPackaging();
 				boolean isWar = "war".equalsIgnoreCase(packing);
