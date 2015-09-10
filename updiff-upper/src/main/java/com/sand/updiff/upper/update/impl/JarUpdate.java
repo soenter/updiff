@@ -128,7 +128,8 @@ public class JarUpdate extends DefaultUpdate {
 			LOGGER.info("[更新]-解压新jar文件:[{}] ==> [{}]", scanned.getNewFile(), unjarNew);
 
 			//3.根据diff配置更新“{filename}_old”中的文件到“{filename}_new”中
-			Scanner<Scanned> diffElScanner = new DiffScanner(unjarOld, unjarNew, scanned.getDiffFile());
+			File diffFileParent = new File(unjarNew, "META-INF/");
+			Scanner<Scanned> diffElScanner = new DiffScanner(unjarOld, unjarNew, UpdiffFileUtils.getDiffFiles(diffFileParent));
 			Iterator<Scanned> diffIt = diffElScanner.iterator();
 			File updateJarBack = new File(workDir, scanned.getOldFile().getName() + "_bak_" + time);
 

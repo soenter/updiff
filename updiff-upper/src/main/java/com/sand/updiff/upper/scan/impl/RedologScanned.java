@@ -104,10 +104,6 @@ public class RedologScanned implements Scanned{
 		return newFile;
 	}
 
-	public File getDiffFile () {
-		return null;
-	}
-
 	public String getRelativePath () {
 		return relativePath;
 	}

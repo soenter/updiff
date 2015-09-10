@@ -18,9 +18,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -88,6 +86,22 @@ public class UpdiffFileUtils {
 			return null;
 		}
 	}
+	public static boolean hasDiffFile(File jar){
+		JarFile jarFile = null;
+		try {
+			jarFile = new JarFile(jar);
+			Enumeration<JarEntry> entryEnumeration =  jarFile.entries();
+			while (entryEnumeration.hasMoreElements()){
+				JarEntry entry = entryEnumeration.nextElement();
+				if(entry.getName().startsWith("META-INF/") && entry.getName().endsWith(FileType.DIFF.getType())){
+					return true;
+				}
+			}
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+	}
 
 	public static Stack<File> mkdirs(File file){
 		if(file.exists()){
@@ -108,6 +122,20 @@ public class UpdiffFileUtils {
 		}
 
 		return files;
+	}
+
+	public static List<File> getDiffFiles(File parentFile){
+		if(parentFile.exists()){
+			List<File> warDiffFile = new ArrayList<File>();
+			File[] files = parentFile.listFiles();
+			for(File file: files){
+				if(!file.isDirectory() && file.getName().endsWith(FileType.DIFF.getType())){
+					warDiffFile.add(file);
+				}
+			}
+			return warDiffFile;
+		}
+		return null;
 	}
 
 

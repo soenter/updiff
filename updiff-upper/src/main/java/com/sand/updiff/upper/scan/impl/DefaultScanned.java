@@ -38,7 +38,7 @@ public class DefaultScanned implements Scanned {
 
 	private File newFile;
 
-	private File diffFile;
+	private boolean hasDiff;
 
 	private String relativePath;
 
@@ -70,18 +70,18 @@ public class DefaultScanned implements Scanned {
 		this.oldFile = oldFile;
 		this.newFile = newFile;
 
-		String newFilePath = newFile.getAbsolutePath();
 		if(isInnerDiffFile){
 			if(isJar()){
-				this.diffFile = UpdiffFileUtils.readDiffFileFromJar(newFile);
+				hasDiff = UpdiffFileUtils.hasDiffFile(newFile);
 			}
 		} else {
-			int newFileDotIndex = newFilePath.lastIndexOf(".");
+			int newFileDotIndex = newFile.getName().lastIndexOf(".");
 
 			if(newFileDotIndex != -1){
-				this.diffFile = new File(newFilePath.substring(0, newFileDotIndex) + FileType.DIFF.getType());
+				hasDiff = new File(newFile.getParent(), newFile.getName().substring(0, newFileDotIndex) + FileType.DIFF.getType()).exists();
+
 			} else {
-				this.diffFile = new File(newFilePath + FileType.DIFF.getType());
+				hasDiff = new File(newFile.getParent(), newFile.getName() + FileType.DIFF.getType()).exists();
 			}
 		}
 
@@ -107,7 +107,7 @@ public class DefaultScanned implements Scanned {
 	}
 
 	public boolean hasDiff () {
-		return diffFile == null?false:diffFile.exists();
+		return hasDiff;
 	}
 
 	public boolean isUpVersionFile () {
@@ -134,10 +134,6 @@ public class DefaultScanned implements Scanned {
 		return newFile;
 	}
 
-	public File getDiffFile () {
-		return diffFile;
-	}
-
 	public String getRelativePath () {
 		return relativePath;
 	}
@@ -154,8 +150,7 @@ public class DefaultScanned implements Scanned {
 		sb.append("isModifyFile: ").append(isModifyFile()).append(", ");
 		sb.append("isDeleteFile: ").append(isDeleteFile()).append(", ");
 		sb.append("oldFile: ").append(oldFile).append(", ");
-		sb.append("newFile: ").append(newFile).append(", ");
-		sb.append("diffFile: ").append(diffFile);
+		sb.append("newFile: ").append(newFile);
 
 		return sb.append("]").toString();
 	}

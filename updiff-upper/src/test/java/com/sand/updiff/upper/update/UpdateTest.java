@@ -24,7 +24,9 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -52,7 +54,9 @@ public class UpdateTest {
 		File diffFile = new File("D:\\0000_test\\updiff\\abacus_up\\abacus_up.diff");
 		File newDir = new File("D:\\0000_test\\updiff\\abacus");
 		File oldDir = new File("D:\\0000_test\\updiff\\abacus_up");
-		Scanner<Scanned> scanner = new DiffScanner(oldDir, newDir, diffFile);
+		List<File> diffFiles = new ArrayList<File>(1);
+		diffFiles.add(diffFile);
+		Scanner<Scanned> scanner = new DiffScanner(oldDir, newDir, diffFiles);
 
 		Iterator<Scanned> it = scanner.iterator();
 

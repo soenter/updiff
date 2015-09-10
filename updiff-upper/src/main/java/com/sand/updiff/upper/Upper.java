@@ -15,6 +15,7 @@ package com.sand.updiff.upper;
 
 import com.sand.updiff.common.FileType;
 import com.sand.updiff.common.utils.DateUtils;
+import com.sand.updiff.common.utils.UpdiffFileUtils;
 import com.sand.updiff.upper.dom.RedologWriter;
 import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
@@ -77,22 +78,23 @@ public class Upper {
 			this.backupDir = backupDir;
 		}
 
-		LOGGER.info("要更新的文件夹:{}", oldPath);
-		LOGGER.info("更新包或文件夹:{}", newPath);
-		LOGGER.info("备份文件夹:{}", this.backupDir);
+		File backupDirFile = new File(this.backupDir);
+		File newFile = new File(newPath);
+		LOGGER.info("要更新的文件夹:{}", oldFile.getAbsoluteFile());
+		LOGGER.info("更新包或文件夹:{}", newFile.getAbsoluteFile());
+		LOGGER.info("备份文件夹:{}", backupDirFile.getAbsoluteFile());
 
-		if(new File(this.backupDir).exists()){
-			throw new RuntimeException(String.format("备份文件夹已经存在：%s", this.backupDir));
+		if(backupDirFile.exists()){
+			throw new RuntimeException(String.format("备份文件夹已经存在：%s", backupDirFile.getAbsoluteFile()));
 		}
 
 		this.oldPath = oldPath;
 		if(!oldFile.exists()){
-			throw new RuntimeException(String.format("要更新的文件夹不存在：%s", oldPath));
+			throw new RuntimeException(String.format("要更新的文件夹不存在：%s", oldFile.getAbsoluteFile()));
 		}
 
-		File newFile = new File(newPath);
 		if(!newFile.exists()){
-			LOGGER.error("更新文件或目录不存在：{}", newPath);
+			LOGGER.error("更新文件或目录不存在：{}", newFile.getAbsoluteFile());
 			return;
 		}
 		if(!newFile.isDirectory()){
@@ -188,17 +190,8 @@ public class Upper {
 		Scanner<Scanned> diffScanner = null;
 		File warDiffFile = null;
 		File warDiffFileParent = new File(newPath, "META-INF");
-		if(warDiffFileParent.exists()){
-			File[] files = warDiffFileParent.listFiles();
-			for(File file: files){
-				if(!file.isDirectory() && file.getName().endsWith(FileType.DIFF.getType())){
-					warDiffFile = file;
-					break;
-				}
-			}
-		}
 		if(warDiffFile != null) {
-			diffScanner = new DiffScanner(new File(oldPath), new File(newPath), warDiffFile);
+			diffScanner = new DiffScanner(new File(oldPath), new File(newPath), UpdiffFileUtils.getDiffFiles(warDiffFileParent));
 		} else {
 			throw new RuntimeException("war 不包含 .diff 差异文件");
 		}

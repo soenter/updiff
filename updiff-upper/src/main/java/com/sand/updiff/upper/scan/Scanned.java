@@ -29,8 +29,6 @@ public interface Scanned {
 
 	File getNewFile();
 
-	File getDiffFile();
-
 	String getRelativePath();
 
 }

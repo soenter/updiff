@@ -38,61 +38,67 @@ public class DiffScanner implements Scanner<Scanned> {
 
 	private File newDir;
 
-	private File diffFile;
 
-	private DiffReader diffReader;
+	private List<DiffReader> diffReaders;
 
 	private List<Scanned> scanFiles;
 
-	public DiffScanner (File oldDir, File newDir, File diffFile) throws IOException {
+	public DiffScanner (File oldDir, File newDir, List<File> diffFiles) throws IOException {
 		this.oldDir = oldDir;
 		this.newDir = newDir;
-		this.diffFile = diffFile;
 
-		if(!this.diffFile.exists()){
-			throw new IOException("diff 不存在");
+		diffReaders = new ArrayList<DiffReader>(diffFiles.size());
+		for(File file: diffFiles){
+			if(!file.exists()){
+				throw new IOException("diff 不存在");
+			}
+			try {
+
+				DiffReader diffReader = new DiffReader(file);
+				diffReaders.add(diffReader);
+			} catch (DocumentException e) {
+				throw new IOException("diff 文件格式错误");
+			}
 		}
-		try {
-			diffReader = new DiffReader(this.diffFile);
-		} catch (DocumentException e) {
-			throw new IOException("diff 文件格式错误");
-		}
+
 	}
 
 	public Iterator<Scanned> iterator () {
 
 		if(scanFiles == null){
-			Iterator<DiffItem> diffIt = diffReader.readAll().iterator();
-			scanFiles = new LinkedList<Scanned>();
+			for(DiffReader reader: diffReaders){
+				Iterator<DiffItem> diffIt = reader.readAll().iterator();
+				scanFiles = new LinkedList<Scanned>();
 
-			String packing = diffReader.getPackaging();
-			boolean isWar = "war".equalsIgnoreCase(packing);
-			Map<String, Boolean> needCompileMap = null;
-			if(isWar){
-				needCompileMap = new HashMap<String, Boolean>();
-				needCompileMap.put(diffReader.getMainJavaGroup(), true);
-				String[] mainResources = diffReader.getMainResourceGroups();
-				for(String resource: mainResources){
-					needCompileMap.put(resource, true);
-				}
-			}
-
-			while(diffIt.hasNext()){
-				DiffItem item = diffIt.next();
-
-				String compliedPath = item.getCompiledNewPath();
-				File oldFile = null;
-				File newFile = null;
-				if(isWar && needCompileMap.containsKey(item.getGroupName())){
-					oldFile = new File(oldDir, "WEB-INF/classes/" + compliedPath);
-					newFile = new File(newDir, "WEB-INF/classes/" + compliedPath);
-				} else {
-					oldFile = new File(oldDir, compliedPath);
-					newFile = new File(newDir, compliedPath);
+				String packing = reader.getPackaging();
+				boolean isWar = "war".equalsIgnoreCase(packing);
+				Map<String, Boolean> needCompileMap = null;
+				if(isWar){
+					needCompileMap = new HashMap<String, Boolean>();
+					needCompileMap.put(reader.getMainJavaGroup(), true);
+					String[] mainResources = reader.getMainResourceGroups();
+					for(String resource: mainResources){
+						needCompileMap.put(resource, true);
+					}
 				}
 
-				Scanned scanned = new DiffScanned(oldFile, newFile, compliedPath, item);
-				scanFiles.add(scanned);
+				while(diffIt.hasNext()){
+					DiffItem item = diffIt.next();
+
+					String compliedPath = item.getCompiledNewPath();
+					File oldFile = null;
+					File newFile = null;
+					if(isWar && needCompileMap.containsKey(item.getGroupName())){
+						oldFile = new File(oldDir, "WEB-INF/classes/" + compliedPath);
+						newFile = new File(newDir, "WEB-INF/classes/" + compliedPath);
+					} else {
+						oldFile = new File(oldDir, compliedPath);
+						newFile = new File(newDir, compliedPath);
+					}
+
+					Scanned scanned = new DiffScanned(oldFile, newFile, compliedPath, item);
+					scanFiles.add(scanned);
+				}
 			}
 		}
 

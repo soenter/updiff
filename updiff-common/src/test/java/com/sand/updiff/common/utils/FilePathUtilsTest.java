@@ -13,8 +13,15 @@
  */
 package com.sand.updiff.common.utils;
 
+import com.sand.updiff.common.FileType;
 import org.apache.maven.model.Resource;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  *
@@ -64,6 +71,21 @@ public class FilePathUtilsTest {
 
 		assert FilePathUtils.isFiltered(resourceExclude2, "1.test");
 		assert FilePathUtils.isFiltered(resourceExclude2, "bin/a/1.test");
+	}
+
+	@Test
+	public void test_read_file_entry(){
+		JarFile jarFile = null;
+		try {
+			jarFile = new JarFile(new File("E:\\0097_upload\\risk-server-bootstrap-service-2.0.0\\lib\\risk-server-service-all-2.0.0.jar"));
+			Enumeration<JarEntry> entryEnumeration =  jarFile.entries();
+			while (entryEnumeration.hasMoreElements()){
+				JarEntry entry = entryEnumeration.nextElement();
+				System.out.println("entry name: " + entry.getName());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
