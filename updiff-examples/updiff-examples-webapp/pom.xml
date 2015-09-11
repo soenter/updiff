@@ -19,13 +19,11 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -34,13 +32,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>2.6</version>
-        </dependency>
-
     </dependencies>
     <build>
         <finalName>updiff-examples-webapp</finalName>
@@ -48,12 +39,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
             </plugin>
             <plugin>
                 <groupId>com.sand.updiff</groupId>
                 <artifactId>updiff-mvn-plugin</artifactId>
-                <version>1.0.5</version>
                 <configuration>
                     <!-- HEAD 为最新版本-->
                     <newGitVersion>HEAD</newGitVersion>
