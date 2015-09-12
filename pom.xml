@@ -31,7 +31,7 @@
         <servlet-jsp.version>2.0</servlet-jsp.version>
         <updiff-mvn.version>1.0.5</updiff-mvn.version>
 
-        <maven.plugin.version>2.5.1</maven.plugin.version>
+        <maven-plugin.version>2.5.1</maven-plugin.version>
         <maven-assembly.version>2.2.1</maven-assembly.version>
         <maven-war.version>2.6</maven-war.version>
         <maven.plugin.api>3.0</maven.plugin.api>
