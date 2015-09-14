@@ -10,7 +10,6 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,37 +21,42 @@ import java.util.List;
 public class UpdiffMojo extends AbstractMojo {
 
 	/**
-	 * Git旧版本号：SHA-1全称，或简称
-	 * @parameter expression="${oldGitVersion}"
+	 * Git 仓库的版本可以为: commit短sha-1版本或Tag<br/>
+	 * SVN 仓库只能为提交版本
+	 * @parameter expression="${oldVersion}"
 	 * @required
 	 *
 	 */
-	private String oldGitVersion;
+	private String oldVersion;
 
 	/**
-	 * Git新版本号：SHA-1全称，或简称
-	 * @parameter expression="${newGitVersion}" default-value="HEAD"
+	 * Git 仓库的版本可以为: commit短sha-1版本或Tag<br/>
+	 * SVN 仓库只能为提交版本<br/>
+	 * 默认值为HEAD
+	 * @parameter expression="${newVersion}" default-value="HEAD"
 	 *
 	 */
-	private String newGitVersion;
+	private String newVersion;
 
 	/**
+	 * 项目根目录，默认取${session.executionRootDirectory}
 	 *
-	 * @parameter expression="${rootDir}" default-value="${session.executionRootDirectory}"
+	 * @parameter expression="${projectDir}" default-value="${session.executionRootDirectory}"
 	 * @required
 	 *
 	 */
-	private File rootDir;
+	private File projectDir;
 
 	/**
-	 * @parameter expression="${baseDir}" default-value="${project.basedir}"
+	 * 模块路径，默认取${project.basedir}
+	 * @parameter expression="${moduleDir}" default-value="${project.basedir}"
 	 * @required
 	 */
-	private File baseDir;
+	private File moduleDir;
 
 
 	/**
-	 * Location of the file.
+	 * 输出目录，默认取${project.build.directory}
 	 *
 	 * @parameter expression="${outputDirectory}" default-value="${project.build.directory}"
 	 * @required
@@ -60,7 +64,7 @@ public class UpdiffMojo extends AbstractMojo {
 	private File outputDirectory;
 
 	/**
-	 * Location of the file.
+	 * class 文件输出目录
 	 *
 	 * @parameter expression="${classOutputDirectory}" default-value="${project.build.outputDirectory}"
 	 * @required
@@ -68,7 +72,7 @@ public class UpdiffMojo extends AbstractMojo {
 	private File classOutputDirectory;
 
 	/**
-	 * 源文件路径.
+	 * 源文件目录，默认取${project.build.sourceDirectory}
 	 *
 	 * @parameter expression="${sourceDirectory}" default-value="${project.build.sourceDirectory}"
 	 * @required
@@ -138,10 +142,10 @@ public class UpdiffMojo extends AbstractMojo {
 		DiffWriter diffWriter = null;
 		try {
 			GitRep gitRep = new GitRep(
-					rootDir.getAbsolutePath(),
-					oldGitVersion,
-					newGitVersion,
-					baseDir.getAbsolutePath());
+					projectDir.getAbsolutePath(),
+					oldVersion,
+					newVersion,
+					moduleDir.getAbsolutePath());
 
 			List<Resource> resources = new ArrayList<Resource>();
 			Resource sourceDirectoryResource = new Resource();
@@ -156,7 +160,7 @@ public class UpdiffMojo extends AbstractMojo {
 			int index = 0;
 			for (Resource resource: mainResources){
 				resources.add(resource);
-				mainResourceGroup[index ++] = FilePathUtils.getDiffPrefixPath(baseDir.getAbsolutePath(), resource.getDirectory());
+				mainResourceGroup[index ++] = FilePathUtils.getDiffPrefixPath(moduleDir.getAbsolutePath(), resource.getDirectory());
 			}
 
 			if(extResources != null){
@@ -168,7 +172,7 @@ public class UpdiffMojo extends AbstractMojo {
 			List<DiffItem> diffs = gitRep.getDiffItems(resources);
 
 			if(diffs != null && diffs.size() > 0){
-				String mainJavaGroup = FilePathUtils.getDiffPrefixPath(baseDir.getAbsolutePath(), sourceDirectory.getAbsolutePath());
+				String mainJavaGroup = FilePathUtils.getDiffPrefixPath(moduleDir.getAbsolutePath(), sourceDirectory.getAbsolutePath());
 				diffWriter = new DiffWriter(outputDif, finalName, packaging, mainJavaGroup, mainResourceGroup);
 				for (DiffItem element: diffs){
 					diffWriter.addElement(element);

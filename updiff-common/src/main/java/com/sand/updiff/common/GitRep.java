@@ -65,7 +65,9 @@ public class GitRep {
 		log.info(String.format("Git 根目录:%s, Git 新版本号:%s, Git 旧版本号:%s, 模块目录:%s", rootDir, newGitVersion, oldGitVersion, basePath));
 
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository repository = builder.setGitDir(new File(getGitDirByRootDir(rootDir)))
+		File gitRepPath = new File(getGitDirByRootDir(rootDir));
+		if(!gitRepPath.exists()) throw new RuntimeException(String.format("项目根路径: %s 下不存在 .git 仓库文件夹", rootDir));
+		Repository repository = builder.setGitDir(gitRepPath)
 				.readEnvironment()
 				.findGitDir()
 				.build();
@@ -76,10 +78,12 @@ public class GitRep {
 
 		CanonicalTreeParser newTreeIterator = new CanonicalTreeParser();
 		ObjectId newTree = git.getRepository().resolve(newGitVersion + "^{tree}");
+		if(newTree == null) throw new RuntimeException(String.format("未找到 Git 版本: %s", newGitVersion));
 		newTreeIterator.reset(reader, newTree);
 
 		CanonicalTreeParser oldTreeIterator = new CanonicalTreeParser();
 		ObjectId oldTree = git.getRepository().resolve(oldGitVersion + "^{tree}");
+		if(oldTree == null) throw new RuntimeException(String.format("未找到 Git 版本: %s", oldGitVersion));
 		oldTreeIterator.reset(reader, oldTree);
 
 		DiffCommand command = git.diff()
@@ -144,7 +148,7 @@ public class GitRep {
 			if(isNeedUpdate){
 				log.info(String.format("根据Git差异更新，所在目录：%s，文件路径：%s", newPathProfix, path));
 			} else {
-				log.info(String.format("不根据Git差异更新，文件路径：%s", path));
+				log.info(String.format("不根据Git差异更新，所在目录：%s，文件路径：%s", newPathProfix, path));
 			}
 
 		}
