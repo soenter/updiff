@@ -44,9 +44,9 @@
                 <groupId>com.sand.updiff</groupId>
                 <artifactId>updiff-mvn-plugin</artifactId>
                 <configuration>
-                    <newGitVersion>HEAD</newGitVersion>
-                    <!-- 85a4ec2 为上线版本 v0.1.3 的git版本-->
-                    <oldGitVersion>85a4ec2</oldGitVersion>
+                    <newVersion>HEAD</newVersion>
+                    <!-- 最后一次上线版本 v0.1.1-example-assembly-->
+                    <oldVersion>v0.1.0-example-assembly</oldVersion>
                 </configuration>
                 <executions>
                     <execution>

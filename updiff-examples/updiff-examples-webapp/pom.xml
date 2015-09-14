@@ -45,13 +45,11 @@
                 <artifactId>updiff-mvn-plugin</artifactId>
                 <configuration>
                     <!-- HEAD 为最新版本-->
-                    <newGitVersion>HEAD</newGitVersion>
+                    <newVersion>HEAD</newVersion>
                     <!--
-                    - 最后一次上线版本
-                    -   bf64f7e 为出事版本
-                    -   655bd0a 为第一次增量升级版本
+                    - 最后一次上线版本v0.1.0-example-webapp
                     -->
-                    <oldGitVersion>655bd0a</oldGitVersion>
+                    <oldVersion>v0.1.0-example-webapp</oldVersion>
 
                     <!--
                     -   默认包含在rc/main/java、src/main/resource、src/main/script以及
