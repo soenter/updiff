@@ -31,6 +31,7 @@
         <servlet-api.version>2.4</servlet-api.version>
         <servlet-jsp.version>2.0</servlet-jsp.version>
         <updiff-mvn.version>1.0.5</updiff-mvn.version>
+        <spring.version>3.2.14.RELEASE</spring.version>
 
         <maven-plugin.version>2.5.1</maven-plugin.version>
         <maven-assembly.version>2.2.1</maven-assembly.version>
@@ -113,6 +114,21 @@
                 <artifactId>jsp-api</artifactId>
                 <version>${servlet-jsp.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.version}</version>
             </dependency>
 
             <dependency>
