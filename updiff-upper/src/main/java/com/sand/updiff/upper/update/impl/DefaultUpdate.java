@@ -67,10 +67,13 @@ public class DefaultUpdate implements Update {
 	public void backup () throws IOException {
 		//不备份文件夹
 		if(scanned.isModifyFile() || scanned.isDeleteFile()){
-			FileUtils.copyFile(scanned.getOldFile(), backupFile);
-			LOGGER.info("[备份]-备份文件:[{}] ==> [{}]", scanned.getOldFile(), backupFile);
-
-			new BackupListWriter(backupDir).writeItem(new BackupItem(scanned.getOldFile().getPath(), backupPath));
+			if(scanned.getOldFile().exists()){
+				FileUtils.copyFile(scanned.getOldFile(), backupFile);
+				LOGGER.info("[备份]-备份文件:[{}] ==> [{}]", scanned.getOldFile(), backupFile);
+				new BackupListWriter(backupDir).writeItem(new BackupItem(scanned.getOldFile().getPath(), backupPath));
+			} else {
+				LOGGER.warn("[备份]-备份文件不存在:[{}]", scanned.getOldFile());
+			}
 		}
 	}
 

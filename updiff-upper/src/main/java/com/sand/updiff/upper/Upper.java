@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -187,11 +188,11 @@ public class Upper {
 		Map<String, Object> updatedMap = new HashMap<String, Object>();
 
 		//1、先根据 .diff 文件更新差异
-		Scanner<Scanned> diffScanner = null;
-		File warDiffFile = null;
 		File warDiffFileParent = new File(newPath, "META-INF");
-		if(warDiffFile != null) {
-			diffScanner = new DiffScanner(new File(oldPath), new File(newPath), UpdiffFileUtils.getDiffFiles(warDiffFileParent));
+		List<File> diffFiles = UpdiffFileUtils.getDiffFiles(warDiffFileParent);
+		Scanner<Scanned> diffScanner = null;
+		if(diffFiles != null && diffFiles.size() > 0) {
+			diffScanner = new DiffScanner(new File(oldPath), new File(newPath), diffFiles);
 		} else {
 			throw new RuntimeException("war 不包含 .diff 差异文件");
 		}
