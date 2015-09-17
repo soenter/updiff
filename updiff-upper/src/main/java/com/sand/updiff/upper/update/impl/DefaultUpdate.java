@@ -75,11 +75,11 @@ public class DefaultUpdate implements Update {
 					backupNoNeedDependencyJarFileInOldPath((ConstaintJarDirScanned) scanned);
 				} else {
 					//文件夹不支持备份
-					LOGGER.warn("[备份]-文件夹不支持备份:[{}]", scanned.getOldFile());
+					LOGGER.debug("[备份]-文件夹不支持备份:[{}]", scanned.getOldFile());
 				}
 			} else {
 				//文件夹不支持备份
-				LOGGER.warn("[备份]-文件夹不支持备份:[{}]", scanned.getOldFile());
+				LOGGER.debug("[备份]-文件夹不支持备份:[{}]", scanned.getOldFile());
 			}
 		} else {
 			//不备份文件夹
