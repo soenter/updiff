@@ -45,7 +45,7 @@ public class UpperTest {
 	@Test
 	public void test_call_recovery(){
 
-		String backupDir = "D:\\0000_test\\updiff\\abacus\\abacus-product-bootstrap-1.0.0_backup_20150818094730";
+		String backupDir = "D:\\0005_git\\updiff\\updiff-upper\\abacus-product-bootstrap-1.0.0_backup_20150917152825";
 		Upper.main(new String[]{"recovery", backupDir});
 	}
 

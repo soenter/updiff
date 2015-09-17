@@ -62,6 +62,7 @@ public class DiffWriter {
 			String[] mainResourceGroups
 	) throws IOException, DocumentException {
 		OutputFormat format = OutputFormat.createPrettyPrint();
+		format.setEncoding("utf-8");
 
 		File file = new File(savePath, fileName + FileType.DIFF.getType());
 

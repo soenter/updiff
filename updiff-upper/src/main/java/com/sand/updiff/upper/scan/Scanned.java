@@ -17,8 +17,6 @@ public interface Scanned {
 
 	boolean hasDiff();
 
-	boolean isUpVersionFile();
-
 	boolean isAddFile();
 
 	boolean isModifyFile();

@@ -22,9 +22,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  *
@@ -57,6 +55,7 @@ public abstract class AbstractWriter {
 		if(savePath.exists()){
 			SAXReader saxReader = new SAXReader();
 			try {
+				saxReader.setEncoding("utf-8");
 				document = saxReader.read(savePath);
 			} catch (DocumentException e) {
 				throw new IOException( e);
@@ -79,7 +78,9 @@ public abstract class AbstractWriter {
 		XMLWriter writer = null;
 		try {
 			OutputFormat format = OutputFormat.createPrettyPrint();
-			writer = new XMLWriter(new FileWriter(savePath), format);
+			format.setEncoding("utf-8");
+			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(savePath), "utf-8");
+			writer = new XMLWriter(out, format);
 			writer.write(document);
 			writer.flush();
 		} finally {

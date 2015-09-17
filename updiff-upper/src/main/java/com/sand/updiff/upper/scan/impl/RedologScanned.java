@@ -108,6 +108,10 @@ public class RedologScanned implements Scanned{
 		return relativePath;
 	}
 
+	public File getBackupFile () {
+		return backupFile;
+	}
+
 	@Override
 	public String toString () {
 

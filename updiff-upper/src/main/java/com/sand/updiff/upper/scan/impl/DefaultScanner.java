@@ -34,7 +34,7 @@ import java.util.List;
  * @version 1.0.0
  *
  */
-public class DefaultScanner implements Scanner {
+public class DefaultScanner implements Scanner<Scanned> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultScanner.class);
 
@@ -44,6 +44,8 @@ public class DefaultScanner implements Scanner {
 
 	private List<Scanned> scanFiles;
 
+	private ConstaintJarDirScanner constaintJarDirScanner;
+
 	public DefaultScanner (File oldDir, File newDir) {
 
 		if(!oldDir.isDirectory() || !newDir.isDirectory()){
@@ -52,6 +54,8 @@ public class DefaultScanner implements Scanner {
 
 		this.oldDir = oldDir;
 		this.newDir = newDir;
+
+		constaintJarDirScanner = new ConstaintJarDirScanner(this.oldDir, this.newDir);
 	}
 
 	public Iterator<Scanned> iterator () {
@@ -59,6 +63,12 @@ public class DefaultScanner implements Scanner {
 		if(scanFiles == null){
 			scanFiles = new LinkedList<Scanned>();
 			walkFiles(scanFiles, newDir);
+
+			//加入包含jar文件的文件夹scanned
+			Iterator<Scanned> constaintJarDirIt = constaintJarDirScanner.iterator();
+			while(constaintJarDirIt.hasNext()){
+				scanFiles.add(constaintJarDirIt.next());
+			}
 		}
 
 		return scanFiles.iterator();

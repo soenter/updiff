@@ -38,10 +38,11 @@ public class DiffScanner implements Scanner<Scanned> {
 
 	private File newDir;
 
-
 	private List<DiffReader> diffReaders;
 
 	private List<Scanned> scanFiles;
+
+	private ConstaintJarDirScanner constaintJarDirScanner;
 
 	public DiffScanner (File oldDir, File newDir, List<File> diffFiles) throws IOException {
 		this.oldDir = oldDir;
@@ -60,6 +61,8 @@ public class DiffScanner implements Scanner<Scanned> {
 				throw new IOException("diff 文件格式错误");
 			}
 		}
+
+		constaintJarDirScanner = new ConstaintJarDirScanner(this.oldDir, this.newDir);
 
 	}
 
@@ -86,8 +89,8 @@ public class DiffScanner implements Scanner<Scanned> {
 					DiffItem item = diffIt.next();
 
 					String compliedPath = item.getCompiledNewPath();
-					File oldFile = null;
-					File newFile = null;
+					File oldFile;
+					File newFile;
 					if(isWar && needCompileMap.containsKey(item.getGroupName())){
 						oldFile = new File(oldDir, "WEB-INF/classes/" + compliedPath);
 						newFile = new File(newDir, "WEB-INF/classes/" + compliedPath);
@@ -99,6 +102,12 @@ public class DiffScanner implements Scanner<Scanned> {
 					Scanned scanned = new DiffScanned(oldFile, newFile, compliedPath, item);
 					scanFiles.add(scanned);
 				}
+			}
+
+			//加入包含jar文件的文件夹scanned
+			Iterator<Scanned> constaintJarDirIt = constaintJarDirScanner.iterator();
+			while(constaintJarDirIt.hasNext()){
+				scanFiles.add(constaintJarDirIt.next());
 			}
 		}
 
