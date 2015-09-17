@@ -1,11 +1,9 @@
 package com.sand.updiff.common;
 
 /**
- * @author : sun.mt@sand.com.cn
- * @version 1.0.0
- * @ClassName ：com.sand.updiff.common.FileType
- * @Description :
- * @Date : 2015/8/11 9:09
+ * @author : sun.mt
+ * @date : 2015/8/11 9:09
+ * @since 1.0.0
  */
 public enum FileType {
 	CLASS(".class"),

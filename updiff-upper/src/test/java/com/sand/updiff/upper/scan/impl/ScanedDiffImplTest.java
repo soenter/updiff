@@ -9,7 +9,7 @@
  * Change Log
  * Author      Change Date    Comments
  * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/11        Initailized
+ * sun.mt         2015/8/11        Initailized
  */
 package com.sand.updiff.upper.scan.impl;
 
@@ -25,9 +25,9 @@ import java.util.Iterator;
  *
  * @ClassName ：com.sand.updiff.upper.scan.impl.ScanedDiffImplTest
  * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/11 9:21
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/11 9:21
+ * @since 1.0.0
  *
  */
 public class ScanedDiffImplTest {

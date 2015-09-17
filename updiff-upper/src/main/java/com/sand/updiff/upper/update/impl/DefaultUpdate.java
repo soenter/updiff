@@ -1,16 +1,3 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/7 16:33
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/7        Initailized
- */
 package com.sand.updiff.upper.update.impl;
 
 import com.sand.updiff.common.ChangeType;
@@ -35,11 +22,9 @@ import java.util.Stack;
 
 /**
  *
- * @ClassName ：com.sand.updiff.upper.update.impl.DefaultUpdate
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/7 16:33
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/7 16:33
+ * @since 1.0.0
  *
  */
 public class DefaultUpdate implements Update {

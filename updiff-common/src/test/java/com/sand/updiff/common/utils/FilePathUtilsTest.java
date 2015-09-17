@@ -1,19 +1,5 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/17 12:10
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/17        Initailized
- */
 package com.sand.updiff.common.utils;
 
-import com.sand.updiff.common.FileType;
 import org.apache.maven.model.Resource;
 import org.junit.Test;
 
@@ -25,11 +11,9 @@ import java.util.jar.JarFile;
 
 /**
  *
- * @ClassName ：com.sand.updiff.mvnplugin.utils.FilePathUtilsTest
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/17 12:10
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/17 12:10
+ * @since 1.0.0
  *
  */
 public class FilePathUtilsTest {

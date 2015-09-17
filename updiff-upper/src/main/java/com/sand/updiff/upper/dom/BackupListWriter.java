@@ -1,16 +1,3 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/13 14:28
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/13        Initailized
- */
 package com.sand.updiff.upper.dom;
 
 import com.sand.updiff.common.FileType;
@@ -21,11 +8,9 @@ import java.io.IOException;
 
 /**
  *
- * @ClassName ：com.sand.updiff.upper.dom.BackupListWriter
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/13 14:28
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/13 14:28
+ * @since 1.0.0
  *
  */
 public class BackupListWriter extends AbstractWriter{

@@ -1,25 +1,10 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/3 18:50
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/3        Initailized
- */
 package com.sand.updiff.common;
 
 /**
  *
- * @ClassName ：com.sand.updiff.common.DiffItem
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/3 18:50
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/3 18:50
+ * @since 1.0.0
  *
  */
 public class DiffItem {

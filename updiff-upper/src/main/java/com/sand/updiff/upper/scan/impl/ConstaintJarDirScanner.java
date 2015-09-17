@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 扫描包含jar文件的文件夹
- * @author : sun.mt@sand.com.cn
+ * @author : sun.mt
  * @create : 2015/9/17 11:12
  * @since : 1.0.5
  */

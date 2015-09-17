@@ -1,19 +1,5 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/7 13:46
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/7        Initailized
- */
 package com.sand.updiff.upper.scan.impl;
 
-import com.sand.updiff.common.FileType;
 import com.sand.updiff.common.utils.UpdiffFileUtils;
 import com.sand.updiff.upper.scan.Scanned;
 import com.sand.updiff.upper.scan.Scanner;
@@ -27,11 +13,9 @@ import java.util.List;
 
 /**
  *
- * @ClassName ：com.sand.updiff.upper.scan.impl.DefaultScanner
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/7 13:46
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/7 13:46
+ * @since 1.0.0
  *
  */
 public class DefaultScanner implements Scanner<Scanned> {

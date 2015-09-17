@@ -1,16 +1,3 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/10 15:36
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/10        Initailized
- */
 package com.sand.updiff.upper.scan.impl;
 
 import com.sand.updiff.common.DiffItem;
@@ -25,11 +12,9 @@ import java.util.*;
 
 /**
  *
- * @ClassName : com.sand.updiff.upper.scan.impl.DiffScanner
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/10 15:36
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/10 15:36
+ * @since 1.0.0
  *
  */
 public class DiffScanner implements Scanner<Scanned> {

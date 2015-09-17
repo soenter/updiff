@@ -16,10 +16,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @ClassName : com.sand.updiff.common.utils.GitRepTest
- * @Description :
- * @Author : sun.mt@sand.com.cn
- * @Date : 2015/9/12 23:42
+ * @author : sun.mt
+ * @date : 2015/9/12 23:42
  */
 public class GitRepTest {
 

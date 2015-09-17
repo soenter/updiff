@@ -8,11 +8,9 @@ import java.io.*;
 import java.util.List;
 
 /**
- * @ClassName ：com.sand.updiff.examples.assembly.ChangeList
- * @Description :
- * @Author : sun.mt@sand.com.cn
- * @Date : 2015/9/8 12:35
- * @Version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/9/8 12:35
+ * @since 1.0.0
  */
 public class ChangeList {
 

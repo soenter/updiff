@@ -12,10 +12,8 @@ import java.io.*;
 import java.util.List;
 
 /**
- * @ClassName : com.sand.updiff.examples.ChangeListServlet
- * @Description :
- * @Author : sun.mt@sand.com.cn
- * @Date : 2015/8/29 12:11
+ * @author : sun.mt
+ * @date : 2015/8/29 12:11
  */
 public class ChangeListServlet extends HttpServlet{
 

@@ -17,10 +17,8 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * @ClassName : com.sand.updiff.examples.ChangeAnalysisServlet
- * @Description :
- * @Author : sun.mt@sand.com.cn
- * @Date : 2015/8/30 1:34
+ * @author : sun.mt
+ * @date : 2015/8/30 1:34
  */
 public class ChangeAnalysisServlet  extends HttpServlet {
 

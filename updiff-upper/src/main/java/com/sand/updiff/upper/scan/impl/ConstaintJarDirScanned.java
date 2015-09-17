@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * @author : sun.mt@sand.com.cn
+ * @author : sun.mt
  * @create : 2015/9/17 13:00
  * @since : 1.0.5
  */

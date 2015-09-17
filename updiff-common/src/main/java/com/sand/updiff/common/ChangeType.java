@@ -1,11 +1,9 @@
 package com.sand.updiff.common;
 
 /**
- * @author : sun.mt@sand.com.cn
- * @version 1.0.0
- * @ClassName ：com.sand.updiff.common.ChangeType
- * @Description :
- * @Date : 2015/8/11 9:12
+ * @author : sun.mt
+ * @since 1.0.0
+ * @date : 2015/8/11 9:12
  */
 public enum ChangeType {
 	/** Add a new file to the project */

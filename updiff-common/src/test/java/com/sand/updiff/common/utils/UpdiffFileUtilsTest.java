@@ -1,19 +1,5 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/12 13:13
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/12        Initailized
- */
 package com.sand.updiff.common.utils;
 
-import com.sand.updiff.common.utils.UpdiffFileUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,11 +7,9 @@ import java.io.IOException;
 
 /**
  *
- * @ClassName ：com.sand.updiff.utils.UpdiffFileUtilsTest
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/12 13:13
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/12 13:13
+ * @since 1.0.0
  *
  */
 public class UpdiffFileUtilsTest {

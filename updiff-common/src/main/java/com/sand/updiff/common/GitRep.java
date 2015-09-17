@@ -1,16 +1,3 @@
-/**
- * Copyright : http://www.sandpay.com.cn/ , 2007-2015
- * Project : updiff
- * $$Id$$
- * $$Revision$$
- * Last Changed by sun.mt at 2015/8/3 19:24
- * $$URL$$
- * <p/>
- * Change Log
- * Author      Change Date    Comments
- * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/3        Initailized
- */
 package com.sand.updiff.common;
 
 import com.sand.updiff.common.utils.FilePathUtils;
@@ -35,11 +22,9 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @ClassName ：com.sand.updiff.common.GitRep
- * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/3 19:24
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/3 19:24
+ * @since 1.0.0
  *
  */
 public class GitRep {

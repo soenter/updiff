@@ -9,7 +9,7 @@
  * Change Log
  * Author      Change Date    Comments
  * -------------------------------------------------------------
- * sun.mt@sand.com.cn         2015/8/11        Initailized
+ * sun.mt         2015/8/11        Initailized
  */
 package com.sand.updiff.upper.update;
 
@@ -32,9 +32,9 @@ import java.util.List;
  *
  * @ClassName ��com.sand.updiff.update.impl.UpdateTest
  * @Description : 
- * @author : sun.mt@sand.com.cn
- * @Date : 2015/8/11 9:33
- * @version 1.0.0
+ * @author : sun.mt
+ * @date : 2015/8/11 9:33
+ * @since 1.0.0
  *
  */
 public class UpdateTest {
