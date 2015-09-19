@@ -18,7 +18,7 @@
 
     <filter>
         <filter-name>sessionFilter</filter-name>
-        <filter-class>com.sand.sdrift.server.ui.filter.SessionFilter</filter-class>
+        <filter-class>com.sand.updiff.ci.filter.SessionFilter</filter-class>
     </filter>
 
     <filter>
