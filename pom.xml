@@ -14,7 +14,7 @@
         <module>updiff-mvn-plugin</module>
         <module>updiff-upper</module>
         <module>updiff-examples</module>
-        <module>updiff-ci/module>
+        <module>updiff-ci</module>
     </modules>
 
     <properties>
