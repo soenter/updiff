@@ -131,7 +131,7 @@ Fixed Issues:
 
 Fixed Issues:
 
-* [#9314](http://dev.ckeditor.com/ticket/9314): Fixed: Incorrect error message on closing a dialog window without saving changs.
+* [#9314](http://dev.ckeditor.com/ticket/9314): Fixed: Incorrect error messageVo on closing a dialog window without saving changs.
 * [#10308](http://dev.ckeditor.com/ticket/10308): [IE10] Fixed: Unspecified error when deleting a row.
 * [#10945](http://dev.ckeditor.com/ticket/10945): [Chrome] Fixed: Clicking with a mouse inside the editor does not show the caret.
 * [#10912](http://dev.ckeditor.com/ticket/10912): Prevent default action when content of a non-editable link is clicked.

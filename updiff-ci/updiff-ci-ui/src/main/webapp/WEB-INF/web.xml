@@ -5,22 +5,46 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation=" http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-    <display-name>updiff webui</display-name>
+    <display-name>sdrift webui</display-name>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:spring/updiffci.xml</param-value>
+        <param-value>classpath*:spring/updiff-ci-ui.xml</param-value>
     </context-param>
-
+    <servlet>
+        <servlet-name>rest-servlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:spring/updiff-ci-ui_rest-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>rest-servlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
 
     <filter>
         <filter-name>sessionFilter</filter-name>
-        <filter-class>com.sand.updiff.ci.filter.SessionFilter</filter-class>
+        <filter-class>com.sand.sdrift.server.ui.filter.SessionFilter</filter-class>
     </filter>
 
+    <filter-mapping>
+        <filter-name>sessionFilter</filter-name>
+        <url-pattern>/client/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>sessionFilter</filter-name>
+        <url-pattern>/notice/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>sessionFilter</filter-name>
+        <url-pattern>/io/*</url-pattern>
+    </filter-mapping>
     <filter>
         <filter-name>encodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -35,24 +59,17 @@
     </filter>
 
     <filter-mapping>
-        <filter-name>sessionFilter</filter-name>
-        <url-pattern>/console/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <welcome-file-list>
-        <welcome-file>/WEB-INF/</welcome-file>
-    </welcome-file-list>
     <error-page>
         <error-code>404</error-code>
-        <location>/WEB-INF/error/page-not-found.jsp</location>
+        <location>/WEB-INF/error/404.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/WEB-INF/error/page-not-found.jsp</location>
+        <location>/WEB-INF/error/500.jsp</location>
     </error-page>
+
 </web-app>

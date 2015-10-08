@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8"
 	pageEncoding="utf-8"%>
-<%@ include file="/WEB-INF/includes/include-page-doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/page-doctype.jsp"%>
 <html>
 <head>
-<%@ include file="/WEB-INF/includes/include-page-meta.jsp"%>
+	<%@ include file="/WEB-INF/includes/page-meta.jsp"%>
 <title>访问出错</title>
 </head>
 <body>

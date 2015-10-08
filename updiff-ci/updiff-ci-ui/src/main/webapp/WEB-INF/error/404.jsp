@@ -3,7 +3,7 @@
 <%@ include file="/WEB-INF/includes/page-doctype.jsp"%>
 <html>
 <head>
-<%@ include file="/WEB-INF/includes/page-meta.jsp"%>
+	<%@ include file="/WEB-INF/includes/page-meta.jsp"%>
 <title>访问出错</title>
 </head>
 <body>

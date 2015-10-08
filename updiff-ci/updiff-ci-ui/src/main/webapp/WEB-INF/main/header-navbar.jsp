@@ -6,6 +6,6 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
 <ul class="nav navbar-nav">
   <li>
-    <a href="#"><b>登&nbsp;陆</b></a>
+    <a href="/users/login"><i class="fa fa-sign-in"></i>&nbsp;登陆</a>
   </li>
 </ul>

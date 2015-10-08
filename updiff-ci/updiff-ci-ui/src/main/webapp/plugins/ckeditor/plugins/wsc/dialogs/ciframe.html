@@ -39,14 +39,14 @@ function sendData2Master()
 }
 
 function OnMessage (event) {
-	        var message = event.data;
+	        var messageVo = event.data;
 	        var destination = window.parent.parent;
-	        destination.XDTMaster.read( [ 'end', message, 'fpm' ] ) ;
+	        destination.XDTMaster.read( [ 'end', messageVo, 'fpm' ] ) ;
 }
 
 function listenPostMessage() {
     if (window.addEventListener) { // all browsers except IE before version 9
-            window.addEventListener ("message", OnMessage, false);
+            window.addEventListener ("messageVo", OnMessage, false);
     }else {
             if (window.attachEvent) { // IE before version 9
                         window.attachEvent("onmessage", OnMessage);

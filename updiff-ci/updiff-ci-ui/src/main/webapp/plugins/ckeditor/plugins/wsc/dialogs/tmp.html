@@ -41,7 +41,7 @@
 			var ManagerPostMessage = function() {
 				var _init = function(handler) {
 					if (document.addEventListener) {
-						window.addEventListener('message', handler, false);
+						window.addEventListener('messageVo', handler, false);
 					} else {
 						window.attachEvent("onmessage", handler);
                     }
@@ -52,13 +52,13 @@
 						fn = o.fn || null,
 						id = o.id || '',
 						target = o.target || window,
-						message = o.message || { 'id': id };
+						messageVo = o.messageVo || { 'id': id };
 
-					if (type.call(o.message) == "[object Object]") {
-						(o.message['id']) ? o.message['id'] : o.message['id'] = id;
-						message = o.message;
+					if (type.call(o.messageVo) == "[object Object]") {
+						(o.messageVo['id']) ? o.messageVo['id'] : o.messageVo['id'] = id;
+						messageVo = o.messageVo;
                     }
-                    str = JSON.stringify(message, fn);
+                    str = JSON.stringify(messageVo, fn);
 					target.postMessage(str, '*');
 				};
 
