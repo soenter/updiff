@@ -24,7 +24,7 @@ if exist { "%JAVA_HOME%\bin\java" } (
 echo Using JAVA_HOME:    "%JAVA_HOME%"
 echo Using UPPER_HOME:   "%UPPER_HOME%"
 
-set JAVA_OPTS=-server -Xms128m -Xmx128m -XX:+UseG1GC -XX:MaxGCPauseMillis=400 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/updiff.memory.dump -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:logs/updiff.gc.log
+set JAVA_OPTS=-server -Xms128m -Xmx128m -XX:MaxGCPauseMillis=400 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=logs/updiff.memory.dump -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:logs/updiff.gc.log
 
 %JAVA% %JAVA_OPTS% -cp %UPPER_HOME%\lib\* com.sand.updiff.upper.Upper %*
 

@@ -262,7 +262,9 @@ public class DefaultUpdate implements Update {
 			}
 
 		}
-		LOGGER.info("[备份]-要删除的不必要的依赖jar文件：在[{}]中的[{}]", scanned.getOldFile(), stringBuilder);
+		if(!isFirst){
+			LOGGER.info("[备份]-要删除的不必要的依赖jar文件：在[{}]中的[{}]", scanned.getOldFile(), stringBuilder);
+		}
 	}
 
 	private void deleteNoNeedDependencyJarFileInOldPath(ConstaintJarDirScanned scanned) throws IOException {
@@ -287,6 +289,8 @@ public class DefaultUpdate implements Update {
 				stringBuilder.append(oldJarFile.getName());
 			}
 		}
-		LOGGER.info("[删除]-删除不必要的依赖jar文件：在[{}]中的[{}]", scanned.getOldFile(), stringBuilder);
+		if(!isFirst){
+			LOGGER.info("[删除]-删除不必要的依赖jar文件：在[{}]中的[{}]", scanned.getOldFile(), stringBuilder);
+		}
 	}
 }

@@ -49,7 +49,7 @@ done
 #-XX:G1ReservePercent=n	设置作为空闲空间的预留内存百分比，以降低目标空间溢出的风险。默认值是 10%。
 #-XX:G1HeapRegionSize=n	设置的 G1 区域的大小。值是2的幂，范围是1 MB 到32 MB。目标是根据最小的 Java 堆大小划分出约 2048 个区域。
 
-JAVA_OPTS="-server -Xms128m -Xmx128m -XX:+UseG1GC -XX:MaxGCPauseMillis=400 -XX:+HeapDumpOnOutOfMemoryError
+JAVA_OPTS="-server -Xms128m -Xmx128m -XX:MaxGCPauseMillis=400 -XX:+HeapDumpOnOutOfMemoryError
 -XX:HeapDumpPath=logs/upper.memory.dump -XX:+PrintGCDetails -XX:+PrintGCTimeStamps
 -XX:+PrintGCApplicationStoppedTime -Xloggc:logs/upper.gc.log
 "

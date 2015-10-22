@@ -56,7 +56,7 @@ public class ClassUpdate extends DefaultUpdate {
 	}
 
 	public void backup () throws IOException {
-		if(!getScanned().isAddFile()){
+		if(getScanned().isModifyFile() || getScanned().isDeleteFile()){
 			File backupDirFile = getBackupFile().getParentFile();
 
 			if(!backupDirFile.exists() && !backupDirFile.mkdirs()){

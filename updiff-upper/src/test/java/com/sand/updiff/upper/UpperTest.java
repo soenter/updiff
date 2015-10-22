@@ -52,8 +52,8 @@ public class UpperTest {
 	@Test
 	public void test_call_up_webapp(){
 
-		String oldPath = "D:\\0010_bin\\apache-tomcat-7.0.57\\webapps\\updiff-examples-webapp";
-		String newPath = "D:\\0010_bin\\updiff-examples-webapp.war";
+		String oldPath = "D:\\0000_test\\updiff\\riskms";
+		String newPath = "D:\\0000_test\\updiff\\riskms.war";
 		Upper.main(new String[]{"up", oldPath, newPath});
 	}
 }

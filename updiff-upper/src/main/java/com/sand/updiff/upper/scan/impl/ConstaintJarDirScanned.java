@@ -70,4 +70,21 @@ public class ConstaintJarDirScanned implements Scanned{
 	public List<File> getNewDirJarFiles () {
 		return newDirJarFiles;
 	}
+
+	@Override
+	public String toString () {
+
+		StringBuilder sb = new StringBuilder("[");
+
+		sb.append("isDir: ").append(isDir()).append(", ");
+		sb.append("isJar: ").append(isJar()).append(", ");
+		sb.append("hasDiff: ").append(hasDiff()).append(", ");
+		sb.append("isAddFile: ").append(isAddFile()).append(", ");
+		sb.append("isModifyFile: ").append(isModifyFile()).append(", ");
+		sb.append("isDeleteFile: ").append(isDeleteFile()).append(", ");
+		sb.append("oldFile: ").append(oldFile).append(", ");
+		sb.append("newFile: ").append(newFile);
+
+		return sb.append("]").toString();
+	}
 }

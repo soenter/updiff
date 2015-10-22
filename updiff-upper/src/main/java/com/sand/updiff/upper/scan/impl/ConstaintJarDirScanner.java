@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.FileFilter;
+import java.util.*;
 
 /**
  * 扫描包含jar文件的文件夹
@@ -44,27 +42,30 @@ public class ConstaintJarDirScanner implements Scanner<Scanned>{
 
 
 	private void walkFiles(List<Scanned> scanFiles, File file){
-		List<File> oldDirJarFiles = null;
-		List<File> newDirJarFiles = null;
+		File[] jarFiles = getJarFiles(file);
+		if(jarFiles != null && jarFiles.length > 0){
+			List<File> newDirJarFiles = new ArrayList<File>(jarFiles.length);
+			for (int i = 0; i < jarFiles.length; i++){
+				newDirJarFiles.add(getNewFile(jarFiles[i]));
+			}
+			Scanned scanned = new ConstaintJarDirScanned(file, getNewFile(file), getRelativePath(file), Arrays.asList(jarFiles), newDirJarFiles);
+			LOGGER.debug("扫描到包含jar文件的文件夹： {}", scanned);
+			scanFiles.add(scanned);
+		}
 		File[] files = file.listFiles();
 		for (File f: files){
 			if(f.isDirectory()){
 				walkFiles(scanFiles, f);
-			} else if(f.getName().endsWith(FileType.JAR.getType())){
-				if(oldDirJarFiles == null){
-					oldDirJarFiles = new ArrayList<File>();
-					newDirJarFiles = new ArrayList<File>();
-				}
-				oldDirJarFiles.add(f);
-				newDirJarFiles.add(getNewFile(f));
-				LOGGER.debug("扫描到jar文件： {}", f);
 			}
 		}
-		if(oldDirJarFiles != null){
-			Scanned scanned = new ConstaintJarDirScanned(file, getNewFile(file), getRelativePath(file), oldDirJarFiles, newDirJarFiles);
-			LOGGER.debug("扫描到包含jar文件的文件夹： {}", scanned);
-			scanFiles.add(scanned);
-		}
+	}
+
+	private File[] getJarFiles(File file){
+		return file.listFiles(new FileFilter() {
+			public boolean accept (File pathname) {
+				return pathname.isFile() && pathname.getName().endsWith(FileType.JAR.getType());
+			}
+		});
 	}
 
 	private File getNewFile(File file){

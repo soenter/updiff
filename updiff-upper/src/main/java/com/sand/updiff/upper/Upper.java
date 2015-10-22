@@ -175,12 +175,7 @@ public class Upper {
 		//1、先根据 .diff 文件更新差异
 		File warDiffFileParent = new File(newPath, "META-INF");
 		List<File> diffFiles = UpdiffFileUtils.getDiffFiles(warDiffFileParent);
-		Scanner<Scanned> diffScanner = null;
-		if(diffFiles != null && diffFiles.size() > 0) {
-			diffScanner = new DiffScanner(new File(oldPath), new File(newPath), diffFiles);
-		} else {
-			throw new RuntimeException("war 不包含 .diff 差异文件");
-		}
+		Scanner<Scanned> diffScanner = new DiffScanner(new File(oldPath), new File(newPath), diffFiles);
 
 		Iterator<Scanned> backupIt = diffScanner.iterator();
 		Executor executor = new UpperExecutor(backupDir);
