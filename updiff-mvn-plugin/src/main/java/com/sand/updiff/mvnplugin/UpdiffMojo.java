@@ -39,6 +39,13 @@ public class UpdiffMojo extends AbstractMojo {
 	private String newVersion;
 
 	/**
+	 * 默认值为 false
+	 * @parameter expression="${updiff.disabled}" default-value="false"
+	 *
+	 */
+	private boolean disabled;
+
+	/**
 	 * 项目根目录，默认取${session.executionRootDirectory}
 	 *
 	 * @parameter expression="${projectDir}" default-value="${session.executionRootDirectory}"
@@ -120,6 +127,7 @@ public class UpdiffMojo extends AbstractMojo {
 	private Resource[] extResources;
 
 	public void execute () throws MojoExecutionException {
+		if(disabled) return;
 
 		if("pom".equals(packaging)){
 			return;
